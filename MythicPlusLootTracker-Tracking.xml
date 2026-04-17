@@ -1,0 +1,217 @@
+<UI>
+    <Frame name="MPLT_TrackingEncounterElementTemplate" mixin="MPLT_TrackingElementMixin" virtual="true">
+		<Size x="500" y="100"/>
+        <Frames>
+            <Frame parentKey="EncounterContainer">
+                <Size x="500" y="100"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="BackgroundTile" atlas="auctionhouse-background-sell-right" useAtlasSize="true" vertTile="true" horizTile="true">
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="4" y="-4" />
+                                <Anchor point="BOTTOMRIGHT" x="-4" y="5"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="TopLeftCorner" atlas="Tooltip-Maw-NineSlice-CornerTopLeft" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="4"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopRightCorner" atlas="Tooltip-Maw-NineSlice-CornerTopRight" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="4"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopBorder" atlas="_Tooltip-Maw-NineSlice-EdgeTop" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="TOPRIGHT" y="0"/>
+								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="TOPLEFT" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomLeftCorner" atlas="Tooltip-Maw-NineSlice-CornerBottomLeft" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomRightCorner" atlas="Tooltip-Maw-NineSlice-CornerBottomRight" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomBorder" atlas="_Tooltip-Maw-NineSlice-EdgeBottom" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="LeftBorder" atlas="!Tooltip-Maw-NineSlice-EdgeLeft" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="TOPLEFT"/>
+								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="RightBorder" atlas="!Tooltip-Maw-NineSlice-EdgeRight" useAtlasSize="true">
+                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="TOPRIGHT"/>
+								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Highlight" atlas="UI-Valdrakken-Highlight-Middle" hidden="false">
+                            <Size x="615" y="201"/>
+                            <Color r="0.6" g="0.6" b="0.6" a="1"/>
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="100"/>
+                            </Anchors>
+                        </Texture>
+                        <FontString parentKey="EncounterText" inherits="Fancy48Font" justifyH="CENTER" justifyV="TOP" maxLines="2">
+                            <Size x="700" y="30"/>
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-15"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button parentKey="RemoveEnc" inherits="UIPanelCloseButtonNoScripts">
+                <Size x="13" y="13"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.EncounterContainer" relativePoint="TOPLEFT" x="15" y="-11"/>
+                </Anchors>
+                <Scripts>
+					<OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+					</OnClick>
+				</Scripts>
+            </Button>
+        </Frames>
+	</Frame>
+    <Frame name="MPLT_TrackingItemElementTemplate" mixin="MPLT_TrackingElementMixin" virtual="true">
+        <Frames>
+            <Frame parentKey="ItemContainer">
+                <Size x="400" y="60"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BORDER">
+                        <Texture parentKey="ItemBorder" atlas="GarrMissionLocation-Maw-ButtonBG">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="0" y="0"/>
+                                <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="IconBorder" atlas="cyphersetupgrade-rightitem-border-empty">
+                            <Size x="67" y="56"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" relativeKey="$parent.ItemBorder" relativePoint="LEFT" x="12" y="0"/>
+                            </Anchors>
+                            <TexCoords>
+                                <Rect ULx="0" ULy="1" LLx="1" LLy="1" URx="0" URy="0" LRx="1" LRy="0" />
+                            </TexCoords>
+                        </Texture>
+                        <FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true" parentKey="Count">
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ItemText" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP" maxLines="1">
+                            <Size x="370" y="0"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.ItemBorder" relativePoint="TOPLEFT" x="20" y="-10"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ItemSince" inherits="NumberFontNormal" justifyH="LEFT" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemBorder" relativePoint="LEFT" x="20" y="-15"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ItemAttempts" inherits="NumberFontNormal" justifyH="LEFT" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemSince" relativePoint="RIGHT" x="5" y="0"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ItemChances" inherits="NumberFontNormal" justifyH="LEFT" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemAttempts" relativePoint="RIGHT" x="5" y="0"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture name="$parentIconTexture" parentKey="icon">
+                            <Size x="37" y="37"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.IconBorder" relativePoint="CENTER" x="-1" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Animations>
+                    <AnimationGroup parentKey="ShowAnim" looping="NONE" setToFinalAlpha="true">
+                        <Alpha duration=".15" fromAlpha="0" toAlpha="1" smoothing="IN"/>
+                    </AnimationGroup>
+                </Animations>
+                <Scripts>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                        GameTooltip:SetText("");
+                    </OnEnter>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemDone" hidden="true">
+                <Size x="100" y="60"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemContainer" relativePoint="RIGHT" x="5" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="DoneBG" atlas="UI-Frame-jailerstower-RerollButton" hidden="false">
+                            <Size x="227" y="149"/>
+                            <Anchors>
+                                <Anchor point="LEFT" x="0" y="0"/>
+                                <Anchor point="LEFT" x="-50" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <FontString parentKey="ItemDoneText" inherits="NumberFontNormal" justifyH="CENTER" justifyV="CENTER" maxLines="4">
+                            <Size x="110" y="60"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DoneBG" relativePoint="CENTER" x="2" y="0"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button parentKey="RemoveItem" inherits="UIPanelCloseButtonNoScripts">
+                <Size x="13" y="13"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.ItemContainer" relativePoint="RIGHT" x="-5" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+					</OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame>
+</UI>

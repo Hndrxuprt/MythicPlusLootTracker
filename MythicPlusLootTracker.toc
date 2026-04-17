@@ -1,0 +1,28 @@
+## Interface: 120000, 120001
+## Title: Mythic Plus Loot Tracker
+## Version: 1.15
+## SavedVariables: MPLH_ENC, MPLH_ENC_ENDED, MPLH_TRACKITEM, MPLH_TRACKITEM_ORDER, MPLH_TRACKEDITEM_ITEMORDER, MPLH_KACDATA, MPLH_ORDER, MPLTOptions
+## Notes: Tracking all items recieved in mythic plus dungeons
+## Notes-ruRU: Трекер лута в мифик+ подземельях
+## Author: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+
+Localization\localization.lua
+Localization\localization_ru.lua
+
+libs.xml
+
+OutputLogTemplate.xml
+MythicPlusLootTracker-GlobalConstants.lua
+MythicPlusLootTracker-Core.lua
+MythicPlusLootTracker-Core.xml
+MythicPlusLootTracker-Luck.xml
+MythicPlusLootTracker-Luck.lua
+MythicPlusLootTracker-Tracking.xml
+MythicPlusLootTracker-Tracking.lua
+MythicPlusLootTracker-AltManager.xml
+MythicPlusLootTracker-AltManager.lua
+MythicPlusLootTracker-LFG.lua
+MythicPlusLootTracker-LootSniffer.xml
+MythicPlusLootTracker-LootSniffer.lua

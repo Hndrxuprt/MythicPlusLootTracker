@@ -1,0 +1,93 @@
+<UI>
+    <Frame name="MythicPlusLootTrackerLuckElementTemplate" mixin="MythicPlusLootTrackerLuckElementMixin" virtual="true">
+		<Size x="157" y="46"/>
+		<Frames>
+			<Frame parentKey="ItemContainer">
+				<Size y="46"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+				<Frames>
+					<ItemButton parentKey="Item">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="25" y="-4"/>
+						</Anchors>
+					</ItemButton>
+				</Frames>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="NameFrame" atlas="looting_itemcard_bg">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER">
+						<Texture parentKey="BorderFrame" atlas="looting_itemcard_stroke_normal">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" maxLines="2">
+							<Size x="320" y="30"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.Item" relativePoint="TOPRIGHT" x="8" y="-1"/>
+							</Anchors>
+						</FontString>
+                        
+					</Layer>
+					<Layer level="OVERLAY" textureSubLevel="-1">
+						<Texture parentKey="CritFrame" atlas="Professions-Results-InspiredCreation" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="HighlightNameFrame" alphaMode="ADD" atlas="looting_itemcard_stroke_clickstate" alpha="0.7" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="PushedNameFrame" alphaMode="ADD" atlas="looting_itemcard_stroke_clickstate" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY" textureSubLevel="2">
+						<FontString parentKey="CritText" inherits="GameFontNormalTiny" text="PROFESSIONS_OUTPUT_INSPIRED_CREATION" justifyH="RIGHT" enableMouse="true">
+							<Size x="140" y="0"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-8" y="1"/>
+							</Anchors>
+						</FontString>
+                        <FontString parentKey="AmountText" inherits="GameFontNormalTiny" justifyH="LEFT" enableMouse="true">
+							<Size x="140" y="0"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="70" y="1"/>
+							</Anchors>
+						</FontString>
+                        <FontString parentKey="Index" inherits="GameFontNormal" justifyH="CENTER" maxLines="1">
+                            <Size x="20" y="0"/>
+                            <Anchors>
+                                <Anchor point="LEFT" x="4" y="1"/>
+                            </Anchors>
+                        </FontString>                       
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Animations>
+			<AnimationGroup parentKey="ShowAnim" looping="NONE" setToFinalAlpha="true">
+				<Alpha duration=".15" fromAlpha="0" toAlpha="1" smoothing="IN"/>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+</UI>

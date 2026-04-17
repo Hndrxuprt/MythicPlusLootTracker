@@ -1,0 +1,7 @@
+<UI>
+	<Frame name="MPLTBackdropTemplate" mixin="MPLTCoreMixin" virtual="true" inherits="BackdropTemplate">
+		<Scripts>
+			<OnHide method="OnHide"/>
+		</Scripts>
+	</Frame>
+</UI>

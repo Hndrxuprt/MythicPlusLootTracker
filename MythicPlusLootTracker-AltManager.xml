@@ -1,0 +1,1063 @@
+<UI>
+    <Frame name="MPLT_AltManagerTemplate" mixin="MPLT_AltManagerMixin" virtual="true">
+        <Size x="600" y="84"/>
+        <Frames>
+            <Frame parentKey="CharacterFrame" mixin="MPLT_AltManagerMixin">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="BackgroundTile" atlas="auctionhouse-background-sell-right" useAtlasSize="true" vertTile="true" horizTile="true">
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="4" y="-2" />
+                                <Anchor point="BOTTOMRIGHT" x="-4" y="6"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="TopLeftCorner" atlas="characterupdate-9slice-topleftcorner" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="4"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopRightCorner" atlas="characterupdate-9slice-toprightcorner" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="0" y="4"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="TopBorder" atlas="_characterupdate-9slice-topedge" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="TOPRIGHT" y="0"/>
+								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="TOPLEFT" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomLeftCorner" atlas="characterupdate-9slice-bottomleftcorner" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomRightCorner" atlas="characterupdate-9slice-bottomrightcorner" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BottomBorder" atlas="_characterupdate-9slice-bottomedge" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="LeftBorder" atlas="!characterupdate-9slice-leftedge" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="TOPLEFT"/>
+								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="BOTTOMLEFT"/>
+							</Anchors>
+						</Texture>
+						<Texture parentKey="RightBorder" atlas="!characterupdate-9slice-rightedge" useAtlasSize="true">
+                            <Color r="0.38" g="0.5" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="TOPRIGHT"/>
+								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="CharName" inherits="Fancy48Font" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="15" y="-8"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="CharIlvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="170" y="-15"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="CharKeystone" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="TOP" maxLines="2">
+                            <Size x="150" y="40"/>
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="15" y="-18"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="CharDate" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="BOTTOM" relativeKey="$parent" relativePoint="BOTTOM" x="0" y="20"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="CharProg" mixin="MPLT_AltManagerMixin">
+                <Size x="60" y="15"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.CharacterFrame" relativePoint="TOPLEFT" x="290" y="-15"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="CharProg" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="CharRio" mixin="MPLT_AltManagerMixin">
+                <Size x="60" y="15"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.CharacterFrame.CharIlvl" relativePoint="RIGHT" x="10" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="CharRio" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame1" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.CharacterFrame" relativePoint="BOTTOMLEFT" x="170" y="15"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item1" atlas="talents-node-choiceflyout-square-yellow" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon1">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item1" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon1"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon1" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame3" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame1" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item3" atlas="talents-node-choiceflyout-square-yellow" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon3">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item3" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon3"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon3" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame4" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame3" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item4" atlas="talents-node-choiceflyout-square-yellow" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon4">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item4" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon4"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon4" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame9" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame4" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item9" atlas="talents-node-choiceflyout-square-yellow" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon9">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item9" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon9"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon9" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame6" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame9" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item6" atlas="talents-node-choiceflyout-square-yellow" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon6">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item6" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon6"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon6" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame14" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame6" relativePoint="RIGHT" x="20" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item14" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon14">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item14" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon14"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon14" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame5" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame14" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item5" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon5">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item5" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon5"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon5" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            
+            <Frame parentKey="ItemFrame7" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame5" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item7" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                </Layer>
+                <Layer level="OVERLAY">
+                    <Texture parentKey="ItemIcon7">
+                        <Size x="26" y="26"/>
+                        <Anchors>
+                            <Anchor point="CENTER" relativeKey="$parent.Item7" relativePoint="CENTER" x="0" y="0"/>
+                        </Anchors>
+                    </Texture>
+                    <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                        <MaskedTextures>
+                            <MaskedTexture childKey="ItemIcon7"/>
+                        </MaskedTextures>
+                        <Size x="23" y="23"/>
+                        <Anchors>
+                            <Anchor point="CENTER" relativeKey="$parent.ItemIcon7" relativePoint="CENTER" x="0" y="0"/>
+                        </Anchors>
+                    </MaskTexture>
+                </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame8" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame7" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item8" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon8">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item8" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon8"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon8" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame2" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame8" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item2" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon2">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item2" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon2"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon2" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame10" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame2" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item10" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon10">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item10" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon10"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon10" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame11" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame10" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item11" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon11">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item11" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon11"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon11" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame12" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame11" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item12" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon12">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item12" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon12"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon12" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame13" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame12" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item13" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon13">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item13" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon13"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon13" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame15" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame13" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item15" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon15">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item15" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon15"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon15" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="ItemFrame16" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame15" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Item16" atlas="talents-node-choiceflyout-square-gray" useAtlasSize="false">
+                            <Size x="24" y="24"/>
+                            <Color r="1" g="1" b="1" a="1"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>                
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="ItemIcon16">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.Item16" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon16"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon16" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+
+            <Frame parentKey="Dungeon1" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="TOP" relativeKey="$parent.CharacterFrame" relativePoint="TOP" x="31" y="-11"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon1" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon1"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon1" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon2" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon1" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon2" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon2"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon2" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon3" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon2" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon3" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon3"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon3" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon4" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon3" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon4" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon4"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon4" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon5" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon4" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon5" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon5"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon5" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon6" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon5" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon6" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon6"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon6" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon7" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon6" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon7" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon7"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon7" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Dungeon8" mixin="MPLT_AltManagerMixin">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon7" relativePoint="RIGHT" x="3" y="0"/>
+                </Anchors>
+                <Layers>             
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="DungeonIcon8" >
+                            <Size x="24" y="24"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="DungeonIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="DungeonIcon8"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.DungeonIcon8" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="DungeonLvl" inherits="GameFontDisableSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                            <Anchors>
+                                <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter method="OnEnter"/>
+                    <OnLeave function="GameTooltip_Hide"/>
+                </Scripts>
+            </Frame>
+            <Button parentKey="RemoveChar" inherits="UIPanelCloseButtonNoScripts">
+                <Size x="13" y="13"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.CharacterFrame" relativePoint="TOPRIGHT" x="-10" y="-6"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+					</OnClick>
+                </Scripts>
+            </Button>
+            <Button parentKey="UpButton" inherits="QuickKeybindButtonTemplate">
+                <Size x="17" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.CharacterFrame" relativePoint="RIGHT" x="-8" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+					</OnClick>
+                </Scripts>
+                <NormalTexture atlas="ui-hud-actionbar-pageuparrow-up"/>
+                <PushedTexture atlas="ui-hud-actionbar-pageuparrow-down"/>
+                <DisabledTexture atlas="ui-hud-actionbar-pageuparrow-disabled"/>
+                <HighlightTexture atlas="ui-hud-actionbar-pageuparrow-mouseover"/>
+            </Button>
+            <Button parentKey="DownButton" inherits="QuickKeybindButtonTemplate">
+                <Size x="17" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.CharacterFrame" relativePoint="RIGHT" x="-8" y="-28"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+					</OnClick>
+                </Scripts>
+                <NormalTexture atlas="ui-hud-actionbar-pagedownarrow-up"/>
+                <PushedTexture atlas="ui-hud-actionbar-pagedownarrow-down"/>
+                <DisabledTexture atlas="ui-hud-actionbar-pagedownarrow-disabled"/>
+                <HighlightTexture atlas="ui-hud-actionbar-pagedownarrow-mouseover"/>
+            </Button>
+
+        </Frames>
+    </Frame>
+</UI>

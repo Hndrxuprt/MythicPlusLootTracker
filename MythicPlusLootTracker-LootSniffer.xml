@@ -1,0 +1,137 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="MPLT_LootSnifferFrameTemplate" mixin="MPLT_LootSnifferMixin" inherits="DefaultPanelFlatTemplate" virtual="true">
+		<Size x="76" y="290"/>
+        <Layers>
+            <Layer level="OVERLAY">
+                <Texture parentKey="TimerBar" atlas="activities-bar-fill" alphaMode="ADD" alpha="0.5" >
+                    <Size x="400" y="6"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent" relativePoint="BOTTOMLEFT" x="10" y="5"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="AutocloseText" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+                    <Size x="85"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeKey="$parent.TimerBar" relativePoint="LEFT" x="2" y="0"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+		<Frames>
+            <Button parentKey="ClosePanelButton" inherits="UIPanelCloseButtonDefaultAnchors"/>
+			<Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-22"/>
+					<Anchor point="BOTTOM" x="0" y="14"/>
+				</Anchors>
+			</Frame>
+			<EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-16" y="-25"/>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-16" y="6"/>
+				</Anchors>
+			</EventFrame>
+		</Frames>
+		<Animations>
+            <AnimationGroup parentKey="TimerAnim" looping="NONE" setToFinalAlpha="true">
+                <Scale childKey="TimerBar" duration="10.1" order="1" fromScaleX="1" fromScaleY="1" toScaleX="0" toScaleY="1"/>
+				<Translation childKey="TimerBar" duration="10.1" order="1" offsetX="-200" offsetY="0"/>
+				<Alpha childKey="AutocloseText" startDelay="8.1" smoothing="IN" duration="0.4" order="1" fromAlpha="1" toAlpha="0"/>
+                <Scripts>
+                    <OnPlay>
+                        self:GetParent().AutocloseText:SetAlpha(1)
+                    </OnPlay>
+                </Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="ShowAnim" looping="NONE" setToFinalAlpha="true">
+				<Translation duration="0.1" offsetY="-10" smoothing="IN"/>
+				<Alpha duration="0.1" fromAlpha="1" toAlpha="0" smoothing="IN"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="HideAnim" looping="NONE" setToFinalAlpha="true">
+				<Translation duration="0.1" offsetY="-10" smoothing="IN"/>
+				<Alpha duration="0.1" fromAlpha="1" toAlpha="0" smoothing="IN"/>
+			</AnimationGroup>
+		</Animations>
+        <Scripts>
+            <OnLoad>
+              tinsert(UISpecialFrames, self:GetName());
+            </OnLoad>
+            <OnShow>
+              PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
+            </OnShow>
+            <OnHide>
+              PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
+            </OnHide>
+          </Scripts>
+	</Frame>
+    <Button name="MPLT_LootSnifferRowTemplate" mixin="MPLT_LootSnifferMixin" frameStrata="LOW" virtual="true">
+        <Size x="600" y="100"/>
+        <NormalTexture parentKey="NormalTexture" atlas="auctionhouse-rowstripe-1" setAllPoints="true"/>
+        <Frames>
+            <Frame parentKey="ItemFrame" mixin="MPLT_LootSnifferMixin" frameStrata="HIGH">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+						<Texture parentKey="BisTexture" atlas="Soulbinds_Collection_Entry_Selected" alphaMode="ADD" alpha="0.5" setAllPoints="true" hidden="true" >
+							<Color r=".0" g=".9" b=".2" a="1"/>
+						</Texture>
+                        <Texture parentKey="ItemIcon">
+                            <Size x="26" y="26"/>
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <MaskTexture parentKey="ItemIconMask" atlas="talents-node-choiceflyout-mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                            <MaskedTextures>
+                                <MaskedTexture childKey="ItemIcon"/>
+                            </MaskedTextures>
+                            <Size x="23" y="23"/>
+                            <Anchors>
+                                <Anchor point="CENTER" relativeKey="$parent.ItemIcon" relativePoint="CENTER" x="0" y="0"/>
+                            </Anchors>
+                        </MaskTexture>
+                        <FontString parentKey="ItemLink" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+                            <Size x="160"/>
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemIcon" relativePoint="RIGHT" x="2" y="0"/>
+                            </Anchors>
+                        </FontString>
+						<FontString parentKey="ItemUpgrade" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+                            <Size x="45"/>
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemLink" relativePoint="RIGHT" x="0" y="0"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ItemOwner" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
+                            <Size x="85"/>
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.ItemUpgrade" relativePoint="RIGHT" x="0" y="0"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button parentKey="WhisperButton" inherits="UIPanelButtonTemplate" text="w" hidden="false" frameStrata="HIGH">
+				<Size x="30" y="25"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.ItemFrame.ItemOwner" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </Button>
+			<Button parentKey="PartyButton" inherits="UIPanelButtonTemplate" text="p" hidden="false" frameStrata="HIGH">
+				<Size x="30" y="25"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.WhisperButton" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </Button>
+			<Button parentKey="ForgetButton" inherits="UIPanelCloseButtonNoScripts" frameStrata="HIGH">
+				<Size x="15" y="15"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.PartyButton" relativePoint="RIGHT" x="6" y="0"/>
+                </Anchors>
+            </Button>
+        </Frames>
+    </Button>
+</Ui>

@@ -366,7 +366,7 @@ function AskForItem(unitName, itemLink, chatType)
 
     local message = tbl[math.random(1,#tbl)].." "..itemLink
     
-    SendChatMessage(message, chatType, nil, unitName)
+    C_ChatInfo.SendChatMessage(message, chatType, nil, unitName)
 end
 
 local askingFrame = CreateFrame("Frame", "AskingFrame", nil, "MPLT_LootSnifferFrameTemplate")
@@ -635,7 +635,30 @@ local savedInstanceID
 local function ProcessEvent(self, event, ...)
     if event == 'ENCOUNTER_LOOT_RECEIVED' then
         local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
-        if UnitIsUnit('player', unitName) then return end
+
+        local itemBindType = select(14, C_Item.GetItemInfo(itemLink))
+        local itemType = select(6,GetItemInfoInstant(itemLink))
+
+        if UnitIsUnit('player', unitName) then
+
+            -- don't suggest boe or warband
+            if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType > 7) then
+                return
+            end
+            if not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink) then
+                local chatType = "PARTY"
+                if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+                    chatType = 'INSTANCE_CHAT'
+                end
+                C_Timer.After((math.random(3,5)), function()
+                    C_ChatInfo.SendChatMessage(itemLink.. " roll", chatType)
+                end)
+            end
+            return
+        end
+
+        --don't track warband items
+        if itemBindType > 7 then return end
 
         local instanceID = select(8,GetInstanceInfo())
 
@@ -643,6 +666,7 @@ local function ProcessEvent(self, event, ...)
             wipe(MPLT_LootSnifferMixin.lootTable)
             savedInstanceID = instanceID
         end
+
         --print("MPLT sniffsniff: ", unitName, lootEncounterId, itemLink)
 
         if IsItemNeeded(itemID) then

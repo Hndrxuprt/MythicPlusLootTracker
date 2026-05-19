@@ -537,7 +537,7 @@ local function DetectGreatVault(itemLink)
     local itemType = select(6,GetItemInfoInstant(itemLink))
     local itemID = select(1, GetItemInfoInstant(itemLink))
     local mapID = C_Map.GetBestMapForUnit("player")
-    if ((itemType == 2) or (itemType == 4)) and mapID == 2339 and isValueinTable(greatVaultTable, itemID) then
+    if ((itemType == 2) or (itemType == 4)) and mapID == 2393 and isValueinTable(greatVaultTable, itemID) then
         print("DetectGreatVault", itemLink)
         local name, realm = UnitFullName("player")
         local fullname = name .. "-" .. realm
@@ -886,7 +886,7 @@ end
 -----------------------------------------------------------
 
 function StoreCharacterData()
-    if UnitLevel("player") < 80 then 
+    if UnitLevel("player") < 90 then 
         return
     else
         local name, realm = UnitFullName("player")

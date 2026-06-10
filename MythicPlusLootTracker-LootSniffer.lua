@@ -124,8 +124,8 @@ local testTable = {
     --["Lksomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242487::::::::80::::1:3196:\124h[Fatebound Crusader]\124h\124r",
     --["Odomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242488::::::::80::::1:3196:\124h[Tunic of Sworn Revenge]\124h\124r",
     --["Yeomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242491::::::::80::::1:3196:\124h[Whispers of K'aresh]\124h\124r",
-    --["Rksomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242493::::::::80::::1:3196:\124h[Starlit Safeguard]\124h\124r",
-    --["Qweomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242495::::::::80::::1:3196:\124h[Incorporeal Warpclaw]\124h\124r",
+    ["Rksomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242493::::::::80::::1:3196:\124h[Starlit Safeguard]\124h\124r",
+    ["Qweomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242495::::::::80::::1:3196:\124h[Incorporeal Warpclaw]\124h\124r",
     ["Woomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242497::::::::80::::1:3196:\124h[Azhiccaran Parapodia]\124h\124r",
     ["Roomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242494::::::::80::::1:3196:\124h[Lily of the Eternal Weave]\124h\124r",
 }
@@ -458,7 +458,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
         frame.ItemFrame.ItemIcon:SetTexture(itemTexture)
         frame.ItemFrame.ItemUpgrade:SetText(itemUpgrade)
         frame.ItemFrame.ItemUpgrade:SetTextColor(0.0,1.0,0.0)
-        frame.ItemFrame.ItemOwner:SetText(itemOwner)
+        frame.ItemFrame.ItemOwner:SetText(Addon.GetUnitColoredName(itemOwner))
         frame.ItemFrame:SetSize(430, 28)
         frame.ItemFrame.ItemLink:SetText(itemLink)
 
@@ -588,6 +588,8 @@ function MPLT_LootSnifferMixin:TestItem(itemLink, unitName)
         elseif IsItemUpgrade(itemLink) then
             --print("I NEED THIS ITEM 3:", itemLink)
             AddNewItem(itemLink, unitName, false)
+        else
+            AddNewItem(itemLink, unitName, true)
         end
     end
     if not C_Item.IsItemDataCachedByID(itemLink) then
@@ -642,23 +644,17 @@ local function ProcessEvent(self, event, ...)
         if UnitIsUnit('player', unitName) then
 
             -- don't suggest boe or warband
-            if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType > 7) then
+            if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType >= 7) then
                 return
             end
             if not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink) then
-                local chatType = "PARTY"
-                if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-                    chatType = 'INSTANCE_CHAT'
-                end
-                C_Timer.After((math.random(3,5)), function()
-                    C_ChatInfo.SendChatMessage(itemLink.. " roll", chatType)
-                end)
+                Addon.RollForItem(itemID, itemLink)
             end
             return
         end
 
         --don't track warband items
-        if itemBindType > 7 then return end
+        if itemBindType >= 7 then return end
 
         local instanceID = select(8,GetInstanceInfo())
 
@@ -681,6 +677,6 @@ local function ProcessEvent(self, event, ...)
     end
 end
 
-eventHandlerFrame = CreateFrame('Frame')
+local eventHandlerFrame = CreateFrame('Frame')
 eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
 eventHandlerFrame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')

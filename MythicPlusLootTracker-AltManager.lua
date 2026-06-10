@@ -310,6 +310,6 @@ function MPLT_AltManagerMixin:PrepareAltManager()
     AltManagerFrame:SetAlpha(1)
 end
 
-eventHandlerFrame = CreateFrame('Frame')
+local eventHandlerFrame = CreateFrame('Frame')
 eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
 eventHandlerFrame:RegisterEvent('FIRST_FRAME_RENDERED')

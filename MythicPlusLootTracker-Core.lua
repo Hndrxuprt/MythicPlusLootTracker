@@ -1138,6 +1138,17 @@ local function ProcessData(self)
             MPLT_LootSnifferMixin:Init()
         end)
 
+        local showRollButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
+        showRollButton:Hide()
+        showRollButton:SetParent(MPLTLootFrame)
+        showRollButton:SetPoint("LEFT", showLootShiffButton, "RIGHT", 4, 0)
+        showRollButton:SetSize(100, 25)
+        showRollButton:SetText("Roll")
+        showRollButton:Show()
+        showRollButton:SetScript("OnClick", function()
+            MPLT_RollFrameMixin:Init()
+        end)
+
 
         
         UIConfig.ScrollFrame = CreateFrame("ScrollFrame", nil, UIConfig, "UIPanelScrollFrameTemplate")
@@ -1305,6 +1316,16 @@ local function ProcessEvent(self, event, ...)
         if seasonID and Addon.currentSeason < seasonID then
             Addon.currentSeason = seasonID
         end
+--[[         do
+            if not issecretvalue(INVTYPE_WRIST) then
+                if INVTYPE_WRIST == "Wrist" then
+                    INVTYPE_WRIST = "Bracers"
+                end
+                if INVTYPE_WAIST == "Waist" then
+                    INVTYPE_WAIST = "Belt"
+                end
+            end
+        end ]]
     elseif event == "CHAT_MSG_CURRENCY" or event == "CURRENCY_DISPLAY_UPDATE" or event == "PLAYER_EQUIPMENT_CHANGED" then
         StoreCharacterData()  
     elseif event == 'ENCOUNTER_LOOT_RECEIVED' then
@@ -1356,7 +1377,7 @@ SlashCmdList["MPLHCOMMAND"] = function()
 
 end
 
-eventHandlerFrame = CreateFrame('Frame')
+local eventHandlerFrame = CreateFrame('Frame')
 eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
 eventHandlerFrame:RegisterEvent('ADDON_LOADED')
 eventHandlerFrame:RegisterEvent('FIRST_FRAME_RENDERED')

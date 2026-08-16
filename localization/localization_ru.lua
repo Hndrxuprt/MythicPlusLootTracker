@@ -70,3 +70,12 @@ Addon.localization.snifferTitle = "Попрошайка"
 Addon.localization.snifferW = "Ш"
 Addon.localization.snifferP = "П"
 Addon.localization.snifferAutoclose = "Автозакрытие"
+
+Addon.localization.rollButton = "Ролл"
+
+Addon.localization.CCImportButton = "Импорт"
+Addon.localization.CCImportButtonDesc1 = "Отслеживать предметы из аддона Class Codex"
+Addon.localization.CCImportButtonDesc2 = "IcyVeins Guide BIS"
+Addon.localization.CCImportButtonDesc3 = "Click - Mythic+"
+Addon.localization.CCImportButtonDesc4 = "Shift+Click - Raid"
+Addon.localization.CCImportButtonDesc5 = "Alt+Click - Overall"

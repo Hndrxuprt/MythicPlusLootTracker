@@ -1,6 +1,6 @@
-## Interface: 120001, 120005
+## Interface: 120100
 ## Title: Mythic Plus Loot Tracker
-## Version: 1.16
+## Version: 1.17
 ## SavedVariables: MPLH_ENC, MPLH_ENC_ENDED, MPLH_TRACKITEM, MPLH_TRACKITEM_ORDER, MPLH_TRACKEDITEM_ITEMORDER, MPLH_KACDATA, MPLH_ORDER, MPLTOptions
 ## Notes: Tracking all items recieved in mythic plus dungeons
 ## Notes-ruRU: Трекер лута в мифик+ подземельях
@@ -28,3 +28,7 @@ MythicPlusLootTracker-LootSniffer.xml
 MythicPlusLootTracker-LootSniffer.lua
 MythicPlusLootTracker-RollFrame.xml
 MythicPlusLootTracker-RollFrame.lua
+
+data\db_icyveins.lua
+data\Generated.lua
+MythicPlusLootTracker-ClassCodexImport.lua

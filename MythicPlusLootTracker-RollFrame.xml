@@ -142,8 +142,8 @@
                 </Anchors>
                 <Layers>
                     <Layer level="OVERLAY">
-						<Texture parentKey="BisTexture" atlas="Soulbinds_Collection_Entry_Selected" alphaMode="ADD" alpha="0.5" setAllPoints="true" hidden="true" >
-							<Color r=".0" g=".9" b=".2" a="1"/>
+						<Texture parentKey="WinTexture" atlas="Soulbinds_Collection_Entry_Selected" alphaMode="ADD" alpha="0.5" setAllPoints="true" hidden="true" >
+							<Color r=".9" g=".9" b=".2" a="1"/>
 						</Texture>
                         <FontString parentKey="RollName" inherits="GameFontDisableSmall" justifyH="LEFT" justifyV="MIDDLE" maxLines="1">
                             <Size x="110" y="26"/>
@@ -219,7 +219,7 @@
 				</Layers>
 				<Animations>
 					<AnimationGroup parentKey="Animation" mixin="MPLT_RollAnimMixin" setToFinalAlpha="true">
-						<FlipBook childKey="DiceRoll" duration="1.47" order="1" flipBookRows="9" flipBookColumns="5" flipBookFrames="44" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
+                        <FlipBook childKey="DiceRoll" duration="1.47" order="1" flipBookRows="9" flipBookColumns="5" flipBookFrames="44" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
 						<Alpha childKey="DiceRoll" duration="1.47" order="1" fromAlpha="1" toAlpha="1"/>
 						<Alpha childKey="DiceRoll" duration="0" order="1" startDelay="1.48" fromAlpha="0" toAlpha="0"/>
 						<FlipBook childKey="DiceGlow" duration="1.67" order="1" startDelay="1.48" flipBookRows="10" flipBookColumns="5" flipBookFrames="50" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
@@ -241,10 +241,11 @@
 						<FlipBook childKey="FX_RevealFade" duration="0.7" order="1" startDelay="3.4" flipBookRows="3" flipBookColumns="7" flipBookFrames="21" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
 						<Alpha childKey="FX_RevealFade" duration="3.39" order="1" fromAlpha="0" toAlpha="0"/>
 						<Alpha childKey="FX_RevealFade" duration="0.7" order="1" startDelay="3.4" fromAlpha="1" toAlpha="1"/>
+
                         <Scripts>
                             <OnFinished method="OnFinished"/>
                         </Scripts>
-					</AnimationGroup>
+                    </AnimationGroup>
 				</Animations>
 			</Frame>
             <Button parentKey="TradeButton" inherits="UIPanelButtonTemplate"  hidden="false" frameStrata="HIGH">

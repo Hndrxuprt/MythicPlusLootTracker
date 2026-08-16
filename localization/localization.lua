@@ -67,3 +67,12 @@ Addon.localization.snifferTitle = "Loot sniffer"
 Addon.localization.snifferW = "W"
 Addon.localization.snifferP = "P"
 Addon.localization.snifferAutoclose = "Autoclose"
+
+Addon.localization.rollButton = "Roll"
+
+Addon.localization.CCImportButton = "Import"
+Addon.localization.CCImportButtonDesc1 = "Track items from Class Codex AddOn"
+Addon.localization.CCImportButtonDesc2 = "IcyVeins Guide BIS"
+Addon.localization.CCImportButtonDesc3 = "Click - Mythic+"
+Addon.localization.CCImportButtonDesc4 = "Shift+Click - Raid"
+Addon.localization.CCImportButtonDesc5 = "Alt+Click - Overall"

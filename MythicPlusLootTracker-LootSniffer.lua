@@ -647,7 +647,7 @@ local function ProcessEvent(self, event, ...)
             if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType >= 7) then
                 return
             end
-            if not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink) then
+            if IsInGroup() and (not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink)) then
                 Addon.RollForItem(itemID, itemLink)
             end
             return

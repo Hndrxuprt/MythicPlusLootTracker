@@ -1,9 +1,10 @@
 local AddonName, Addon = ...
 
-Addon.currentSeason = 17
+--C_MythicPlus.GetCurrentSeason()
+Addon.currentSeason = 18
 
--- Boss ID's from https://wago.tools/db2/JournalEncounter?page=1
--- Dungeon ID's from https://wago.tools/db2/MapChallengeMode?page=1
+-- Boss ID's as ID, Boss name as Name_lang from https://wago.tools/db2/JournalEncounter?page=1
+-- Dungeon ID's as ID, Dungeon name as Name_lang from https://wago.tools/db2/MapChallengeMode?page=1
 Addon.currentSeasonEncounters = {
     -----Lich King Encounters-----
     [556] = {
@@ -181,6 +182,18 @@ Addon.currentSeasonEncounters = {
         2173, --Dread Captain Lockwood
         2654, --Chopper Redhook
     }, --Siege of Boralus
+    [249] = {
+        2165, --The Golden Serpent
+        2171, --Mchimba the Embalmer
+        2170, --The Council of Tribes
+        2172, --Dazar, The First King
+    }, --Kings' Rest
+    [250] = {
+        2142, --Adderis and Aspix
+        2143, --Merektha
+        2144, --Galvazzt
+        2145, --Avatar of Sethraliss
+    }, --Temple of Sethraliss
 
     -----SL Encounters-----
     [391] = {
@@ -371,9 +384,38 @@ Addon.currentSeasonEncounters = {
         2655, --Emberdawn
         2658, --The Restless Heart
     }, --Windrunner Spire
+    [584] = {
+        2769, --Lightblossom Trinity
+        2770, --Ikuzz the Light Hunter
+        2771, --Lightwarden Ruia
+        2772, --Ziekket
+    }, --The Blinding Vale
+    [585] = {
+        2791, --Taz'Rah
+        2792, --Atroxus
+        2793, --Charonus
+    }, --Voidscar Arena
+    [586] = {
+        2776, --The Hoardmonger
+        2777, --Sentinel of Winter
+        2778, --Nalorakk
+    }, --Den of Nalorakk
+    [587] = {
+        2679, --Kystia Manaheart
+        2680, --Zaen Bladesorrow
+        2681, --Xathuux the Annihilator
+        2682, --Lithiel Cinderfury
+    }, --Murder Row
+    [588] = {
+        2878, --Rav'i
+        2879, --The Writhing Coil
+        2880, --Zul'jan
+    }, --Altar of Fangs
 }
 
 --JournalInstanceID from https://wago.tools/db2/JournalEncounter?page=1
+--MapID is ID from https://wago.tools/db2/MapChallengeMode?page=1
+--currentSeason dungeonMaps - C_ChallengeMode.GetMapTable()
 Addon.EJInstaceIDToMapID = {
 
     -----Lich King Encounters-----
@@ -446,10 +488,25 @@ Addon.EJInstaceIDToMapID = {
     [1315] = 560, --Maisara Caverns
     [1316] = 559, --Nexus-Point Xenas
     [1299] = 557, --Windrunner Spire
+
+    -----Midnight S2 Encounters-----
+    [1322] = 588, --Altar of Fangs
+    [1313] = 585, --Voidscar Arena
+    [1311] = 586, --Den of Nalorakk
+    [1304] = 587, --Murder Row
+    [1309] = 584, --The Blinding Vale
+    [1041] = 249, --Kings' Rest
+    [1030] = 250, --Temple of Sethraliss
     
     
 }
 
+Addon.MapIDToEJInstaceID = {}
+
+
+Addon.RaidEJInstanceID ={}
+
+--data from https://github.com/0xbs/premade-groups-filter-helper/blob/0394d07865ab7f1eccdaa1eb00ac38a1b4f3b10e/data/Activity.lua
 Addon.ActivityID = {
     [179] = 163, -- Bloodmaul Slag Mines (Challenge)
     [180] = 169, -- Iron Docks (Mythic Keystone)
@@ -525,6 +582,20 @@ Addon.ActivityID = {
     [1764] = 560, -- Maisara Caverns (Mythic Keystone)
     [1768] = 559, -- Nexus-Point Xenas (Mythic Keystone)
     [1770] = 556, -- Pit of Saron (Mythic Keystone)
+    [1542] = 557, -- Windrunner Spire
+
+    [1795] = 207, -- Vault of the Wardens (Mythic Keystone)
+
+    [1933] = 588, -- Altar of Fangs (Mythic Keystone)
+    [1945] = 233, -- Cathedral of Eternal Night (Mythic Keystone)
+
+    [1949] = 584, -- The Blinding Vale (Mythic Keystone)
+    [1950] = 587, -- Murder Row (Mythic Keystone)
+    [1951] = 585, -- Voidscar Arena (Mythic Keystone)
+    [1952] = 586, -- Den of Nalorakk (Mythic Keystone)
+
+    
+
     --[1782] = 197, -- Eye of Azshara (Mythic Keystone)
     --[1783] = 200, -- Halls of Valor (Mythic Keystone)
     --[1785] = 206, -- Neltharion's Lair (Mythic Keystone)

@@ -146,29 +146,50 @@ function MPLT_RollFrameMixin:PrepareScrollFrame()
     end
 
     if Addon.itemRolls.rolls then
-        for k,data in pairs(Addon.itemRolls.rolls) do
-            self.DataProvider:Insert({ name = data.name, roll = data.roll })
+        for name, roll in pairs(Addon.itemRolls.rolls) do
+            self.DataProvider:Insert({ name = name, roll = roll })
         end
     end
+
+    local function SortByRoll(data1, data2)
+        return data1.roll > data2.roll
+    end
+
+    self.DataProvider:SetSortComparator(SortByRoll)
 end
 
 function MPLT_RollFrameMixin:Update(frame, elementData)
     local itemLink = Addon.itemRolls.itemLink
     local name = elementData.name
     local roll = elementData.roll
+    Addon.itemRolls.shown = Addon.itemRolls.shown or {}
+    local animShown = Addon.itemRolls.shown[name] or false
 
     local function SetRowData()
         frame.RollFrame.RollName:SetText(Addon.GetUnitColoredName(name))
         frame.RollFrame.RollAmount:SetText(GetRollColor(roll))
 
-        frame.NeedRollAnim:Show()
-        frame.NeedRollAnim.Animation:Restart()
-        frame.NeedRollAnim.AnimCallback = function()
-            frame.RollFrame.Animation:Restart()
+        if not animShown then
+            frame.NeedRollAnim:Show()
+            frame.NeedRollAnim.Animation:Restart()
+            frame.NeedRollAnim.AnimCallback = function()
+                frame.RollFrame.Animation:Restart()
+                Addon.itemRolls.shown[name] = true
+            end
+        else
+            frame.RollFrame:Show()
+            frame.RollFrame.RollAmount:SetAlpha(1)
         end
         
         frame.TradeButton:SetScript("OnClick", function(self)
-            InitiateTrade(name)
+            local bag, slot = Addon.FindItemInBags(itemLink)
+            if bag and slot then
+                C_Container.PickupContainerItem(bag, slot)
+            end
+            if CursorHasItem() then
+                C_Item.DropItemOnUnit(name)
+            end
+            --InitiateTrade(name)
         end)
     end
 
@@ -211,7 +232,7 @@ local latestItem
 -- /run MPLT_RollFrameMixin:Test()
 
 function MPLT_RollFrameMixin:Test()
-    local itemLink = "\124cff0070dd\124Hitem:242494::::::::80::::1:3196:\124h[Lily of the Eternal Weave]\124h\124r"
+    local itemLink = "|cnIQ3:|Hitem:250144::::::::90:1480:::::::::|h[Emberwing Feather]|h|r"
     local itemID = 242494
 
     Addon.RollForItem(itemID, itemLink)
@@ -260,11 +281,15 @@ local function ProcessEvent(self, event, ...)
         if tonumber(min) <= 1 and tonumber(max) == 100 then
 
             if latestItem and latestItem == Addon.itemRolls.itemID then
-                Addon.itemRolls.rolls = {}
-                table.insert(Addon.itemRolls.rolls, {name = name, roll = roll})
-                if rollFrame:IsVisible() then
-                    MPLT_RollFrameMixin:PrepareScrollFrame()
-                    MPLT_RollFrameMixin:StopAutoclose()
+                if not Addon.itemRolls.rolls then
+                    Addon.itemRolls.rolls = {}
+                end
+                if not Addon.itemRolls.rolls[name] then
+                    Addon.itemRolls.rolls[name] = roll
+                    if rollFrame:IsVisible() then
+                        MPLT_RollFrameMixin:PrepareScrollFrame()
+                        MPLT_RollFrameMixin:StopAutoclose()
+                    end
                 end
             end
         end

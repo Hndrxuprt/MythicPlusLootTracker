@@ -85,6 +85,17 @@ function GetDungeonTableLenght(table)
     end
 end
 
+function Addon.FindItemInBags(itemLink)
+    for bag = 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+            local foundLink = C_Container.GetContainerItemLink(bag, slot)
+            if foundLink == itemLink then
+                return bag, slot
+            end
+        end
+    end
+end
+
 function MPLT_UpdateSubFrames()
     local tabID = PanelTemplates_GetSelectedTab(MPLTLootFrame)
     local SubFrames = {"MPLTEncountersFrame", "MPLTTrackingFrame", "MPLTAltManagerFrame"}
@@ -196,14 +207,16 @@ function GetEncounter(instance)
     if instance == nil then
         local info = C_ChallengeMode.GetChallengeCompletionInfo()
         mapID = info.mapChallengeModeID
-        if mapID then
+        if mapID and mapID ~= 0 then
             dungeonName = select(1, C_ChallengeMode.GetMapUIInfo(mapID))
             dungeonID = select(3, C_ChallengeMode.GetMapUIInfo(mapID))
             if dungeonName then
                 return dungeonName, mapID
             end
         else
-            print("no mapID")
+            instance = select(8, GetInstanceInfo())
+            dungeonName = select(1,GetInstanceInfo() )
+            return dungeonName, instance
         end
     elseif tonumber(instance) == 999999 then
         dungeonName = Addon.localization.gvault
@@ -574,7 +587,7 @@ local function ScrollFrame_OnMouseWheel(self, delta)
 
 end
 
-local function sortTable(tbl)
+function Addon.sortTable(tbl)
     local sorted = {}
     for k,v in pairs(tbl) do
         table.insert(sorted,{k,v})
@@ -633,7 +646,7 @@ local function UpdateItemTable(playerID, dungeonName, content)
         local scrollLenght = GetDungeonTableLenght(tbl) 
         content:SetSize(308,scrollLenght*32);
 
-        local sortedTable = sortTable(tbl)
+        local sortedTable = Addon.sortTable(tbl)
 
         
 
@@ -932,6 +945,7 @@ function StoreCharacterData()
         end ]]
 
         local mythicRuns = {}
+        C_MythicPlus.RequestMapInfo()
         local runHistory = C_MythicPlus.GetRunHistory(false, true);
         if #runHistory > 0 then
             local comparison = function(entry1, entry2)
@@ -942,9 +956,6 @@ function StoreCharacterData()
                 end
             end
             table.sort(runHistory, comparison);
-            if next(mythicRuns) then
-                wipe(mythicRuns)
-            end
             for i = 1, 8 do
                 if runHistory[i] then
                     tinsert(mythicRuns, runHistory[i])
@@ -952,6 +963,7 @@ function StoreCharacterData()
             end
         end
         local oneMPlus, fourMPlus, eightMPlus = 0, 0, 0
+        local numKeys = 0
         if next(mythicRuns) then
             for i = 1, #mythicRuns do
                 local runInfo = mythicRuns[i]
@@ -962,6 +974,7 @@ function StoreCharacterData()
                 elseif i == 8 then
                     eightMPlus = runInfo.level
                 end
+                numKeys = numKeys + 1
             end
         end
 
@@ -1070,7 +1083,7 @@ function StoreCharacterData()
         MPLH_KACDATA[playerID]["currentKeystone"] = currentKeystone
         MPLH_KACDATA[playerID]["currentKeystoneLvl"] = currentKeystoneLvl
         local r, g, b = GetItemLevelColor()
-        MPLH_KACDATA[playerID]["ilvl"] = format("|cff%02x%02x%02x", r*255, g*255, b*255)..format("%.0f",select(2, GetAverageItemLevel()))
+        MPLH_KACDATA[playerID]["ilvl"] = format("|cff%02x%02x%02x", r*255, g*255, b*255)..floor(select(2, GetAverageItemLevel()))
         if MPLH_KACDATA[playerID]["mythicRuns"] and next(MPLH_KACDATA[playerID]["mythicRuns"]) then
             wipe(MPLH_KACDATA[playerID]["mythicRuns"])
         end
@@ -1143,11 +1156,55 @@ local function ProcessData(self)
         showRollButton:SetParent(MPLTLootFrame)
         showRollButton:SetPoint("LEFT", showLootShiffButton, "RIGHT", 4, 0)
         showRollButton:SetSize(100, 25)
-        showRollButton:SetText("Roll")
+        showRollButton:SetText(Addon.localization.rollButton)
         showRollButton:Show()
         showRollButton:SetScript("OnClick", function()
             MPLT_RollFrameMixin:Init()
         end)
+
+        if C_AddOns.IsAddOnLoaded("ClassCodex") then
+            local showImportButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
+            showImportButton:Hide()
+            showImportButton:SetParent(MPLTLootFrame)
+            showImportButton:SetPoint("LEFT", showRollButton, "RIGHT", 4, 0)
+            showImportButton:SetSize(100, 25)
+            showImportButton:SetText(Addon.localization.CCImportButton)
+            showImportButton:Show()
+            showImportButton:SetScript("OnClick", function()
+                local type = "Mythic+"
+                if IsShiftKeyDown() then
+                    type = "Raid"
+                elseif IsAltKeyDown() then
+                    type = "Overall"
+                end
+                MPLT_ImportClassCodexGear(type)
+            end)
+            showImportButton:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip_AddNormalLine(GameTooltip, Addon.localization.CCImportButtonDesc1)
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddHighlightLine(GameTooltip, Addon.localization.CCImportButtonDesc2)
+                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc3, LIGHTYELLOW_FONT_COLOR)
+                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc4, LIGHTYELLOW_FONT_COLOR)
+                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc5, LIGHTYELLOW_FONT_COLOR)
+                GameTooltip:SetScale(0.82)
+                GameTooltip:Show()
+            end)
+            showImportButton:SetScript("OnLeave",function(self)
+                GameTooltip:SetScale(1)
+                GameTooltip:Hide()
+            end)
+
+
+            local texture = C_AddOns.GetAddOnMetadata("ClassCodex", "IconTexture")
+            if texture then
+                showImportButton.icon = showImportButton:CreateTexture()
+                showImportButton.icon:SetSize(16, 16)
+                showImportButton.icon:SetPoint("LEFT", showImportButton, "LEFT", 8, 0)
+                showImportButton.icon:SetTexture(texture)
+                showImportButton.icon:Show()
+            end
+        end
 
 
         
@@ -1287,7 +1344,6 @@ local function ProcessEvent(self, event, ...)
         
         local addOnName = ...
         if addOnName == "Blizzard_EncounterJournal" then
-            --hooksecurefunc("EncounterJournal_LootUpdate", EJTrackItem)
             local lastTier = EJ_GetNumTiers()
             if EJ_GetCurrentTier() ~= lastTier then
                 EJ_SelectTier(lastTier)
@@ -1310,7 +1366,9 @@ local function ProcessEvent(self, event, ...)
             EncounterJournal.encounter.info.LootContainer.ScrollBox:RegisterCallback(ScrollBoxListMixin.Event.OnDataRangeChanged, OnDataRangeChanged, self)
         end
     elseif event == "FIRST_FRAME_RENDERED" then
-        StoreCharacterData()      
+        C_Timer.After(1, function()
+            StoreCharacterData()      
+        end)
         C_MythicPlus.RequestMapInfo()
         local seasonID = C_MythicPlus.GetCurrentSeason()
         if seasonID and Addon.currentSeason < seasonID then
@@ -1341,7 +1399,7 @@ local function ProcessEvent(self, event, ...)
         end
     elseif event == 'CHALLENGE_MODE_COMPLETED' then
         CalcDungeonStat()
-        
+        StoreCharacterData()
     elseif event == 'TRADE_TARGET_ITEM_CHANGED' then
         local tradeSlotIndex = ...
         local tradedItem = DetectTrade(tradeSlotIndex)

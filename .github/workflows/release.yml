@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build zip
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          STAGE="$TMP/MythicPlusLootTracker"
+          mkdir -p "$STAGE"
+          git archive HEAD | tar -x -C "$STAGE"
+          rm -rf "$STAGE/.gitignore" "$STAGE/.github"
+          cd "$TMP"
+          zip -r "MythicPlusLootTracker-$TAG.zip" MythicPlusLootTracker
+          mv "MythicPlusLootTracker-$TAG.zip" "$GITHUB_WORKSPACE/"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" "MythicPlusLootTracker-$TAG.zip" --generate-notes

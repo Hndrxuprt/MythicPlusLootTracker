@@ -76,13 +76,7 @@ rollFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
 end)
 rollFrame:SetScript("OnEnter", function(self)
-    if MPLT_RollFrameMixin.timer then
-        rollFrame.TimerAnim:Stop()
-        rollFrame.AutocloseText:SetAlpha(0)
-        rollFrame.autoclose = false
-        MPLT_RollFrameMixin.timer:Cancel()
-        MPLT_RollFrameMixin.timer = nil
-    end
+    Addon.StopAutoclose(rollFrame, MPLT_RollFrameMixin)
 end)
 rollFrame:SetTitle("")
 rollFrame:SetFrameStrata("HIGH")
@@ -94,33 +88,10 @@ MPLT_RollFrameMixin.DataProvider = CreateDataProvider()
 local view
 
 function MPLT_RollFrameMixin:Autoclose()
-    if not rollFrame.autoclose then
-        return
-    end
-
-    if self.timer then
-        rollFrame.TimerAnim:Stop()
-        self.timer:Cancel()
-        self.timer = nil
-    end
-
-    rollFrame.TimerAnim:Restart()
-
-    self.timer = C_Timer.NewTimer(10, function()
-        rollFrame:Hide()
-        rollFrame:SetAlpha(0)
-        self.timer:Cancel()
-        self.timer = nil
-    end)
+    Addon.StartAutoclose(rollFrame, self, true)
 end
 function MPLT_RollFrameMixin:StopAutoclose()
-    if self.timer then
-        rollFrame.TimerAnim:Stop()
-        rollFrame.AutocloseText:SetAlpha(0)
-        rollFrame.autoclose = false
-        self.timer:Cancel()
-        self.timer = nil
-    end
+    Addon.StopAutoclose(rollFrame, self)
 end
 
 function MPLT_RollFrameMixin:PrepareScrollFrame()
@@ -192,14 +163,7 @@ function MPLT_RollFrameMixin:Update(frame, elementData)
         end)
     end
 
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()         
-            SetRowData()
-        end)
-    else
-        SetRowData()
-    end
+    Addon.RunOnItemReady(itemLink, SetRowData)
 end
 
 function MPLT_RollFrameMixin:Init()

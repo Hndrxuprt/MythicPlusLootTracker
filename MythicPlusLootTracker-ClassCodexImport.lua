@@ -79,45 +79,10 @@ end
 
 local function TrackItem()
     if next(gearTable) then
-        local name, realm = UnitFullName("player")
-        local playerID = name .. "-" .. realm
-        if not MPLH_TRACKITEM[playerID] then
-            MPLH_TRACKITEM[playerID] = {}
-        end
-        local playerTbl = MPLH_TRACKITEM[playerID]
+        local playerID = Addon.GetPlayerID()
         for _, data in ipairs(gearTable) do
             if data.source then
-                if not playerTbl[data.source] then
-                    playerTbl[data.source] = {}
-                end
-                if not playerTbl[data.source][data.itemID] then
-                    playerTbl[data.source][data.itemID] = {}
-                    playerTbl[data.source][data.itemID]["dateSince"] = date("%d.%m.%y")
-                    playerTbl[data.source][data.itemID]["attempts"] = 0
-                    playerTbl[data.source][data.itemID]["chances"] = 0
-                    playerTbl[data.source][data.itemID]["done"] = {
-                        ["done"] = 0,
-                        ["date"] = 0,
-                        ["attempts"] = 0,
-                        ["traded"] = 0,
-                        ["chance"] = 0,
-                    }
-                    if MPLH_TRACKEDITEM_ITEMORDER[playerID] == nil then
-                        MPLH_TRACKEDITEM_ITEMORDER[playerID] = {}
-                    end
-                    if MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source] == nil then
-                        MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source] = {}
-                    end
-                    if MPLH_TRACKITEM_ORDER[playerID] == nil then
-                        MPLH_TRACKITEM_ORDER[playerID] = {}
-                    end
-                    if not tContains(MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source], data.itemID) then
-                        tinsert(MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source], data.itemID)
-                    end
-                    if not tContains(MPLH_TRACKITEM_ORDER[playerID], data.source) then
-                        tinsert(MPLH_TRACKITEM_ORDER[playerID], data.source)
-                    end
-                end
+                Addon.MakeTrackedItemRecord(playerID, data.source, data.itemID)
             end
         end
         if MPLTLootFrame then

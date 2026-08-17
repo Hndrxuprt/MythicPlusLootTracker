@@ -101,8 +101,7 @@ MPLT_LootSnifferMixin = {}
 MPLT_LootSnifferMixin.lootTable = {}
 
 local function IsItemNeeded(itemID)
-    local name, realm = UnitFullName("player")
-    local playerID = name .. "-" .. realm
+    local playerID = Addon.GetPlayerID()
 
     local _, mapID = GetEncounter(instance)
 
@@ -189,14 +188,9 @@ function IsItemEquippable(itemLink)
         end
     end
 
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()
-            return IsEquippable(itemLink)
-        end)
-    else
+    return Addon.RunOnItemReady(itemLink, function()
         return IsEquippable(itemLink)
-    end
+    end)
 end
 
 function GetItemLevelDiff(itemLink)
@@ -271,14 +265,9 @@ function IsItemUpgrade(itemLink)
         
     end
 
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()
-            return IsUpgrade(itemLink)
-        end)
-    else
+    return Addon.RunOnItemReady(itemLink, function()
         return IsUpgrade(itemLink)
-    end
+    end)
 end
 
 function AskForItem(unitName, itemLink, chatType)
@@ -326,13 +315,7 @@ askingFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
 end)
 askingFrame:SetScript("OnEnter", function(self)
-    if MPLT_LootSnifferMixin.timer then
-        askingFrame.TimerAnim:Stop()
-        askingFrame.AutocloseText:SetAlpha(0)
-        askingFrame.autoclose = false
-        MPLT_LootSnifferMixin.timer:Cancel()
-        MPLT_LootSnifferMixin.timer = nil
-    end
+    Addon.StopAutoclose(askingFrame, MPLT_LootSnifferMixin)
 end)
 askingFrame:SetTitle(Addon.localization.snifferTitle)
 askingFrame:SetFrameStrata("HIGH")
@@ -387,12 +370,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
         frame.ItemFrame.ItemLink:SetText(itemLink)
 
         frame:SetScript("OnEnter", function(self)
-            if MPLT_LootSnifferMixin.timer then
-                askingFrame.TimerAnim:Stop()
-                askingFrame.AutocloseText:SetAlpha(0)
-                MPLT_LootSnifferMixin.timer:Cancel()
-                MPLT_LootSnifferMixin.timer = nil
-            end
+            Addon.CancelAutoclose(askingFrame, MPLT_LootSnifferMixin)
         end)
 
         frame.ItemFrame.ItemLink:SetScript("OnEnter", function(self)
@@ -400,12 +378,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
             GameTooltip:SetHyperlink(itemLink)
             GameTooltip:Show()
 
-            if MPLT_LootSnifferMixin.timer then
-                askingFrame.TimerAnim:Stop()
-                askingFrame.AutocloseText:SetAlpha(0)
-                MPLT_LootSnifferMixin.timer:Cancel()
-                MPLT_LootSnifferMixin.timer = nil
-            end
+            Addon.CancelAutoclose(askingFrame, MPLT_LootSnifferMixin)
         end)
         frame.ItemFrame.ItemLink:SetScript("OnLeave", function(self)
             GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -455,14 +428,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
     end
     frame.ItemFrame.ItemLink:SetJustifyH("LEFT")
 
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()         
-            SetRowData()
-        end)
-    else
-        SetRowData()
-    end
+    Addon.RunOnItemReady(itemLink, SetRowData)
 end
 
 function MPLT_LootSnifferMixin:PrepareScrollFrame()
@@ -493,24 +459,7 @@ function MPLT_LootSnifferMixin:PrepareScrollFrame()
 end
 
 function MPLT_LootSnifferMixin:Autoclose()
-    if not askingFrame.autoclose then
-        return
-    end
-
-    if self.timer then
-        askingFrame.TimerAnim:Stop()
-        self.timer:Cancel()
-        self.timer = nil
-    end
-
-    askingFrame.TimerAnim:Play()
-
-    self.timer = C_Timer.NewTimer(10, function()
-        askingFrame:Hide()
-        askingFrame:SetAlpha(0)
-        self.timer:Cancel()
-        self.timer = nil
-    end)
+    Addon.StartAutoclose(askingFrame, self)
 end
 
 local savedInstanceID
@@ -523,7 +472,7 @@ local function ProcessEvent(self, event, ...)
 
         if UnitIsUnit('player', unitName) then
 
-            if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType >= 7) then
+            if not Addon.IsEquippableItemType(itemType) or (itemBindType == 2 or itemBindType >= 7) then
                 return
             end
             if IsInGroup() and (not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink)) then

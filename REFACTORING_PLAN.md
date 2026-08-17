@@ -136,12 +136,12 @@
 
 ## Этап 5. Общие хелперы (средний риск)
 
-- [ ] `Addon.GetPlayerID()` — заменить ~10 дублей `UnitFullName`-блоков.
-- [ ] `Addon.MakeTrackedItemRecord(itemID)` — убрать дубль done-таблицы, инкапсулировать инвариант трёх таблиц (`TRACKITEM` + `TRACKITEM_ORDER` + `TRACKEDITEM_ITEMORDER`).
-- [ ] `Addon.IsEquipableItemType(itemType)` — убрать 6 дублей `(itemType == 2) or (itemType == 4)`.
-- [ ] Хелпер автозакрытия таймера — убрать 5 дублей (LootSniffer ×3, RollFrame ×2).
-- [ ] Хелпер `ContinueOnItemLoad`-или-сразу — убрать дублирование cache-check обёртки.
-- [ ] `Addon.GetTableLength(t)` — обёртка с nil-guard; `#tbl` для массивов где можно.
+- [x] `Addon.GetPlayerID()` — заменить ~10 дублей `UnitFullName`-блоков.
+- [x] `Addon.MakeTrackedItemRecord(itemID)` — убрать дубль done-таблицы, инкапсулировать инвариант трёх таблиц (`TRACKITEM` + `TRACKITEM_ORDER` + `TRACKEDITEM_ITEMORDER`).
+- [x] `Addon.IsEquippableItemType(itemType)` — убрать 6 дублей `(itemType == 2) or (itemType == 4)`.
+- [x] Хелпер автозакрытия таймера — убрать 5 дублей (LootSniffer ×3, RollFrame ×2).
+- [x] Хелпер `ContinueOnItemLoad`-или-сразу — убрать дублирование cache-check обёртки.
+- [x] `Addon.GetTableLength(t)` — обёртка с nil-guard; `#tbl` для массивов где можно.
 
 ## Этап 6. Разбивка Core.lua на модули (высокий риск — главный этап)
 
@@ -224,7 +224,7 @@
 - [x] Этап 2 — Исправление багов и утечек
 - [x] Этап 3 — Унификация стиля и переименование опечаток
 - [x] Этап 4 — Выделение констант
-- [ ] Этап 5 — Общие хелперы
+- [x] Этап 5 — Общие хелперы
 - [ ] Этап 6 — Разбивка Core.lua на модули
 - [ ] Этап 7 — Рефакторинг GlobalConstants.lua
 - [ ] Этап 8 — Локализация

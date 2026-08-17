@@ -66,7 +66,7 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
         if MPLH_ENC[Addon.currentSeason][playerID] and MPLH_ENC[Addon.currentSeason][playerID][dungeonID] then
             for itemLink, amount in pairs(MPLH_ENC[Addon.currentSeason][playerID][dungeonID]) do
                 local itemType = select(6,GetItemInfoInstant(itemLink))
-                    if (itemType == 2) or (itemType == 4) then
+                    if Addon.IsEquippableItemType(itemType) then
                         LootDataProvider:Insert({itemLink = itemLink, amount = amount})
                     end
             end

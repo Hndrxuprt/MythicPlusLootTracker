@@ -4,6 +4,120 @@ local UIConfig = nil
 
 local greatVaultTable = {}
 
+function Addon.GetPlayerID()
+    local name, realm = UnitFullName("player")
+    return name .. "-" .. realm
+end
+
+function Addon.GetPlayerName()
+    return select(1, UnitFullName("player"))
+end
+
+function Addon.IsEquippableItemType(itemType)
+    return itemType == 2 or itemType == 4
+end
+
+function Addon.GetTableLength(tbl)
+    local length = 0
+    if tbl ~= nil then
+        for _ in pairs(tbl) do
+            length = length + 1
+        end
+    end
+    return length
+end
+
+function Addon.MakeTrackedItemRecord(playerID, instanceID, itemID)
+    if MPLH_TRACKITEM[playerID] == nil then
+        MPLH_TRACKITEM[playerID] = {}
+    end
+    if MPLH_TRACKITEM[playerID][instanceID] == nil then
+        MPLH_TRACKITEM[playerID][instanceID] = {}
+    end
+    local record = MPLH_TRACKITEM[playerID][instanceID][itemID]
+    if record == nil then
+        record = {
+            ["dateSince"] = date("%d.%m.%y"),
+            ["attempts"] = 0,
+            ["chances"] = 0,
+            ["done"] = {
+                ["done"] = 0,
+                ["date"] = 0,
+                ["attempts"] = 0,
+                ["traded"] = 0,
+                ["chance"] = 0,
+            },
+        }
+        MPLH_TRACKITEM[playerID][instanceID][itemID] = record
+        if MPLH_TRACKEDITEM_ITEMORDER[playerID] == nil then
+            MPLH_TRACKEDITEM_ITEMORDER[playerID] = {}
+        end
+        if MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID] == nil then
+            MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID] = {}
+        end
+        if MPLH_TRACKITEM_ORDER[playerID] == nil then
+            MPLH_TRACKITEM_ORDER[playerID] = {}
+        end
+        if not tContains(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID) then
+            tinsert(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID)
+        end
+        if not tContains(MPLH_TRACKITEM_ORDER[playerID], instanceID) then
+            tinsert(MPLH_TRACKITEM_ORDER[playerID], instanceID)
+        end
+    end
+    return record
+end
+
+function Addon.CancelAutoclose(frame, owner)
+    if owner.timer then
+        frame.TimerAnim:Stop()
+        frame.AutocloseText:SetAlpha(0)
+        owner.timer:Cancel()
+        owner.timer = nil
+    end
+end
+
+function Addon.StopAutoclose(frame, owner)
+    if owner.timer then
+        frame.TimerAnim:Stop()
+        frame.AutocloseText:SetAlpha(0)
+        frame.autoclose = false
+        owner.timer:Cancel()
+        owner.timer = nil
+    end
+end
+
+function Addon.StartAutoclose(frame, owner, restart)
+    if not frame.autoclose then
+        return
+    end
+    if owner.timer then
+        frame.TimerAnim:Stop()
+        owner.timer:Cancel()
+        owner.timer = nil
+    end
+    if restart then
+        frame.TimerAnim:Restart()
+    else
+        frame.TimerAnim:Play()
+    end
+    owner.timer = C_Timer.NewTimer(10, function()
+        frame:Hide()
+        frame:SetAlpha(0)
+        owner.timer:Cancel()
+        owner.timer = nil
+    end)
+end
+
+function Addon.RunOnItemReady(itemLink, callback)
+    if not C_Item.IsItemDataCachedByID(itemLink) then
+        local item = Item:CreateFromItemLink(itemLink)
+        item:ContinueOnItemLoad(callback)
+    else
+        callback()
+    end
+end
+
 MPLTCoreMixin = {}
 
 local function AddonLoadedEvent(self, event, Name, ...)
@@ -59,15 +173,7 @@ local function SplitItemLink(itemLink)
     return s1, s2
 end
 
-function GetTableLength(table)
-    local tableLength = 0
-    if table ~= nil then
-        for k,v in pairs(table) do
-            tableLength = tableLength + 1
-        end
-        return tableLength
-    end
-end
+
 
 function Addon.FindItemInBags(itemLink)
     for bag = 0, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
@@ -235,8 +341,7 @@ local function CalcDungeonStat(instanceID)
     if not instanceID then
         instanceID = select(2,GetEncounter())
     end
-    local name, realm = UnitFullName("player")
-    local playerID = name .. "-" .. realm
+    local playerID = Addon.GetPlayerID()
     if MPLH_ENC_ENDED[Addon.currentSeason][playerID] == nil then
         MPLH_ENC_ENDED[Addon.currentSeason][playerID] = {}
     end
@@ -275,11 +380,11 @@ function CalcFortune(playerID, instanceID, seasonID)
     local MPLH_TABLE = MPLH_ENC
     local MPLH_ENDED_TABLE = MPLH_ENC_ENDED
     if MPLH_TABLE[seasonID] and MPLH_TABLE[seasonID][playerID] and MPLH_TABLE[seasonID][playerID][instanceID] then
-        if GetTableLength(MPLH_TABLE[seasonID][playerID][instanceID]) > 0 then
+        if Addon.GetTableLength(MPLH_TABLE[seasonID][playerID][instanceID]) > 0 then
             for k, v in pairs(MPLH_ENC[Addon.currentSeason][playerID][instanceID]) do
                 local itemType = select(6,GetItemInfoInstant(k))
                 local isTraded = select(1,strsplit("~",k))
-                if isTraded ~= "traded" and ((itemType == 2) or (itemType == 4)) then
+                if isTraded ~= "traded" and Addon.IsEquippableItemType(itemType) then
                     pFortune = pFortune + 1
                 end
             end
@@ -379,9 +484,8 @@ local function DetectGreatVault(itemLink)
     local itemType = select(6,GetItemInfoInstant(itemLink))
     local itemID = select(1, GetItemInfoInstant(itemLink))
     local mapID = C_Map.GetBestMapForUnit("player")
-    if ((itemType == 2) or (itemType == 4)) and mapID == Addon.Constants.GREAT_VAULT_MAP_ID and isValueinTable(greatVaultTable, itemID) then
-        local name, realm = UnitFullName("player")
-        local fullname = name .. "-" .. realm
+    if Addon.IsEquippableItemType(itemType) and mapID == Addon.Constants.GREAT_VAULT_MAP_ID and isValueinTable(greatVaultTable, itemID) then
+        local fullname = Addon.GetPlayerID()
         local greatVault = Addon.Constants.GREAT_VAULT_ID
         local dungeonName = GetEncounter(greatVault)
         CalcDungeonStat(greatVault)
@@ -396,7 +500,7 @@ local function DetectTrade(tradeSlotIndex)
     local slotItemLink = GetTradeTargetItemLink(tradeSlotIndex)
     if slotItemLink then
         local itemType = select(6,GetItemInfoInstant(slotItemLink))
-        if (itemType == 2) or (itemType == 4) then
+        if Addon.IsEquippableItemType(itemType) then
             tinsert(tradedItems, slotItemLink)
             return slotItemLink
         end
@@ -460,7 +564,7 @@ local function UpdateItemTable(playerID, dungeonName, content)
         local tbl = {}
         tbl = CopyTable(MPLH_ENC_TABLE[playerID][dungeonName])
 
-        local scrollLength = GetTableLength(tbl) 
+        local scrollLength = Addon.GetTableLength(tbl) 
         content:SetSize(308,scrollLength*32);
 
         local sortedTable = Addon.sortTable(tbl)
@@ -594,8 +698,7 @@ local EJTrackItemPool = CreateFramePool("Button", UIParent, "UIPanelCloseButtonN
 
 local function EJTrackItem()
     EJTrackItemPool:ReleaseAll()
-    local name, realm = UnitFullName("player")
-    local playerID = MPLTLootFrame and MPLTDropDown.defaultText or name .. "-" .. realm
+    local playerID = MPLTLootFrame and MPLTDropDown.defaultText or Addon.GetPlayerID()
     local isRaid = EncounterJournal_IsRaidTabSelected(EncounterJournal)
 
     if (EJ_GetCurrentTier() ~= EJ_GetNumTiers()) then
@@ -639,40 +742,9 @@ local function EJTrackItem()
                     else
                         EJTrackItemButton:SetNormalAtlas("runecarving-icon-reagent-empty-error")
                         if instanceID then
-                            if MPLH_TRACKITEM[playerID] == nil then
-                                MPLH_TRACKITEM[playerID] = {}
-                            end
-                            if MPLH_TRACKITEM[playerID][instanceID] == nil then
-                                MPLH_TRACKITEM[playerID][instanceID] = {}
-                            end
                             itemID = tonumber(itemID)
-                            if not MPLH_TRACKITEM[playerID][instanceID][itemID] then
-                                MPLH_TRACKITEM[playerID][instanceID][itemID] = {}
-                                MPLH_TRACKITEM[playerID][instanceID][itemID]["dateSince"] = date("%d.%m.%y")
-                                MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"] = 0
-                                MPLH_TRACKITEM[playerID][instanceID][itemID]["chances"] = 0
-                                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"] = {
-                                    ["done"] = 0,
-                                    ["date"] = 0,
-                                    ["attempts"] = 0,
-                                    ["traded"] = 0,
-                                    ["chance"] = 0,
-                                }
-                                if MPLH_TRACKEDITEM_ITEMORDER[playerID] == nil then
-                                    MPLH_TRACKEDITEM_ITEMORDER[playerID] = {}
-                                end
-                                if MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID] == nil then
-                                    MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID] = {}
-                                end
-                                if MPLH_TRACKITEM_ORDER[playerID] == nil then
-                                    MPLH_TRACKITEM_ORDER[playerID] = {}
-                                end
-                                if not isValueinTable(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID) then
-                                    tinsert(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID)
-                                end
-                                if not isValueinTable(MPLH_TRACKITEM_ORDER[playerID], instanceID) then
-                                    tinsert(MPLH_TRACKITEM_ORDER[playerID], instanceID)
-                                end
+                            if not MPLH_TRACKITEM[playerID] or not MPLH_TRACKITEM[playerID][instanceID] or not MPLH_TRACKITEM[playerID][instanceID][itemID] then
+                                Addon.MakeTrackedItemRecord(playerID, instanceID, itemID)
                                 CalcChance(playerID, instanceID, itemID, false, itemInfo.encounterID)
                             end
                         end
@@ -707,7 +779,7 @@ function StoreCharacterData()
     if UnitLevel("player") < Addon.Constants.MIN_CHARACTER_LEVEL then 
         return
     else
-        local name, realm = UnitFullName("player")
+        local name = Addon.GetPlayerName()
         local _, class = UnitClass("player")
         local classColor = RAID_CLASS_COLORS[class].colorStr
         local playerID = "|c"..classColor..name
@@ -837,8 +909,7 @@ function StoreCharacterData()
 end
 
 local function ProcessData(self)
-    local name, realm = UnitFullName("player")
-    local playerID = name .. "-" .. realm
+    local playerID = Addon.GetPlayerID()
     if UIConfig == nil then
         local dungeonName = nil
 
@@ -1106,8 +1177,8 @@ local function ProcessEvent(self, event, ...)
         StoreCharacterData()  
     elseif event == 'ENCOUNTER_LOOT_RECEIVED' then
         local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
-        local name, realm = UnitFullName("player")
-        local playerID = name .. "-" .. realm
+        local playerID = Addon.GetPlayerID()
+        local name = Addon.GetPlayerName()
 
         if unitName == playerID or unitName == name then
             local _, _, difficultyIndex, _, _, _, _, _, _, _ = GetInstanceInfo()

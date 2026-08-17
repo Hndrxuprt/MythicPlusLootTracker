@@ -36,11 +36,10 @@ local function PrepareNumItems(parentFrame)
     local mapID, delisted, activityID = GetSearchResultMapID(resultID)
 
     if LFGListFrame:IsVisible() then
-        local name, realm = UnitFullName("player")
-        local playerID = name .. "-" .. realm
+        local playerID = Addon.GetPlayerID()
         local text = 0
         if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][mapID] then
-            text = GetTableLength(MPLH_TRACKITEM[playerID][mapID])
+            text = Addon.GetTableLength(MPLH_TRACKITEM[playerID][mapID])
         end
 
         local dataParent = select(2,parentFrame.DataDisplay:GetPoint())

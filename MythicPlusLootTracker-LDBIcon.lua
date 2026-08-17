@@ -4,7 +4,7 @@ function Addon:InitIcon()
     local icon = LibStub("LibDBIcon-1.0")
     local MPLTLDB = LibStub("LibDataBroker-1.1"):NewDataObject("MythicPlusLootTracker", {
         type = "data source",
-        text = "Mythic+ Loot Tracker",
+        text = Addon.localization.addonName,
         icon = "interface/icons/inv_bfa_paragoncache_orderofembers.blp",
         OnClick = function(button, buttonPressed)
             if buttonPressed == "LeftButton" then
@@ -15,7 +15,7 @@ function Addon:InitIcon()
             if not tooltip or not tooltip.AddLine then
                 return
             end
-            tooltip:AddLine(Addon.Constants.Color.Brand.."Mythic+ Loot Tracker|r")
+            tooltip:AddLine(Addon.Constants.Color.Brand..Addon.localization.addonName.."|r")
             tooltip:AddLine("|cFFFFFFFF" .. Addon.localization.mbutton)
         end,
     })

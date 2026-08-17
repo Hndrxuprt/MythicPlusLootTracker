@@ -24,7 +24,7 @@ function Addon.GetEncounter(instance)
         dungeonName = Addon.localization.gvault
         return dungeonName, instance 
     elseif Addon.Constants.OVERALL_ID then
-        dungeonName = "Overall"
+        dungeonName = Addon.localization.overall
         return dungeonName, instance 
     elseif isRaid and isRaid ~= 0 then
         dungeonName = select (1, EJ_GetInstanceInfo(instance))

@@ -39,7 +39,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         local name = select(1,C_ChallengeMode.GetMapUIInfo(MPLH_KACDATA[playerID]["currentKeystone"]))
         keyName = name..Addon.Constants.Color.AltGray.." ("..MPLH_KACDATA[playerID]["currentKeystoneLvl"]..")"
     else
-        keyName = "No keystone"
+        keyName = Addon.localization.noKeystone
     end
     frame.CharacterFrame.CharKeystone:SetText(keyName)
     frame.CharacterFrame.CharKeystone:SetTextScale(1.2)
@@ -117,7 +117,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
             end)
         end
     end
-    frame.CharacterFrame.CharIlvl:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["ilvl"]).." "..Addon.Constants.Color.AltDim.."ilvl")
+    frame.CharacterFrame.CharIlvl:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["ilvl"]).." "..Addon.Constants.Color.AltDim..Addon.localization.ilvl)
     frame.CharacterFrame.CharIlvl:SetTextScale(1.2)
     frame.CharProg.CharProg:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["oneMPlus"].." / "..MPLH_KACDATA[playerID]["fourMPlus"].." / "..MPLH_KACDATA[playerID]["eightMPlus"]))
     frame.CharProg.CharProg:SetTextScale(1.2)
@@ -147,7 +147,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         GameTooltip:Show()
     end)
     local rio = MPLH_KACDATA[playerID]["rio"]
-    frame.CharRio.CharRio:SetText(rio and rio.." "..Addon.Constants.Color.AltDim.."rio" or "No RIO")
+    frame.CharRio.CharRio:SetText(rio and rio.." "..Addon.Constants.Color.AltDim..Addon.localization.rio or Addon.localization.noRIO)
     frame.CharRio.CharRio:SetTextColor(0.5, 0.5, 0.5)
     if rio then
         local color = C_ChallengeMode.GetDungeonScoreRarityColor(rio)

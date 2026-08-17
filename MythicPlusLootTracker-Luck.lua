@@ -34,7 +34,7 @@ function MythicPlusLootTrackerLuckElementMixin:InitLootList(frame, elementData)
     frame.ItemContainer.CritText:SetText("")
     if itemLink then
         frame.ItemContainer.CritFrame:Show()
-        frame.ItemContainer.CritText:SetText("Traded item")
+        frame.ItemContainer.CritText:SetText(Addon.localization.tradedItem)
         frame.ItemContainer.CritText:SetTextColor(0.7, 0.3, 0.3, 1.0)
         frame.ItemContainer.CritFrame:SetVertexColor(0.5, 0.1, 0.1)
     end

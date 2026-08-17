@@ -187,7 +187,7 @@ function Addon.ToggleMainWindow()
         UIConfig.dropDownChars:SetPoint("RIGHT", MPLTLootFrameTitleText, "RIGHT", 0, -35)
         UIConfig.dropDownChars:SetWidth(200)
         UIConfig.dropDownChars:SetupMenu(function(dropdown, rootDescription)
-            rootDescription:CreateTitle("Characters")
+            rootDescription:CreateTitle(Addon.localization.characters)
 
             local function IsSelected(player)
                 return UIConfig.dropDownChars.character == player
@@ -219,7 +219,7 @@ function Addon.ToggleMainWindow()
         UIConfig.dropDownSeason:SetWidth(130)
         UIConfig.dropDownSeason.seasonID = Addon.currentSeason
         UIConfig.dropDownSeason:SetupMenu(function(dropdown, rootDescription)
-            rootDescription:CreateTitle("Seasons")
+            rootDescription:CreateTitle(Addon.localization.seasons)
 
             local function IsSelected(season)
                 return UIConfig.dropDownSeason.seasonID == season

@@ -105,16 +105,9 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                     itemElementFrame.ItemContainer.ItemChances:SetText(Addon.localization.chance..Addon.Constants.Color.TextLight..chances+(chances*attempts).."%")
 
                     if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["done"] == 1 then
-                        local doneText = ""
-                        if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["traded"] == 1 then
-                            doneText = Addon.localization.got1..Addon.localization.gotTraded..Addon.Constants.Color.TextLight..doneDate
-                                ..Addon.localization.got2..Addon.Constants.Color.TextLight..doneAttempts..Addon.localization.got3
-                                ..Addon.localization.gotChance..Addon.Constants.Color.TextLight..(doneChance*doneAttempts).."%"
-                        else
-                            doneText = Addon.localization.got1..Addon.Constants.Color.TextLight..doneDate
-                                ..Addon.localization.got2..Addon.Constants.Color.TextLight..doneAttempts..Addon.localization.got3
-                                ..Addon.localization.gotChance..Addon.Constants.Color.TextLight..(doneChance*doneAttempts).."%"
-                        end
+                        local traded = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["traded"] == 1
+                        local doneTemplate = traded and Addon.localization.doneTraded or Addon.localization.done
+                        local doneText = string.format(doneTemplate, doneDate, doneAttempts, doneChance*doneAttempts)
                         itemElementFrame.ItemDone:Show()
                         itemElementFrame.ItemDone.ItemDoneText:SetText(Addon.Constants.Color.TextLight..doneText)
                     end

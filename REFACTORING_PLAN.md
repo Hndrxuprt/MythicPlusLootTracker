@@ -180,12 +180,12 @@
 
 ## Этап 8. Локализация (средний риск)
 
-- [ ] Удалить мёртвые ключи `valor`/`flux`/`dinar` (нет читателей).
-- [ ] Локализовать хардкод: `"Characters"`, `"Seasons"` (Core:1226,1258), `"Overall"` (Core:225, ClassCodexImport:5,45,152), `"No keystone"`/`"No RIO"`/`"ilvl"`/`"rio"` (AltManager:83,161,163,190,191), `"Traded item"` (Luck:39), `"Mythic+ Loot Tracker"`/тултип (Core:1311,1322) — добавить ключи в оба файла.
-- [ ] Заменить фрагментную сборку `got1+got2+got3+gotTraded+gotChance` (`Tracking.lua:115-121`) на один `string.format`-паттерн с плейсхолдерами.
-- [ ] Добавить `rollAutoclose` вместо переиспользования `sninnerAutoclose` (RollFrame.lua:90).
-- [ ] `helpBox`/`helpButton` — перенести в Constants (Этап 4), из localization убрать.
-- [ ] Синхронизировать EN/RU.
+- [x] Удалены мёртвые ключи `valor`/`flux`/`dinar` (нет читателей).
+- [x] Локализован хардкод: `"Characters"`/`"Seasons"` (MainWindow), `"Overall"` (LootProcessing `GetEncounter`; строки-идентификаторы `type == "Overall"` в MainWindow/ClassCodexImport оставлены — они не отображаются), `"No keystone"`/`"No RIO"`/`"ilvl"`/`"rio"` (AltManager), `"Traded item"` (Luck), `"Mythic+ Loot Tracker"`/тултип (LDBIcon) — ключи добавлены в оба файла.
+- [x] Фрагментная сборка `got1+got2+got3+gotTraded+gotChance` (Tracking.lua) заменена на `string.format` с паттернами `done`/`doneTraded`.
+- [x] Добавлен `rollAutoclose` вместо переиспользования `snifferAutoclose` (RollFrame).
+- [x] `helpBox`/`helpButton` — уже перенесены в Constants (Этап 4), из localization убраны.
+- [x] EN/RU синхронизированы (42 ключа в обоих файлах, проверено скриптом).
 
 ## Этап 9. AltManager — XML и бог-функция (высокий риск)
 
@@ -231,6 +231,6 @@
 - [x] Этап 5 — Общие хелперы
 - [x] Этап 6 — Разбивка Core.lua на модули
 - [x] Этап 7 — Рефакторинг GlobalConstants.lua
-- [ ] Этап 8 — Локализация
+- [x] Этап 8 — Локализация
 - [ ] Этап 9 — AltManager — XML и бог-функция
 - [ ] Этап 10 — Прочие модули и UI/XML

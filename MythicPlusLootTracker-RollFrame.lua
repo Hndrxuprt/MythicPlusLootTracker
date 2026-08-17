@@ -80,7 +80,7 @@ rollFrame:SetScript("OnEnter", function(self)
 end)
 rollFrame:SetTitle("")
 rollFrame:SetFrameStrata("HIGH")
-rollFrame.AutocloseText:SetText(Addon.localization.snifferAutoclose)
+rollFrame.AutocloseText:SetText(Addon.localization.rollAutoclose)
 
 rollFrame:Show()
 

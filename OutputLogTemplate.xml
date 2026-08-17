@@ -1,4 +1,55 @@
 <UI>
+    <Frame name="MPLT_NineSliceBorderTemplate" virtual="true">
+        <Layers>
+            <Layer level="OVERLAY">
+                <Texture parentKey="TopLeftCorner" atlas="characterupdate-9slice-topleftcorner" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="4"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="TopRightCorner" atlas="characterupdate-9slice-toprightcorner" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="0" y="4"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="TopBorder" atlas="_characterupdate-9slice-topedge" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="TOPRIGHT" y="0"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="TOPLEFT" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BottomLeftCorner" atlas="characterupdate-9slice-bottomleftcorner" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BottomRightCorner" atlas="characterupdate-9slice-bottomrightcorner" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BottomBorder" atlas="_characterupdate-9slice-bottomedge" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="LeftBorder" atlas="!characterupdate-9slice-leftedge" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="TOPLEFT"/>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="BOTTOMLEFT"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="RightBorder" atlas="!characterupdate-9slice-rightedge" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="TOPRIGHT"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+
     <Frame name="OutputLogTemplate" inherits="ScrollingFlatPanelTemplate" virtual="true">
 		<Size x="76" y="290"/>
 		<KeyValues>

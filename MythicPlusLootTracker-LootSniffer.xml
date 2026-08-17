@@ -114,13 +114,13 @@
                     </Layer>
                 </Layers>
             </Frame>
-            <Button parentKey="WhisperButton" inherits="UIPanelButtonTemplate" text="w" hidden="false" frameStrata="HIGH">
+            <Button parentKey="WhisperButton" inherits="UIPanelButtonTemplate" hidden="false" frameStrata="HIGH">
 				<Size x="30" y="25"/>
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.ItemFrame.ItemOwner" relativePoint="RIGHT" x="0" y="0"/>
                 </Anchors>
             </Button>
-			<Button parentKey="PartyButton" inherits="UIPanelButtonTemplate" text="p" hidden="false" frameStrata="HIGH">
+			<Button parentKey="PartyButton" inherits="UIPanelButtonTemplate" hidden="false" frameStrata="HIGH">
 				<Size x="30" y="25"/>
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.WhisperButton" relativePoint="RIGHT" x="0" y="0"/>

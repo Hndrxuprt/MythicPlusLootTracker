@@ -2,7 +2,7 @@
     <Frame name="MPLT_TrackingEncounterElementTemplate" mixin="MPLT_TrackingElementMixin" virtual="true">
 		<Size x="500" y="100"/>
         <Frames>
-            <Frame parentKey="EncounterContainer">
+            <Frame parentKey="EncounterContainer" inherits="MPLT_NineSliceBorderTemplate">
                 <Size x="500" y="100"/>
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
@@ -17,60 +17,6 @@
                                 <Anchor point="BOTTOMRIGHT" x="-4" y="5"/>
                             </Anchors>
                         </Texture>
-                    </Layer>
-                    <Layer level="OVERLAY">
-                        <Texture parentKey="TopLeftCorner" atlas="Tooltip-Maw-NineSlice-CornerTopLeft" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" x="0" y="4"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="TopRightCorner" atlas="Tooltip-Maw-NineSlice-CornerTopRight" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="TOPRIGHT" x="0" y="4"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="TopBorder" atlas="_Tooltip-Maw-NineSlice-EdgeTop" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="TOPRIGHT" y="0"/>
-								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="TOPLEFT" y="0"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="BottomLeftCorner" atlas="Tooltip-Maw-NineSlice-CornerBottomLeft" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" x="0" y="0"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="BottomRightCorner" atlas="Tooltip-Maw-NineSlice-CornerBottomRight" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="BottomBorder" atlas="_Tooltip-Maw-NineSlice-EdgeBottom" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="BOTTOMRIGHT" y="0"/>
-								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="BOTTOMLEFT" y="0"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="LeftBorder" atlas="!Tooltip-Maw-NineSlice-EdgeLeft" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="TOPLEFT"/>
-								<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="BOTTOMLEFT"/>
-							</Anchors>
-						</Texture>
-						<Texture parentKey="RightBorder" atlas="!Tooltip-Maw-NineSlice-EdgeRight" useAtlasSize="true">
-                            <Color r="1" g="0.70" b="0.70" a="0.6"/>
-							<Anchors>
-								<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="TOPRIGHT"/>
-								<Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
-							</Anchors>
-						</Texture>
                     </Layer>
                     <Layer level="ARTWORK">
                         <Texture parentKey="Highlight" atlas="UI-Valdrakken-Highlight-Middle" hidden="false">

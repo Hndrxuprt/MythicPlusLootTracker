@@ -24,8 +24,8 @@ local function GetClassAndSpec()
     return class, specName
 end
 
-local function SetItemSource(type)
-    type = type or "Mythic+"
+local function SetItemSource(sourceType)
+    sourceType = sourceType or "Mythic+"
     if not next(gearTable) then return end
 
     local spec = GetSpecialization()
@@ -35,11 +35,11 @@ local function SetItemSource(type)
     EJ_SetLootFilter(classID, specID)
 
     local tbl
-    if type == "Raid" then
+    if sourceType == "Raid" then
         tbl = Addon.RaidEJInstanceID
-    elseif type == "Mythic+" then
+    elseif sourceType == "Mythic+" then
         tbl = Addon.MapIDToEJInstanceID
-    elseif type == "Overall" then
+    elseif sourceType == "Overall" then
         tbl = Addon.CopyTable(Addon.MapIDToEJInstanceID)
         MergeTable(tbl, Addon.RaidEJInstanceID)
     end
@@ -92,7 +92,7 @@ local function TrackItem()
     end
 end
 
-function MPLT_ImportClassCodexGear(type)
+function MPLT_ImportClassCodexGear(sourceType)
     wipe(gearTable)
     local class, spec = GetClassAndSpec()
 
@@ -101,11 +101,11 @@ function MPLT_ImportClassCodexGear(type)
     if db and db[class] and db[class][spec] and db[class][spec].gear and db[class][spec].gear.all then
         local gearAll = db[class][spec].gear.all
         local tbl
-        if type == "Raid" then
+        if sourceType == "Raid" then
             tbl = gearAll.raid
-        elseif type == "Mythic+" then
+        elseif sourceType == "Mythic+" then
             tbl = gearAll.mplus
-        elseif type == "Overall" then
+        elseif sourceType == "Overall" then
             tbl = gearAll.all
         end
         if tbl then
@@ -114,7 +114,7 @@ function MPLT_ImportClassCodexGear(type)
             end
         end
     end
-    SetItemSource(type)
+    SetItemSource(sourceType)
     TrackItem()
 end
 

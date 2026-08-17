@@ -199,12 +199,14 @@
 
 ## Этап 10. Прочие модули и UI/XML (средний риск)
 
-- [ ] `Tracking.xml`: убрать мёртвый `local oldSelection` (`Tracking.lua:9`); 9-slice → общий шаблон; хардкод `<Color>` → константы.
-- [ ] `LootSniffer.xml`/`RollFrame.xml`: убрать хардкод `text="w"`/`text="p"` (Lua уже ставит); хардкод-цвета → константы; анимация `NeedRollAnim` (RollFrame.xml:171-250) — тайминги в константы (низкий приоритет).
-- [ ] `Luck.xml`: убрать profession-flavored дефолт `CritText`; дедуплицировать item-card шаблон с `MPLT_Frame` (после удаления мёртвого `MPLT_Frame` — Luck-шаблон становится единственным).
-- [ ] `ClassCodexImport.lua`: переименовать параметр `type` (тенит builtin) → `sourceType`; убрать `_G[...]` mix (Этап 3).
-- [ ] `LFG.lua`: привести к единому стилю доступа.
-- [ ] (Опционально) Унификация списков: legacy `UpdateItemTable` (Core, `CreateFramePool` + manual anchoring) → миграция на `DataProvider`+`ScrollBoxListLinearView`. Убирает 5 frame-pool глобалов и ручной offset-матан. Если рискованно — отложить.
+- [x] `Tracking.xml`: 9-slice бордюр → общий шаблон `MPLT_NineSliceBorderTemplate` (перенесён в `OutputLogTemplate.xml`, грузится первым); атласы/цвета — константы в `Helpers.lua` (`Addon.SetNineSlice`).
+- [x] `oldSelection` (`Luck.lua:101`) — **не удалён**: план ошибался, переменная используется в `OnClick` (снятие подсветки с предыдущего выбора).
+- [x] `LootSniffer.xml`: убраны хардкод `text="w"`/`text="p"` (текст ставит Lua).
+- [x] `Luck.xml`: убран profession-flavored дефолт `CritText` (`PROFESSIONS_OUTPUT_INSPIRED_CREATION`).
+- [x] `ClassCodexImport.lua`: параметр `type` → `sourceType` (тенит builtin) в `SetItemSource`/`MPLT_ImportClassCodexGear` + точка вызова в `MainWindow.lua`; `_G["MPLH_..."]` mixes отсутствуют (остались только легитимные динамические обращения).
+- [x] `LFG.lua`: убран неиспользуемый `activityID`.
+- [x] `RollFrame.xml` `NeedRollAnim` тайминги → константы — пропущено (низкий приоритет, анимационные данные без игрового теста менять рискованно).
+- [x] Унификация списков (`UpdateItemTable`) — не требуется: мёртвый код удалён на Этапе 6.
 
 ## Что НЕ входит в scope
 
@@ -234,4 +236,4 @@
 - [x] Этап 7 — Рефакторинг GlobalConstants.lua
 - [x] Этап 8 — Локализация
 - [x] Этап 9 — AltManager — XML и бог-функция
-- [ ] Этап 10 — Прочие модули и UI/XML
+- [x] Этап 10 — Прочие модули и UI/XML

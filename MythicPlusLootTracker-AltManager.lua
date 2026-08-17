@@ -285,7 +285,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
 
     frame.CharacterFrame.CharName:SetText(playerID)
     frame.CharacterFrame.CharName:SetTextScale(0.5)
-    Addon.SetBorderColor(frame.CharacterFrame, 0.38, 0.5, 1, 1)
+    Addon.SetNineSlice(frame.CharacterFrame, "characterupdate", 0.38, 0.5, 1, 1)
     frame.CharacterFrame:SetSize(600, 84)
     frame.CharacterFrame:Show()
 

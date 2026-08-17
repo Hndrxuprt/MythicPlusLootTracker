@@ -157,9 +157,41 @@ function Addon.RunOnItemReady(itemLink, callback)
     end
 end
 
+local NINE_SLICE_PART_NAMES = { "TopLeftCorner", "TopRightCorner", "TopBorder", "BottomLeftCorner", "BottomRightCorner", "BottomBorder", "LeftBorder", "RightBorder" }
+
+local NINE_SLICE_ATLASES = {
+    characterupdate = {
+        "characterupdate-9slice-topleftcorner",
+        "characterupdate-9slice-toprightcorner",
+        "_characterupdate-9slice-topedge",
+        "characterupdate-9slice-bottomleftcorner",
+        "characterupdate-9slice-bottomrightcorner",
+        "_characterupdate-9slice-bottomedge",
+        "!characterupdate-9slice-leftedge",
+        "!characterupdate-9slice-rightedge",
+    },
+    tooltipMaw = {
+        "Tooltip-Maw-NineSlice-CornerTopLeft",
+        "Tooltip-Maw-NineSlice-CornerTopRight",
+        "_Tooltip-Maw-NineSlice-EdgeTop",
+        "Tooltip-Maw-NineSlice-CornerBottomLeft",
+        "Tooltip-Maw-NineSlice-CornerBottomRight",
+        "_Tooltip-Maw-NineSlice-EdgeBottom",
+        "!Tooltip-Maw-NineSlice-EdgeLeft",
+        "!Tooltip-Maw-NineSlice-EdgeRight",
+    },
+}
+
+function Addon.SetNineSlice(frame, atlasKey, r, g, b, a)
+    local atlases = NINE_SLICE_ATLASES[atlasKey]
+    for i, part in ipairs(NINE_SLICE_PART_NAMES) do
+        frame[part]:SetAtlas(atlases[i], true)
+        frame[part]:SetVertexColor(r, g, b, a)
+    end
+end
+
 function Addon.SetBorderColor(frame, r, g, b, a)
-    local parts = { "TopLeftCorner", "TopRightCorner", "TopBorder", "BottomLeftCorner", "BottomRightCorner", "BottomBorder", "LeftBorder", "RightBorder" }
-    for _, part in ipairs(parts) do
+    for _, part in ipairs(NINE_SLICE_PART_NAMES) do
         frame[part]:SetVertexColor(r, g, b, a)
     end
 end

@@ -135,13 +135,13 @@ function Addon.ToggleMainWindow()
             showImportButton:SetText(Addon.localization.CCImportButton)
             showImportButton:Show()
             showImportButton:SetScript("OnClick", function()
-                local type = "Mythic+"
+                local sourceType = "Mythic+"
                 if IsShiftKeyDown() then
-                    type = "Raid"
+                    sourceType = "Raid"
                 elseif IsAltKeyDown() then
-                    type = "Overall"
+                    sourceType = "Overall"
                 end
-                MPLT_ImportClassCodexGear(type)
+                MPLT_ImportClassCodexGear(sourceType)
             end)
             showImportButton:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

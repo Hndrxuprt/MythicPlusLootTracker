@@ -33,7 +33,7 @@ local function PrepareNumItems(parentFrame)
     end
     local resultID = parentFrame.resultID
     
-    local mapID, delisted, activityID = GetSearchResultMapID(resultID)
+    local mapID, delisted = GetSearchResultMapID(resultID)
 
     if LFGListFrame:IsVisible() then
         local playerID = Addon.GetPlayerID()

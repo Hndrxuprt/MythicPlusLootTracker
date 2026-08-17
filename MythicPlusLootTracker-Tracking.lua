@@ -15,6 +15,7 @@ local gridLayout = AnchorUtil.CreateGridLayout(GRID_DIRECTION, GRID_STRIDE, GRID
 
 function MPLT_TrackingElementMixin:InitElements(frame, elementData, playerID)
     local encounterID = elementData.encounterID
+    Addon.SetNineSlice(frame.EncounterContainer, "tooltipMaw", 1, 0.7, 0.7, 0.6)
     local dungeonName = select(1,Addon.GetEncounter(encounterID))
     frame.EncounterContainer.EncounterText:SetText(dungeonName)
     frame.EncounterContainer.EncounterText:SetTextScale(0.6)

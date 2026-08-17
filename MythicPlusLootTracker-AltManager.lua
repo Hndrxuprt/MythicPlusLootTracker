@@ -1,52 +1,12 @@
 local AddonName, Addon = ...
 
 MPLT_AltManagerMixin = {}
-MPLT_AltManagerItemsMixin = {}
 OutputLogMixin = {}
 
 local AltManagerFrame = CreateFrame("Frame", "MPLTAltManagerFrame", UIParent, "OutputLogTemplate")
 local DataProvider = CreateDataProvider()
 
-local itemSetsIDs = {}
-local itemSetsItems = {}
-local isClassItem = {}
-
-local function ProcessEvent(self, event, ...)
-    if event == "FIRST_FRAME_RENDERED" then
-        for i = 1, GetNumClasses() do
-            local itemSets = C_LootJournal.GetItemSets(i, 0)
-            local setIlvl = 0
-            local setID = 0
-            if itemSets then
-                for k, v in pairs(itemSets) do
-                    if v.itemLevel > setIlvl then
-                        setIlvl = v.itemLevel
-                        setID = v.setID
-                    end
-                end
-            end
-            if setID > 0 then
-                table.insert(itemSetsIDs, setID)
-            end
-        end
-
-        for i = 1, #itemSetsIDs do
-        local items = C_LootJournal.GetItemSetItems(itemSetsIDs[i])
-        local itemID = 0
-            for _, v in pairs(items) do
-                    table.insert(itemSetsItems, v.itemID)
-            end
-        end
-
-        for _, itemID in pairs(itemSetsItems) do
-            isClassItem[itemID] = true
-        end
-    end
-end
-
 local classSetItems = {
-    --MidnightS1
-    --https://wago.tools/db2/ItemSet
     249955, 249953, 249952, 249951, 249950,
     250043, 250042, 250041, 250045, 250040,
     249982, 249980, 249979, 249978, 249977,
@@ -64,7 +24,6 @@ local classSetItems = {
 
 local function IsItemClassSet(itemID)
     return (itemID and tContains(classSetItems, itemID))
-    --return (itemID and isClassItem[itemID])
 end
 
 function MPLT_AltManagerMixin:OnEnter()
@@ -217,7 +176,6 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
                 frame["ItemFrame"..i]["ItemIcon"..i]:SetTexture(itemIcon)
                 frame["ItemFrame"..i]:SetScript("OnEnter", function(self)
                     GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
-                    --GameTooltip:SetPoint("LEFT", UIParent, "LEFT", 100, 0)
                     GameTooltip:SetHyperlink(MPLH_KACDATA[playerID]["gear"][i])
                     GameTooltip:Show()
                 end)
@@ -235,7 +193,6 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         _G["MPLH_ORDER"][index-1] = tmp
         C_Timer.After(0.4, function()
             MPLT_AltManagerMixin:PrepareAltManager()
-            --AltManagerFrame.ScrollBox:ScrollToElementDataIndex(index, ScrollBoxConstants.AlignNearest, ScrollBoxConstants.NoScrollInterpolation)
             MPLT_UpdateSubFrames()
         end)
     end)
@@ -246,7 +203,6 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         _G["MPLH_ORDER"][index+1] = tmp
         C_Timer.After(0.4, function()
             MPLT_AltManagerMixin:PrepareAltManager()
-            --AltManagerFrame.ScrollBox:ScrollToElementDataIndex(index, ScrollBoxConstants.AlignNearest, ScrollBoxConstants.NoScrollInterpolation)
             MPLT_UpdateSubFrames()
         end)
     end)
@@ -255,7 +211,6 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         MPLH_KACDATA[playerID] = nil
         C_Timer.After(0.4, function()
             MPLT_AltManagerMixin:PrepareAltManager()
-            --AltManagerFrame.ScrollBox:ScrollToElementDataIndex(index, ScrollBoxConstants.AlignNearest, ScrollBoxConstants.NoScrollInterpolation)
             MPLT_UpdateSubFrames()
         end)
     end)

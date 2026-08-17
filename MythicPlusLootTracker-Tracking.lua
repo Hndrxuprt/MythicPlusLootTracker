@@ -6,8 +6,6 @@ local TrackingFrame = CreateFrame("Frame", "MPLTTrackingFrame", UIParent, "Scrol
 
 local TrackingDataProvider = CreateDataProvider()
 
-local oldSelection
-
 local GRID_DIRECTION = GridLayoutMixin.Direction.TopLeftToBottomRight;
 local GRID_STRIDE    = 1;
 local GRID_PADDING_X = 2;
@@ -18,7 +16,6 @@ local gridLayout = AnchorUtil.CreateGridLayout(GRID_DIRECTION, GRID_STRIDE, GRID
 function MPLT_TrackingElementMixin:InitElements(frame, elementData, playerID)
     local encounterID = elementData.encounterID
     local dungeonName = select(1,GetEncounter(encounterID))
-    --local index = TrackingDataProvider:FindIndex(elementData)
     frame.EncounterContainer.EncounterText:SetText(dungeonName)
     frame.EncounterContainer.EncounterText:SetTextScale(0.6)
     local children = elementData.children
@@ -47,12 +44,10 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
     TrackingDataProvider:Flush()
 
     local view = CreateScrollBoxListLinearView(0, 0, 2, 2, 0);
-    --view:SetElementExtent(100)
     local function CalculateHeight()
         return 100 + 60*#children
     end
     view:SetElementExtentCalculator(function(dataIndex, elementData)
-        --local height = #_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][elementData.encounterID]
         local height = #elementData.children[elementData.encounterID]
         return 100 + 60*height
     end)
@@ -146,11 +141,6 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
         TrackingFrame.ScrollBox:SetDataProvider(TrackingDataProvider)
     end
     TrackingFrame.ScrollBar:SetScrollPercentage(scrollPos, true)
-    local function SortComparator(enc1, enc2)
-        if enc1 and enc2 then
-            return enc1.runs > enc2.runs
-        end
-    end
     TrackingFrame:ClearAllPoints()
     TrackingFrame:SetParent(MPLTLootFrame)
     TrackingFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, -65)

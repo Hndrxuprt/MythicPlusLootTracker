@@ -2,9 +2,6 @@ local AddonName, Addon = ...
 local GuideDB
 local gearTable = {}
 
--- /dump MPLT_ImportClassCodexGear("Overall")
-
--- because of ClassCodex DB
 local SPEC_KEYS = {
     DEATHKNIGHT  = { "blood", "frost", "unholy" },
     DEMONHUNTER  = { "havoc", "vengeance", "devourer" },
@@ -47,7 +44,6 @@ local function SetItemSource(type)
         MergeTable(tbl, Addon.RaidEJInstanceID)
     end
     if not tbl or not next(tbl) then
-        print("tbl empty")
         return
     end
     for mapID, instanceID in pairs(tbl) do
@@ -55,8 +51,6 @@ local function SetItemSource(type)
         isRaid = EJ_InstanceIsRaid()
         local dungeonName = C_ChallengeMode.GetMapUIInfo(isRaid and instanceID or mapID)
         if EncounterJournal then
-            --EncounterJournal_Refresh()
-            --EncounterJournal_ListInstances()
             EJ_ContentTab_SelectAppropriateInstanceTab(instanceID)
             EncounterJournal_DisplayInstance(instanceID)
         end
@@ -87,7 +81,6 @@ local function TrackItem()
     if next(gearTable) then
         local name, realm = UnitFullName("player")
         local playerID = name .. "-" .. realm
-        local trackedItems = 0
         if not MPLH_TRACKITEM[playerID] then
             MPLH_TRACKITEM[playerID] = {}
         end
@@ -124,7 +117,6 @@ local function TrackItem()
                     if not tContains(_G["MPLH_TRACKITEM_ORDER"][playerID], data.source) then
                         tinsert(MPLH_TRACKITEM_ORDER[playerID], data.source)
                     end
-                    trackedItems = trackedItems + 1
                 end
             end
         end
@@ -132,7 +124,6 @@ local function TrackItem()
             MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
             MPLT_UpdateSubFrames()
         end
-        print("Import Finished, imported "..trackedItems.." items")
     end
 end
 

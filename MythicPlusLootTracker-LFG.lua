@@ -34,7 +34,6 @@ local function PrepareNumItems(parentFrame)
     local resultID = parentFrame.resultID
     
     local mapID, delisted, activityID = GetSearchResultMapID(resultID)
-    --print("ActivityID: ", mapID, delisted, activityID)
 
     if LFGListFrame:IsVisible() then
         local name, realm = UnitFullName("player")

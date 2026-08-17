@@ -77,7 +77,6 @@ rollFrame:SetScript("OnDragStop", function(self)
 end)
 rollFrame:SetScript("OnEnter", function(self)
     if MPLT_RollFrameMixin.timer then
-        --print("Cancel Autoclose")
         rollFrame.TimerAnim:Stop()
         rollFrame.AutocloseText:SetAlpha(0)
         rollFrame.autoclose = false
@@ -189,7 +188,6 @@ function MPLT_RollFrameMixin:Update(frame, elementData)
             if CursorHasItem() then
                 C_Item.DropItemOnUnit(name)
             end
-            --InitiateTrade(name)
         end)
     end
 
@@ -203,8 +201,6 @@ function MPLT_RollFrameMixin:Update(frame, elementData)
     end
 end
 
--- /run MPLT_RollFrameMixin:Init()
-
 function MPLT_RollFrameMixin:Init()
     self:PrepareScrollFrame()
     if not rollFrame:IsVisible() then
@@ -213,11 +209,6 @@ function MPLT_RollFrameMixin:Init()
     end
     self:Autoclose()
 end
-
----------------------------------------------
-
-
----------------------------------------------
 
 local body = RANDOM_ROLL_RESULT:sub(3)
 
@@ -229,18 +220,8 @@ Addon.itemRolls = {}
 
 local latestItem
 
--- /run MPLT_RollFrameMixin:Test()
-
-function MPLT_RollFrameMixin:Test()
-    local itemLink = "|cnIQ3:|Hitem:250144::::::::90:1480:::::::::|h[Emberwing Feather]|h|r"
-    local itemID = 242494
-
-    Addon.RollForItem(itemID, itemLink)
-end
-
 function Addon.RollForItem(itemID, itemLink)
     if not itemID then return end
-    if issecretvalue(itemID) then return end
 
     wipe(Addon.itemRolls)
 
@@ -271,7 +252,6 @@ local function ProcessEvent(self, event, ...)
     if event == 'CHAT_MSG_SYSTEM' then
         local msg = ...
 
-        if issecretvalue(msg) then return end
         if not msg then return end
 
         local name, roll, min, max = msg:match(rollPattern)

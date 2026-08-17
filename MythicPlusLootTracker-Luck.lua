@@ -31,7 +31,6 @@ function MythicPlusLootTrackerLuckElementMixin:InitLootList(frame, elementData)
     frame.ItemContainer.Index:SetTextColor(0.6, 0.6, 0.6, 1.0)
     frame.ItemContainer.AmountText:SetText("x"..elementData.amount)
     frame.ItemContainer.AmountText:SetTextColor(0.8, 0.8, 0.8, 1.0)
-    --frame.ItemContainer.ItemLvl:SetText(select(1,GetDetailedItemLevelInfo(itemLink or traded)))
     frame.ItemContainer.CritFrame:Hide()
     frame.ItemContainer.CritText:SetText("")
     if itemLink then
@@ -51,14 +50,6 @@ function MythicPlusLootTrackerLuckElementMixin:InitLootList(frame, elementData)
         GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
         GameTooltip:Hide()
     end)
-    --frame.name:SetText(itemLink or traded)
-    --[[ if itemLink then
-        local color = frame:CreateTexture(nil, "BACKGROUND")
-        color:SetColorTexture(0.6, 0.6, 0.6, 0.1)
-        color:SetSize(20,20)
-        frame:SetNormalTexture(color)
-    end ]]
-    --button.name:SetFrameStrata("MEDIUM")
 end
 function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, playerID)
     LootDataProvider:Flush()
@@ -91,13 +82,6 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
             end
         end
     end
---[[     local function SortComparator(amount1, amount2)
-        if amount1 and amount2 then
-            local itemID1 = select(1,GetItemInfoInstant(amount1.itemLink))
-            local itemID2 = select(1,GetItemInfoInstant(amount2.itemLink))
-            return itemID1 > itemID2
-        end
-    end ]]
     local function SortComparator(amount1, amount2)
         if amount1 and amount2 then
             return amount1.amount > amount2.amount
@@ -111,13 +95,8 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
     lootFrame:SetSize(460, 401)
     lootFrame:Show()
     lootFrame:SetAlpha(1)
-    --[[ lootFrame.bg:SetAtlas("Professions-Recrafting-Panel", true)
-    lootFrame.bg:SetPoint("LEFT", lootFrame, "LEFT", 0, 0)
-    lootFrame.bg:SetSize(335, 300)
-    lootFrame.bg:Show() ]]
 end
 
----------------
 local DataProvider = CreateDataProvider()
 
 local oldSelection
@@ -126,14 +105,7 @@ local function Init_Button(button, elementData, playerID)
     local runs = elementData.runs
     local name = select(1,GetEncounter(encounterId))
     local fortune = string.format("%.1f",(elementData.fortune*100)).."%"
-    --print(name, runs)
     button.name:SetText(name.." - "..runs.." - "..fortune)
-    --[[ if id == 1 then
-        button:LockHighlight()
-        oldSelection = button
-    else
-        button:UnlockHighlight()
-    end ]]
     button:SetScript("OnClick", function()
         if oldSelection then
             oldSelection:UnlockHighlight()
@@ -147,7 +119,6 @@ local function Init_Button(button, elementData, playerID)
         button:LockHighlight()
         button:Click()
     end
-    --button.name:SetFrameStrata("MEDIUM")
 end
 
 function PrepareEncounterList(playerID)
@@ -176,7 +147,6 @@ function PrepareEncounterList(playerID)
         for encounterID, runs in pairs(MPLH_ENC_ENDED[seasonID][playerID]) do
             local fortune, numLoot = CalcFortune(playerID, encounterID, seasonID)
             DataProvider:Insert({encounterID = encounterID, runs = runs, fortune = fortune})
-            --ScrollBox:SetDataProvider(DataProvider)
             overall = overall + runs
             overallLoot = overallLoot + numLoot
         end

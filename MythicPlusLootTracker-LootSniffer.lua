@@ -97,52 +97,8 @@ local partyMessage_RU = {
     "если не нужна, отдашь?",
 }
 
-local animationInfo = {
-    TimerBar = {
-        animType = "Translation",
-		baseDuration = 15,
-		durationDiff = 4,
-		XOfs = -400,
-		YOfs = 0,
-    }
-}
-
-local testTable = {
-    --["Aboba-Kaloboba"] = "|cnIQ4:|Hitem:221050::::::::80:256::16:7:11987:10390:6652:11964:10383:3147:10255:1:28:1279::::|h[Ancient Hardened Legwraps]|h|r",
-    --["Abob-Kaloboba"] = "|cffa335ee|Hitem:221109::::::::80:102::16:7:11978:10390:6652:11964:10383:3131:10255:1:28:1279:::::|h[Candlebearer's Shroud]|h|r",
-    --["Abo-Kaloboba"] = "|cnIQ4:|Hitem:221198::::::::80:1467::16:8:11979:6652:10395:10392:10383:11215:3134:10255:1:28:1279::::|h[85-Year Tenure Ring]|h|r",
-    --["Ab-Kaloboba"] = "|cffa335ee|Hitem:221062::::::::80:1467::16:6:11985:10390:6652:10384:3141:10255:1:28:1279:::::|h[Scalding Queenmaker's Shiv]|h|r",
-    --["Abbbb-Kaloboba"] = "|cnIQ4:|Hitem:168973::::::::80:256::16:6:11979:10390:6652:10384:10031:10255:1:28:1279::::|h[Neural Synapse Enhancer]|h|r",
-    --["POomtis-Kaloboba"] = "\124cff0070dd\124Hitem:221116::::::::80::::1:3147:\124h[Glorious Defender's Poleaxe]\124h\124r",
-    --["Choomtis-Kaloboba"] = "\124cff0070dd\124Hitem:221119::::::::80::::1:3147:\124h[Holybound Grips]\124h\124r",
-    --["Doomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242464::::::::80::::1:3196:\124h[Swarmite's Frenzied Pedicel]\124h\124r",
-    --["Doomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242468::::::::80::::1:3196:\124h[Al'dani Attendant's Gauze]\124h\124r",
-    --["Hroomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242473::::::::80:::::\124h[Spittle-Stained Trousers]\124h\124r",
-    --["ASdomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242475::::::::80::::1:3196:\124h[Eco-Dome Access Bands]\124h\124r",
-    --["AOIKomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242476::::::::80::::1:3196:\124h[Taahbat's Desert Carbine]\124h\124r",
-    --["Koaomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242484::::::::80::::1:3196:\124h[Soul-Scribe's Tabiqa Dagger]\124h\124r",
-    --["Lksomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242487::::::::80::::1:3196:\124h[Fatebound Crusader]\124h\124r",
-    --["Odomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242488::::::::80::::1:3196:\124h[Tunic of Sworn Revenge]\124h\124r",
-    --["Yeomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242491::::::::80::::1:3196:\124h[Whispers of K'aresh]\124h\124r",
-    ["Rksomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242493::::::::80::::1:3196:\124h[Starlit Safeguard]\124h\124r",
-    ["Qweomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242495::::::::80::::1:3196:\124h[Incorporeal Warpclaw]\124h\124r",
-    ["Woomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242497::::::::80::::1:3196:\124h[Azhiccaran Parapodia]\124h\124r",
-    ["Roomtis-Kaloboba"] = "\124cff0070dd\124Hitem:242494::::::::80::::1:3196:\124h[Lily of the Eternal Weave]\124h\124r",
-}
-
 MPLT_LootSnifferMixin = {}
 MPLT_LootSnifferMixin.lootTable = {}
-
-local function GetCachedItem(itemLink)
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()      
-            return itemLink
-        end)
-    else
-        return itemLink
-    end
-end
 
 local function IsItemNeeded(itemID)
     local name, realm = UnitFullName("player")
@@ -176,22 +132,11 @@ local function IsItemValid(itemID)
     if result then
         for i, lineData in ipairs(result) do
             if lineData.type == Enum.TooltipDataLineType.EquipSlot then
-                --print("isValidItemType ", lineData.isValidItemType)
-                --print("isValidInvSlot", lineData.isValidInvSlot)
                 return lineData.isValidItemType, lineData.isValidInvSlot
             end
         end
     end
 end
---/dump IsItemEquippable("|cnIQ4:|Hitem:221050::::::::80:256::16:7:11987:10390:6652:11964:10383:3147:10255:1:28:1279::::|h[Ancient Hardened Legwraps]|h|r")
---/dump IsItemEquippable("|cffa335ee|Hitem:221109::::::::80:102::16:7:11978:10390:6652:11964:10383:3131:10255:1:28:1279:::::|h[Candlebearer's Shroud]|h|r")
---/dump IsItemEquippable("|cffa335ee|Hitem:178865::::::::80:102::16:6:11979:6652:10384:11215:9951:10255:1:28:1279:::::|h[Xav's Pike of Authority]|h|r")
---/dump IsItemEquippable("|cffa335ee|Hitem:235811::::::::80:102::16:7:11987:10390:6652:11964:10383:3147:10255:1:28:1279:::::|h[Extravagant Epaulets]|h|r")
---/dump IsItemEquippable("|cffa335ee|Hitem:219305::::::::80:102::16:6:11986:10390:6652:10383:3144:10255:1:28:1279:::::|h[Carved Blazikon Wax]|h|r")
---/dump IsItemEquippable("|cffa335ee|Hitem:221099::::::::80:102::16:8:11985:10390:6652:10395:10392:10383:3141:10255:1:28:1279:::::|h[Wick's Golden Loop]|h|r")
-
---/dump IsItemUpgrade("|cffa335ee|Hitem:235811::::::::80:102::16:7:11987:10390:6652:11964:10383:3147:10255:1:28:1279:::::|h[Extravagant Epaulets]|h|r")
---/run print(IsItemEquippable("|cffa335ee|Hitem:221099::::::::80:102::16:8:11985:10390:6652:10395:10392:10383:3141:10255:1:28:1279:::::|h[Wick's Golden Loop]|h|r"))
 
 function IsItemEquippable(itemLink)
     local equippable
@@ -219,31 +164,25 @@ function IsItemEquippable(itemLink)
             local itemPrimaryStat
             if itemStats then
                 for stat, _ in pairs(itemStats) do
-                    --print("weapon stat: ", _G[stat])
                     if _G[stat] == SPEC_STAT_STRINGS[primaryStat] then
                         itemPrimaryStat = _G[stat]
-                        --print(itemLink, ' its weapon ', itemEquipLoc)
                         return true
                     end
                 end
             end
                 
             if not itemPrimaryStat then 
-                --print('its weapon, cant equip')
                 return false 
             end
         end
 
         if itemEquipLoc == 'INVTYPE_TRINKET' then
-            --print(itemLink, ' its trinket')
             return true
         else
             if classID == Enum.ItemClass.Armor then
                 if subclassID == playerPreferredArmor then
-                    --print(itemLink, ' its armor')
                     return true
                 else
-                    --print(itemLink, ' its armor, cant equip')
                     return false
                 end
             end
@@ -259,8 +198,6 @@ function IsItemEquippable(itemLink)
         return IsEquppable(itemLink)
     end
 end
-
---/dump GetItemLevelDiff("|cnIQ4:|Hitem:221050::::::::80:256::16:7:11987:10390:6652:11964:10383:3147:10255:1:28:1279::::|h[Ancient Hardened Legwraps]|h|r")
 
 function GetItemLevelDiff(itemLink)
     if not GetItemInfoInstant(itemLink) then return end
@@ -285,8 +222,6 @@ function GetItemLevelDiff(itemLink)
     
     local ilvl1 = equippedItem1 and C_Item.GetDetailedItemLevelInfo(equippedItem1) or 0
     local ilvl2 = equippedItem2 and C_Item.GetDetailedItemLevelInfo(equippedItem2) or 0
-    
-    --print(itemEquipLoc, equippedItem1, equippedItem2)
 
     local equippedItemLevel
 
@@ -392,7 +327,6 @@ askingFrame:SetScript("OnDragStop", function(self)
 end)
 askingFrame:SetScript("OnEnter", function(self)
     if MPLT_LootSnifferMixin.timer then
-        --print("Cancel Autoclose")
         askingFrame.TimerAnim:Stop()
         askingFrame.AutocloseText:SetAlpha(0)
         askingFrame.autoclose = false
@@ -409,7 +343,6 @@ askingFrame:Hide()
 local DataProvider = CreateDataProvider()
 
 local function AddNewItem(itemLink, unitName, isBis)
-    --print("adding item to DataProvider")
     local data = { itemLink = itemLink, owner = unitName, wAsked = false, pAsked = false, isBis = isBis }
 
     table.insert(MPLT_LootSnifferMixin.lootTable, data)
@@ -422,16 +355,6 @@ function MPLT_LootSnifferMixin:Init()
         askingFrame:SetAlpha(1)
     end
     self:Autoclose()
-end
-
-function MPLT_LootSnifferMixin:Timer()
-    local slideAnimGroup = askingFrame.TimerBar:CreateAnimationGroup()
-    self.slideAnimGroup = slideAnimGroup
-
-    local translationAnimation = self.slideAnimGroup:CreateAnimation("Translation");
-	translationAnimation = self.slideAnimGroup:CreateAnimation("Translation");
-	translationAnimation:SetSmoothing("IN");
-	slideAnimGroup.translationAnimation = translationAnimation;
 end
 
 function MPLT_LootSnifferMixin:Update(frame, elementData)
@@ -464,7 +387,6 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
 
         frame:SetScript("OnEnter", function(self)
             if MPLT_LootSnifferMixin.timer then
-                --print("Cancel Autoclose")
                 askingFrame.TimerAnim:Stop()
                 askingFrame.AutocloseText:SetAlpha(0)
                 MPLT_LootSnifferMixin.timer:Cancel()
@@ -478,7 +400,6 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
             GameTooltip:Show()
 
             if MPLT_LootSnifferMixin.timer then
-                --print("Cancel Autoclose")
                 askingFrame.TimerAnim:Stop()
                 askingFrame.AutocloseText:SetAlpha(0)
                 MPLT_LootSnifferMixin.timer:Cancel()
@@ -570,48 +491,6 @@ function MPLT_LootSnifferMixin:PrepareScrollFrame()
     end
 end
 
---/run MPLT_TestItem("\124cff0070dd\124Hitem:221116::::::::80::::1:3147:\124h[Glorious Defender's Poleaxe]\124h\124r")
---/run MPLT_TestItem("\124cff0070dd\124Hitem:221119::::::::80::::1:3147:\124h[Holybound Grips]\124h\124r")
-
-
-
-function MPLT_LootSnifferMixin:TestItem(itemLink, unitName)
-    if not unitName then
-        unitName, realm = UnitFullName("player")
-        unitName = unitName.."-"..realm
-    end
-    local itemID
-    local function testItem(itemLink)
-        if IsItemNeeded(itemID) then
-            --print("BIS ITEM FOUND")
-            AddNewItem(itemLink, unitName, true)
-        elseif IsItemUpgrade(itemLink) then
-            --print("I NEED THIS ITEM 3:", itemLink)
-            AddNewItem(itemLink, unitName, false)
-        else
-            AddNewItem(itemLink, unitName, true)
-        end
-    end
-    if not C_Item.IsItemDataCachedByID(itemLink) then
-        local item = Item:CreateFromItemLink(itemLink)
-        item:ContinueOnItemLoad(function()      
-            itemID = item:GetItemID()   
-            testItem(itemLink)
-        end)
-    else
-        itemID = GetItemInfoInstant(itemLink)
-        testItem(itemLink)
-    end
-
-end
-
-function MPLT_LootSnifferMixin:Test()
-    for name, item in pairs(testTable) do
-        self:TestItem(item, name)
-    end
-    MPLT_LootSnifferMixin:Init()
-end
-
 function MPLT_LootSnifferMixin:Autoclose()
     if not askingFrame.autoclose then
         return
@@ -643,7 +522,6 @@ local function ProcessEvent(self, event, ...)
 
         if UnitIsUnit('player', unitName) then
 
-            -- don't suggest boe or warband
             if not (itemType == 2 or itemType == 4) or (itemBindType == 2 or itemBindType >= 7) then
                 return
             end
@@ -653,7 +531,6 @@ local function ProcessEvent(self, event, ...)
             return
         end
 
-        --don't track warband items
         if itemBindType >= 7 then return end
 
         local instanceID = select(8,GetInstanceInfo())
@@ -663,14 +540,10 @@ local function ProcessEvent(self, event, ...)
             savedInstanceID = instanceID
         end
 
-        --print("MPLT sniffsniff: ", unitName, lootEncounterId, itemLink)
-
         if IsItemNeeded(itemID) then
-            --print("I NEED THIS ITEM 1:", itemLink)
             AddNewItem(itemLink, unitName, true)
             MPLT_LootSnifferMixin:Init()
         elseif IsItemUpgrade(itemLink) then
-            --print("I NEED THIS ITEM 2:", itemLink)
             AddNewItem(itemLink, unitName, false)
             MPLT_LootSnifferMixin:Init()
         end

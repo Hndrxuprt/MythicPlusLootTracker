@@ -1,7 +1,6 @@
 local AddonName, Addon = ...
 
 local UIConfig = nil
-local showOnlyEquip = false
 
 local greatVaultTable = {}
 
@@ -9,11 +8,9 @@ local seasonID = Addon.currentSeason
 
 MPLTCoreMixin = {}
 
--- Event handler for ADDON_LOADED event
 local function AddonLoadedEvent(self, event, Name, ...)
 	if Name == AddonName then
 
-		--eventHandlerFrame:UnregisterEvent('ADDON_LOADED')
         if MPLH_ENC == nil then
             MPLH_ENC = {}
         end
@@ -43,7 +40,6 @@ local function AddonLoadedEvent(self, event, Name, ...)
         if MPLH_ORDER == nil then
             MPLH_ORDER = {}
         end
-		C_ChatInfo.RegisterAddonMessagePrefix('MPLT')
 
         Addon:Init()
 	
@@ -134,12 +130,8 @@ local function SetTabs(frame, numTabs, ...)
         tab.content = CreateFrame ("Frame", nil, UIConfig.ScrollFrame)
         tab.content:SetSize(610,350)
         tab.content:Hide()
-
-        --[[ tab.content.bg = tab.content:CreateTexture(nil, "BACKGROUND")
-        tab.content.bg:SetAllPoints(true)
-        tab.content.bg:SetColorTexture(math.random(), math.random(), math.random(), 0.6) ]]
         tab:Hide()
-        tab:Show() -- Attempt to fix tab size depends on text lenght
+        tab:Show()
 
         tinsert(contents, tab.content)
 
@@ -156,9 +148,6 @@ end
 
 
 function RecreateItemLink(itemLink)
-    --local itemLink = "|cnIQ4:|Hitem:234491:7462:::::::80:581::33:6:10390:6652:10384:11984:1507:10255:1:28:2462:::::|h[Sonic Ka-BOOM!-erang]|h|r"
-    --local itemLink = "|cnIQ4:|Hitem:230905::::::::80:581::16:1:3524:1:28:1279:::::|h[Fractured Spark of Fortunes]|h|r"
-    --RecreateItemLink("|cnIQ4:|Hitem:234491:7462:::::::80:581::33:6:10390:6652:10384:11984:1507:10255:1:28:2462:::::|h[Sonic Ka-BOOM!-erang]|h|r")
     local parts = { strsplit(":", itemLink) }
     local itemContext = parts[14]
     if itemContext ~= "16" then 
@@ -237,148 +226,6 @@ function GetEncounter(instance)
         end
     end
 end
-
-local function GetItemSource(itemLink)
-    local itemIDInitial = GetItemInfoInstant(itemLink)    
-    local itemName = strmatch(itemLink, "[[](.*)[]]")
-    local bossName = nil
-    EJ_SetSearch(itemName)
-    C_Timer.After(0.5, function()
-        local isFinished = EJ_IsSearchFinished()
-        local numResults = EJ_GetNumSearchResults()
-        if numResults then
-            for i=1, numResults do
-                local EJCurrentTier = EJ_GetCurrentTier()
-                if EJCurrentTier > 9 then
-                    print (EJCurrentTier, "DF not yet implemented")
-                    return
-                end
-                local id, stype, difficultyID, instanceID, encounterID, Link = EJ_GetSearchResult(i)
-                local itemIDFromSearch = GetItemInfoInstant(Link)
-                if encounterID then
-                    if itemIDInitial == itemIDFromSearch then
-                        for k, v in pairs(Addon.currentSeasonEncounters) do
-                            if isValueinTable(v, encounterID) then
-                                local itemSource = select(1,C_ChallengeMode.GetMapUIInfo(k))
-                                return itemSource
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end)
-end
-
-local function GetItemIDFromName(itemName, callback)
-    local cachedItemID = GetItemInfoInstant(itemName)
-    if cachedItemID then
-        callback(cachedItemID)
-        return
-    end
-    EJ_SetSearch(itemName)
-    C_Timer.After(0.5, function()
-        local isFinished = EJ_IsSearchFinished()
-        local numResults = EJ_GetNumSearchResults()
-        if numResults then
-            for i=1, numResults do
-                local id, _, _, _, _, Link = EJ_GetSearchResult(i)
-                local itemID = GetItemInfoInstant(Link)
-                local foundName = Link:match("%|h%[(.-)%]%|h")
-                if itemName == foundName then
-                    callback(itemID)
-                    return
-                end
-            end
-        end
-        callback(nil)
-    end)
-end
-local function IsLinkBroken(itemLink)
-    if itemLink:match("|Hitem:.*|Hitem") then
-        return true
-    end
-    
-    local itemID = itemLink:match("|Hitem:(%d+)")
-    if not itemID then
-        return true
-    end
-end
-
-local function FixBrokenLinks(itemLink, callback) 
-    local itemName = itemLink:match("%|h%[(.-)%]%|h")
-    if not itemName then callback(nil) return end
-
-    GetItemIDFromName(itemName, function(itemID)
-        if not itemID then callback(nil) return end
-        local fixedLink = itemLink:gsub("(|Hitem:)[^:]+(:)", "%1" .. itemID .. "%2", 1)
-        callback(fixedLink)
-    end)
-end
-
-function FixAboba(tbl, indent)
-    if not tbl then
-        local name, realm = UnitFullName("player")
-        local playerID = name .. "-" .. realm
-        tbl = MPLH_ENC[14][playerID]
-    end
-    indent = indent or 0
-    local spaces = string.rep("  ", indent)
-    local pending = 0  -- Счетчик асинхронных операций
-    
-    for k, v in pairs(tbl) do
-        if type(k) == "string" then
-            local original = k
-            if not IsLinkBroken(original) then break end
-            pending = pending + 1
-
-            FixBrokenLinks(k, function(fixedLink) 
-                if fixedLink then
-                    print(spaces.."Обнаружена поврежденная ссылка:")
-                    print(spaces.."Исходная: "..k)
-                    print(spaces.."Исправленная: "..fixedLink)
-                    
-                    -- Заменяем ключ в таблице
-                    tbl[fixedLink] = tbl[k]
-                    tbl[k] = nil
-                end
-                
-                pending = pending - 1
-                if pending == 0 then 
-                    print("Все ссылки обработаны!")
-                end
-            end)
-        end
-        if type(v) == "table" then
-            pending = pending + 1
-            FixAboba(v, indent + 1, function()
-                pending = pending - 1
-                if pending == 0 then 
-                    print("Все ссылки обработаны!")
-                end
-            end)
-        end
-    end
-    
-    if pending == 0 then 
-        print("Все ссылки обработаны!")
-    end
-end
---FixAboba()
---GetItemIDFromName("Fearless Challenger's Leggings")
---FixAboba(MPLH_ENC[14]["Äboba-Draenor"], 0, function() print("Все ссылки обработаны!") end)
-
-local function isDungeonInCurrentSeason(journalID)
-    local dungeonName = select(6, EJ_GetInstanceInfo(journalID))
-    for k, v in pairs(C_ChallengeMode.GetMapTable()) do
-        local seasonDungeonName = select(4, C_ChallengeMode.GetMapUIInfo(v))
-        print(dungeonName, " ==== ", seasonDungeonName)
-        if dungeonName == seasonDungeonName then
-            print("GOTCHA")
-        end
-    end
-end
-
 
 local function EncounterLooted(encounter, itemLink, quantity, playerID, season)
     if MPLH_ENC[season] == nil then
@@ -477,8 +324,7 @@ local function CalcChance(playerID, instanceID, item, reset, encounterID)
     local function GetWearableForEnc(Enc)
         if Enc then
             local name, _, _, _, _, journalInstanceID, _, _ = EJ_GetEncounterInfo(Enc)
-            EJ_SelectInstance(journalInstanceID) --Usage: EJ_SelectInstance(ID) for 1
-            --EJ_SelectEncounter(Enc)
+            EJ_SelectInstance(journalInstanceID)
             numLoot = EJ_GetNumLoot()
             for i=1, numLoot do
                 local info = C_EncounterJournal.GetLootInfoByIndex(i)
@@ -489,12 +335,9 @@ local function CalcChance(playerID, instanceID, item, reset, encounterID)
         end
     end
     if not encounterID then
-        --if instance not raid, check if boss from Addon.currentSeasonEncounters list
-        
         for k, v in pairs(Addon.currentSeasonEncounters[instanceID]) do
             encounterID = v
             break 
-            --GetWearableForEnc(v)
         end     
     end
 
@@ -532,7 +375,6 @@ local function LootReceivedEvent(itemID, itemLink, quantity, playerID, lootEncou
                 _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["attempts"] = _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["attempts"]
                 _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["chance"] = _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["chances"]
 
-                --reset current attempts of this item
                 _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["attempts"] = 0
                 if isInTraded then
                     _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["traded"] = 1
@@ -551,7 +393,6 @@ local function DetectGreatVault(itemLink)
     local itemID = select(1, GetItemInfoInstant(itemLink))
     local mapID = C_Map.GetBestMapForUnit("player")
     if ((itemType == 2) or (itemType == 4)) and mapID == 2393 and isValueinTable(greatVaultTable, itemID) then
-        print("DetectGreatVault", itemLink)
         local name, realm = UnitFullName("player")
         local fullname = name .. "-" .. realm
         local greatVault = 999999
@@ -613,7 +454,6 @@ local function CopyTable(tbl)
 end
 
 
------------------------------------------------------------         
 local framePool = CreateFramePool("Frame", UIParent, "BackdropTemplate")            
 local fontPool = CreateFontStringPool(UIParent, "OVERLAY", nil, "NumberFontNormal")         
 local itemIconPool = CreateTexturePool(UIParent)           
@@ -632,16 +472,6 @@ local function UpdateItemTable(playerID, dungeonName, content)
     if MPLH_ENC_TABLE[playerID] ~= nil and MPLH_ENC_TABLE[playerID][dungeonName] ~= nil then
         local tbl = {}
         tbl = CopyTable(MPLH_ENC_TABLE[playerID][dungeonName])
-        if showOnlyEquip then
-            local onlyEquip = {}
-            for key,value in pairs(MPLH_ENC_TABLE[playerID][dungeonName]) do
-                local itemType = select(6,GetItemInfoInstant(key))
-                if (itemType == 2) or (itemType == 4) then
-                    onlyEquip[key]=value
-                end
-            end
-            tbl = onlyEquip
-        end
 
         local scrollLenght = GetDungeonTableLenght(tbl) 
         content:SetSize(308,scrollLenght*32);
@@ -735,11 +565,9 @@ local function UpdateItemTable(playerID, dungeonName, content)
                 
             end
         end)        
-    else
-        --print("ERROR LOADING TABLE")
     end
 end
----------------------------------------------------------------------------------------
+
 local EJTracker_HelpPlate = {
 	FramePos = { x = 2, y = 40 },
 	FrameSize = { width = 840, height = 520 },
@@ -775,7 +603,6 @@ local function InstaceIDToMapID(instanceID, encID)
     return mapID
 end
 
----------------------------------------------------------------------------------------
 local EJTrackItemPool = CreateFramePool("Button", UIParent, "UIPanelCloseButtonNoScripts")
 
 local function EJTrackItem()
@@ -784,11 +611,9 @@ local function EJTrackItem()
     local playerID = MPLTLootFrame and MPLTDropDown.defaultText or name .. "-" .. realm
     local isRaid = EncounterJournal_IsRaidTabSelected(EncounterJournal)
 
-    --check if current season selected in dropdown menu and difficulty is mythic+
     if (EJ_GetCurrentTier() ~= EJ_GetNumTiers()) then
         return
     end
-    --check if difficulty set to mythic+ for dungeons
     if (not isRaid) and (EJ_GetDifficulty() ~= 23) then
         return
     end
@@ -871,12 +696,10 @@ local function EJTrackItem()
                     end
                     EncounterJournal_Refresh()
                     scrollBar:SetScrollPercentage(scrollPos)
-                    --scrollBox:ScrollToElementDataIndex(scrollBoxIndex)
                 end)
                 if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][instanceID] and MPLH_TRACKITEM[playerID][instanceID][itemID] then
                     EJTrackItemButton:SetNormalAtlas("runecarving-icon-reagent-empty-error")
                 else
-                    --print("set GREEN icon")
                     EJTrackItemButton:SetNormalAtlas("runecarving-icon-reagent-empty")
                 end
             end
@@ -887,16 +710,11 @@ end
 local function OnDataRangeChanged()
     EJTrackItem()
 end
------------------------------------------------------------
 
 local function CreateTrackedItemList(parent)
     local playerID = MPLTDropDown.defaultText
     MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
 end
-
------------------------------------------------------------
------------------------------------------------------------
------------------------------------------------------------
 
 function StoreCharacterData()
     if UnitLevel("player") < 90 then 
@@ -908,41 +726,6 @@ function StoreCharacterData()
         local playerID = "|c"..classColor..name
 
         local updateDate = date("%d.%m.%y")
-
-        --local fluxAmmount = C_CurrencyInfo.GetCurrencyInfo(2009).quantity --Cosmic Flux
-        --local valorAmmount = C_CurrencyInfo.GetCurrencyInfo(1191).quantity --Valor
-
-        --[[ local runHistory = C_MythicPlus.GetRunHistory(false, false)
-        
-        table.sort(runHistory, function(left, right) return left.level > right.level; end);
-        local lowestLevel;
-        local lowestCount = 0;
-        for i = math.min(2, #runHistory), 1, -1 do
-            local run = runHistory[i];
-            if not lowestLevel then
-                lowestLevel = run.level;
-            end
-            if lowestLevel == run.level then
-                lowestCount = lowestCount + 1;
-            else
-                break;
-            end
-        end
-        print (lowestLevel, lowestCount) ]]
-
---[[         local activities = C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus)
-        table.sort(activities, function(left, right) return left.index < right.index; end)
-        for i, activityInfo in ipairs(activities) do
-            if i == 1 and activityInfo.level > 0 then
-                oneMPlus = activityInfo.level
-            end
-            if i == 2 and activityInfo.level > 0 then
-                fourMPlus = activityInfo.level
-            end
-            if i == 3 and activityInfo.level > 0 then
-                eightMPlus = activityInfo.level
-            end
-        end ]]
 
         local mythicRuns = {}
         C_MythicPlus.RequestMapInfo()
@@ -996,17 +779,13 @@ function StoreCharacterData()
             for index, encounter in ipairs(encounters) do
                 local name, description, encounterID, rootSectionID, link, instanceID = EJ_GetEncounterInfo(encounter.encounterID);
                 if instanceID ~= lastInstanceID then
-                    local instanceName = EJ_GetInstanceInfo(instanceID);
-                    --GameTooltip_AddBlankLineToTooltip(GameTooltip);	
-                    --GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_ENCOUNTER_LIST, instanceName));
-                    lastInstanceID = instanceID;
+            local instanceName = EJ_GetInstanceInfo(instanceID);
+                lastInstanceID = instanceID;
                 end
                 if name then
                     if encounter.bestDifficulty > 0 then
                         local completedDifficultyName = DifficultyUtil.GetDifficultyName(encounter.bestDifficulty);
                         tinsert(raidRuns, {name, completedDifficultyName})
-                        --print(name, completedDifficultyName)
-                        --GameTooltip_AddColoredLine(GameTooltip, string.format(WEEKLY_REWARDS_COMPLETED_ENCOUNTER, name, completedDifficultyName), GREEN_FONT_COLOR);
                     end
                 end
             end
@@ -1045,36 +824,8 @@ function StoreCharacterData()
                 level = inTimeInfo and inTimeInfo.level or overtimeInfo.level
                 dungeonScore = inTimeInfo and inTimeInfo.dungeonScore or overtimeInfo.dungeonScore
             end
-            --local name = C_ChallengeMode.GetMapUIInfo(maps[i])
             tinsert(MPLH_KACDATA[playerID]["keys"], {id=maps[i], level=level, dungeonScore = dungeonScore, inTimeInfo = inTimeInfo, overtimeInfo = overtimeInfo, affixScores = affixScores, overAllScore = overAllScore})
         end
-        --[[ table.sort(MPLH_KACDATA[playerID]["keys"], function(a, b)
-            if(b.dungeonScore ~= a.dungeonScore) then
-                return a.dungeonScore > b.dungeonScore;
-            else
-                return strcmputf8i(a.id, b.id) > 0;
-            end
-	    end) ]]
-
-        --Dinar quests progress
---[[         if select(4, GetBuildInfo()) == 90207 then
-            local dinarQuest = "N/A"
-            local dinarCondition = nil
-            if C_QuestLog.IsOnQuest(66648) then
-                dinarQuest = select(4,GetQuestObjectiveInfo(66648, 1, false))
-                dinarCondition = select(5,GetQuestObjectiveInfo(66648, 1, false))
-                dinarQuest = "stage1 "..dinarQuest.."/"..dinarCondition
-            elseif C_QuestLog.IsOnQuest(66649) then
-                dinarQuest = select(4,GetQuestObjectiveInfo(66649, 1, false))
-                dinarCondition = select(5,GetQuestObjectiveInfo(66649, 1, false))
-                dinarQuest = "stage2 "..dinarQuest.."/"..dinarCondition
-            elseif C_QuestLog.IsOnQuest(66650) then
-                dinarQuest = select(4,GetQuestObjectiveInfo(66649, 1, false))
-                dinarCondition = select(5,GetQuestObjectiveInfo(66650, 1, false))
-                dinarQuest = "stage3 "..dinarQuest.."/"..dinarCondition
-            end
-            MPLH_KACDATA[playerID]["dinarQuest"] = dinarQuest
-        end ]]
 
         MPLH_KACDATA[playerID]["updateDate"] = updateDate
         MPLH_KACDATA[playerID]["oneMPlus"] = oneMPlus
@@ -1098,37 +849,27 @@ function StoreCharacterData()
 
 end
 
------------------------------------------------------------
------------------------------------------------------------
------------------------------------------------------------
-
-
 local function ProcessData(self)
     local name, realm = UnitFullName("player")
     local playerID = name .. "-" .. realm
     if UIConfig == nil then
-        local dungeonName = nil -- default value for dungeon ID Theatre of pain
-            
+        local dungeonName = nil
 
         UIConfig = CreateFrame("Frame", "MPLTLootFrame", UIParent, "ButtonFrameTemplate")
-        _G["UIConfig"] = UIConfig -- adds the frame via the name "UIConfig" to the global variables
-        tinsert(UISpecialFrames, UIConfig:GetName()) -- instead frame:GetName() one could just use "UIConfig"
+        _G["UIConfig"] = UIConfig
+        tinsert(UISpecialFrames, UIConfig:GetName())
         UIConfig:SetSize(800,495)
         UIConfig:SetPoint("CENTER")
         UIConfig:SetMovable(true)
-        UIConfig:EnableMouse(true)--   Receive mouse events (Buttons automatically have this set)
-        UIConfig:RegisterForDrag("LeftButton")--   Register left button for dragging
-        UIConfig:SetScript("OnDragStart",UIConfig.StartMoving)--  Set script for drag start
-        UIConfig:SetScript("OnDragStop",UIConfig.StopMovingOrSizing)--    Set script for drag stop
+        UIConfig:EnableMouse(true)
+        UIConfig:RegisterForDrag("LeftButton")
+        UIConfig:SetScript("OnDragStart",UIConfig.StartMoving)
+        UIConfig:SetScript("OnDragStop",UIConfig.StopMovingOrSizing)
         UIConfig:SetFrameStrata("HIGH")
         MPLTLootFrameInset.Bg:SetAtlas("Dragonflight-Landingpage-Background", true)
         MPLTLootFrameInset.Bg:SetHorizTile(false)
         MPLTLootFrameInset.Bg:SetVertTile(false)
         MPLTLootFrameInset.Bg:SetVertexColor(0.4, 0.4, 0.4)
-
-        --------------------------------------
-        --------------CONTENT 1---------------
-        --------------------------------------
 
         UIConfig.desc = UIConfig:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
         UIConfig.desc:ClearAllPoints()
@@ -1138,7 +879,7 @@ local function ProcessData(self)
         UIConfig.desc:SetText(Addon.localization.version..version.." | Discord: "..author)
 
         MPLTLootFrameTitleText:SetText(Addon.localization.title)
-        MPLTLootFramePortrait:SetTexture("interface/icons/inv_bfa_paragoncache_orderofembers.blp") --Addon icon
+        MPLTLootFramePortrait:SetTexture("interface/icons/inv_bfa_paragoncache_orderofembers.blp")
 
         local showLootShiffButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
         showLootShiffButton:Hide()
@@ -1374,16 +1115,6 @@ local function ProcessEvent(self, event, ...)
         if seasonID and Addon.currentSeason < seasonID then
             Addon.currentSeason = seasonID
         end
---[[         do
-            if not issecretvalue(INVTYPE_WRIST) then
-                if INVTYPE_WRIST == "Wrist" then
-                    INVTYPE_WRIST = "Bracers"
-                end
-                if INVTYPE_WAIST == "Waist" then
-                    INVTYPE_WAIST = "Belt"
-                end
-            end
-        end ]]
     elseif event == "CHAT_MSG_CURRENCY" or event == "CURRENCY_DISPLAY_UPDATE" or event == "PLAYER_EQUIPMENT_CHANGED" then
         StoreCharacterData()  
     elseif event == 'ENCOUNTER_LOOT_RECEIVED' then
@@ -1439,7 +1170,6 @@ local eventHandlerFrame = CreateFrame('Frame')
 eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
 eventHandlerFrame:RegisterEvent('ADDON_LOADED')
 eventHandlerFrame:RegisterEvent('FIRST_FRAME_RENDERED')
-eventHandlerFrame:RegisterEvent('CHAT_MSG_LOOT')
 eventHandlerFrame:RegisterEvent('CHAT_MSG_CURRENCY')
 eventHandlerFrame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 eventHandlerFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
@@ -1448,4 +1178,3 @@ eventHandlerFrame:RegisterEvent('SHOW_LOOT_TOAST')
 eventHandlerFrame:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW')
 eventHandlerFrame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 eventHandlerFrame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
---eventHandlerFrame:RegisterEvent('WEEKLY_REWARDS_SHOW')

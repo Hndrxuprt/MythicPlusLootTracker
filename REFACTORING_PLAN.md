@@ -189,12 +189,13 @@
 
 ## Этап 9. AltManager — XML и бог-функция (высокий риск)
 
-- [ ] `AltManager.xml` (1062 строк): заменить 16 ручных `ItemFrameN` + 8 `DungeonN` (~840 строк) на один `MPLT_AltManagerSlotTemplate` + цикл в Lua (Lua уже обращается по индексу `frame["ItemFrame"..i]`).
-- [ ] Убрать `mixin="MPLT_AltManagerMixin"` с 27 дочерних фреймов (`OnEnter` пустой).
-- [ ] 9-slice бордюр `CharacterFrame` (8 текстур × повтор цвета, `:20-72`) → `NineSlicePanel` или общий шаблон (аналогично `Tracking.xml`).
-- [ ] Разбить `MPLT_AltManagerMixin:InitElements` (202 строки) на хелперы: keystone, dungeons tooltip, ilvl/prog, rio, gear slots — разделить доступ к данным (`MPLH_KACDATA`) и рендеринг.
-- [ ] `OutputLogMixin` (пустой, XML ссылается) — либо оставить пустой глобал, либо убрать ссылку из XML.
-- [ ] `OutputLogTemplate.xml`: удалить мёртвый блок `MPLT_Frame` (`:46-129`, `MPLT_FrameMixin` не определён), profession-flavored дефолты (`PROFESSIONS_*`).
+- [x] `AltManager.xml` (1063 строки → 180): 16 ручных `ItemFrameN` + 8 `DungeonN` (~840 строк) заменены на шаблоны `MPLT_AltManagerSlotTemplate`/`MPLT_AltManagerDungeonSlotTemplate` + циклы создания в Lua (`CreateItemSlotFrames`/`CreateDungeonSlotFrames`, порядок цепочки якорей 1→3→4→9→6→14→5→7→8→2→10→11→12→13→15→16 извлечён скриптом).
+- [x] `mixin="MPLT_AltManagerMixin"` убран со всех дочерних фреймов (пустой `OnEnter` удалён); `OnLeave GameTooltip_Hide` из XML перенесён в Lua (`SetScript("OnLeave", GameTooltip_Hide)`).
+- [x] 9-slice бордюр `CharacterFrame` → шаблон `MPLT_AltManagerBorderTemplate`; повтор цвета убран — `Addon.SetBorderColor` (Helpers).
+- [x] `InitElements` (202 строки) разбит на хелперы: `SetKeystone`, `SetDungeons`, `SetIlvlProg`, `SetRio`, `SetGear`, `SetOrderButtons` + создание слотов; данные (`MPLH_KACDATA[playerID]`) извлекаются один раз и передаются в рендер-хелперы.
+- [x] `OutputLogMixin` (пустой) — ссылка убрана из XML, глобал удалён.
+- [x] `OutputLogTemplate.xml`: удалён мёртвый блок `MPLT_Frame` (`MPLT_FrameMixin` не определён) + `ExtraRowTemplate`/`ExtraIconRowTemplate`/`ExtraIconsRowTemplate` (использовались только им) + profession-flavored дефолты (`PROFESSIONS_CRAFT_OUTPUT_TITLE`, `PROFESSIONS_OUTPUT_INGENUITY`).
+- [x] Мёртвый `eventHandlerFrame` в AltManager.lua (ссылался на несуществующий `ProcessEvent`) удалён.
 
 ## Этап 10. Прочие модули и UI/XML (средний риск)
 
@@ -232,5 +233,5 @@
 - [x] Этап 6 — Разбивка Core.lua на модули
 - [x] Этап 7 — Рефакторинг GlobalConstants.lua
 - [x] Этап 8 — Локализация
-- [ ] Этап 9 — AltManager — XML и бог-функция
+- [x] Этап 9 — AltManager — XML и бог-функция
 - [ ] Этап 10 — Прочие модули и UI/XML

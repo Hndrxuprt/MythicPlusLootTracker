@@ -156,3 +156,10 @@ function Addon.RunOnItemReady(itemLink, callback)
         callback()
     end
 end
+
+function Addon.SetBorderColor(frame, r, g, b, a)
+    local parts = { "TopLeftCorner", "TopRightCorner", "TopBorder", "BottomLeftCorner", "BottomRightCorner", "BottomBorder", "LeftBorder", "RightBorder" }
+    for _, part in ipairs(parts) do
+        frame[part]:SetVertexColor(r, g, b, a)
+    end
+end

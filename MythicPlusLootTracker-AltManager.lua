@@ -1,7 +1,6 @@
 local AddonName, Addon = ...
 
 MPLT_AltManagerMixin = {}
-OutputLogMixin = {}
 
 local AltManagerFrame = CreateFrame("Frame", "MPLTAltManagerFrame", UIParent, "OutputLogTemplate")
 local DataProvider = CreateDataProvider()
@@ -26,24 +25,54 @@ local function IsItemClassSet(itemID)
     return (itemID and tContains(classSetItems, itemID))
 end
 
-function MPLT_AltManagerMixin:OnEnter()
-    
+local ITEM_FRAME_ORDER = { 1, 3, 4, 9, 6, 14, 5, 7, 8, 2, 10, 11, 12, 13, 15, 16 }
+
+local function CreateItemSlotFrames(row)
+    local prevFrame = nil
+    for _, n in ipairs(ITEM_FRAME_ORDER) do
+        local itemFrame = CreateFrame("Frame", nil, row, "MPLT_AltManagerSlotTemplate")
+        itemFrame:SetSize(24, 24)
+        if prevFrame then
+            itemFrame:SetPoint("LEFT", prevFrame, "RIGHT", 3, 0)
+        else
+            itemFrame:SetPoint("BOTTOMLEFT", row.CharacterFrame, "BOTTOMLEFT", 170, 15)
+        end
+        itemFrame["Item"..n] = itemFrame.Slot
+        itemFrame["ItemIcon"..n] = itemFrame.SlotIcon
+        row["ItemFrame"..n] = itemFrame
+        prevFrame = itemFrame
+    end
 end
 
-function MPLT_AltManagerMixin:InitElements(frame, elementData)
-    local playerID = elementData.playerID
-    frame.CharacterFrame.CharName:SetText(elementData.playerID)
-    frame.CharacterFrame.CharName:SetTextScale(0.5)
+local function CreateDungeonSlotFrames(row)
+    for i = 1, Addon.Constants.MAX_KEY_RUNS do
+        local dungeonFrame = CreateFrame("Frame", nil, row, "MPLT_AltManagerDungeonSlotTemplate")
+        dungeonFrame:SetSize(24, 24)
+        if i == 1 then
+            dungeonFrame:SetPoint("TOP", row.CharacterFrame, "TOP", 31, -11)
+        else
+            dungeonFrame:SetPoint("LEFT", row["Dungeon"..(i-1)], "RIGHT", 3, 0)
+        end
+        dungeonFrame["DungeonIcon"..i] = dungeonFrame.SlotIcon
+        dungeonFrame.DungeonLvl = dungeonFrame.SlotLvl
+        row["Dungeon"..i] = dungeonFrame
+    end
+end
+
+local function SetKeystone(frame, data)
     local keyName = nil
-    if tonumber(MPLH_KACDATA[playerID]["currentKeystone"]) then
-        local name = select(1,C_ChallengeMode.GetMapUIInfo(MPLH_KACDATA[playerID]["currentKeystone"]))
-        keyName = name..Addon.Constants.Color.AltGray.." ("..MPLH_KACDATA[playerID]["currentKeystoneLvl"]..")"
+    if tonumber(data.currentKeystone) then
+        local name = select(1,C_ChallengeMode.GetMapUIInfo(data.currentKeystone))
+        keyName = name..Addon.Constants.Color.AltGray.." ("..data.currentKeystoneLvl..")"
     else
         keyName = Addon.localization.noKeystone
     end
     frame.CharacterFrame.CharKeystone:SetText(keyName)
     frame.CharacterFrame.CharKeystone:SetTextScale(1.2)
-    local mapInfo = MPLH_KACDATA[playerID]["keys"]
+end
+
+local function SetDungeons(frame, data)
+    local mapInfo = data.keys
     for i=1, Addon.Constants.MAX_KEY_RUNS do
         if (not mapInfo) or (not mapInfo[i]) then
             frame["Dungeon"..i]["DungeonIcon"..i]:SetAlpha(0)
@@ -51,6 +80,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
                 GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
                 GameTooltip:Hide()
             end)
+            frame["Dungeon"..i]:SetScript("OnLeave", GameTooltip_Hide)
         else
             local _, _, _, texture = C_ChallengeMode.GetMapUIInfo(mapInfo[i].id)
             if (texture == 0) then
@@ -115,38 +145,46 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
 
                 GameTooltip:Show()
             end)
+            frame["Dungeon"..i]:SetScript("OnLeave", GameTooltip_Hide)
         end
     end
-    frame.CharacterFrame.CharIlvl:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["ilvl"]).." "..Addon.Constants.Color.AltDim..Addon.localization.ilvl)
+end
+
+local function SetIlvlProg(frame, data)
+    frame.CharacterFrame.CharIlvl:SetText(Addon.Constants.Color.AltGray..tostring(data.ilvl).." "..Addon.Constants.Color.AltDim..Addon.localization.ilvl)
     frame.CharacterFrame.CharIlvl:SetTextScale(1.2)
-    frame.CharProg.CharProg:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["oneMPlus"].." / "..MPLH_KACDATA[playerID]["fourMPlus"].." / "..MPLH_KACDATA[playerID]["eightMPlus"]))
+    frame.CharProg.CharProg:SetText(Addon.Constants.Color.AltGray..tostring(data.oneMPlus.." / "..data.fourMPlus.." / "..data.eightMPlus))
     frame.CharProg.CharProg:SetTextScale(1.2)
     frame.CharProg:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
-        if next(MPLH_KACDATA[playerID]["mythicRuns"]) then
-            GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_MYTHIC_TOP_RUNS, #MPLH_KACDATA[playerID]["mythicRuns"]))
-            for i = 1, #MPLH_KACDATA[playerID]["mythicRuns"] do
-                local runInfo = MPLH_KACDATA[playerID]["mythicRuns"][i]
+        if next(data.mythicRuns) then
+            GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_MYTHIC_TOP_RUNS, #data.mythicRuns))
+            for i = 1, #data.mythicRuns do
+                local runInfo = data.mythicRuns[i]
                 local name = C_ChallengeMode.GetMapUIInfo(runInfo.mapChallengeModeID)
                 local colour = ((i == 1) or (i == 4) or (i == 8)) and GREEN_FONT_COLOR or WHITE_FONT_COLOR
                 GameTooltip_AddColoredLine(GameTooltip, string.format(WEEKLY_REWARDS_MYTHIC_RUN_INFO, runInfo.level, name), colour)
             end
             GameTooltip_AddBlankLineToTooltip(GameTooltip)
         end
-        if next(MPLH_KACDATA[playerID]["raidRuns"]) then
+        if next(data.raidRuns) then
             local suggestions = C_AdventureJournal.GetSuggestions()
             local raidSuggestion = suggestions[3]
             local raidEJID = raidSuggestion.ej_instanceID
 
             local instanceName = EJ_GetInstanceInfo(raidEJID) --Undermine
             GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_ENCOUNTER_LIST, instanceName))
-            for i = 1, #MPLH_KACDATA[playerID]["raidRuns"] do
-                GameTooltip_AddColoredLine(GameTooltip, string.format(WEEKLY_REWARDS_COMPLETED_ENCOUNTER, MPLH_KACDATA[playerID]["raidRuns"][i][1], MPLH_KACDATA[playerID]["raidRuns"][i][2]), GREEN_FONT_COLOR)
+            for i = 1, #data.raidRuns do
+                GameTooltip_AddColoredLine(GameTooltip, string.format(WEEKLY_REWARDS_COMPLETED_ENCOUNTER, data.raidRuns[i][1], data.raidRuns[i][2]), GREEN_FONT_COLOR)
             end
         end
         GameTooltip:Show()
     end)
-    local rio = MPLH_KACDATA[playerID]["rio"]
+    frame.CharProg:SetScript("OnLeave", GameTooltip_Hide)
+end
+
+local function SetRio(frame, data)
+    local rio = data.rio
     frame.CharRio.CharRio:SetText(rio and rio.." "..Addon.Constants.Color.AltDim..Addon.localization.rio or Addon.localization.noRIO)
     frame.CharRio.CharRio:SetTextColor(0.5, 0.5, 0.5)
     if rio then
@@ -154,17 +192,22 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         frame.CharRio.CharRio:SetTextColor(color.r, color.g, color.b)
     end
     frame.CharRio.CharRio:SetTextScale(1.2)
-    if MPLH_KACDATA[playerID]["gear"] then
+    frame.CharRio:SetScript("OnLeave", GameTooltip_Hide)
+end
+
+local function SetGear(frame, data)
+    if data.gear then
         for i=1, 16 do
-            if not MPLH_KACDATA[playerID]["gear"][i] then
+            if not data.gear[i] then
                 frame["ItemFrame"..i]["ItemIcon"..i]:SetAlpha(0)
                 frame["ItemFrame"..i]:SetScript("OnEnter", function(self)
                     GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
                     GameTooltip:Hide()
                 end)
+                frame["ItemFrame"..i]:SetScript("OnLeave", GameTooltip_Hide)
             else
                 frame["ItemFrame"..i]["ItemIcon"..i]:SetAlpha(1)
-                local itemID = GetItemInfoInstant(MPLH_KACDATA[playerID]["gear"][i])
+                local itemID = GetItemInfoInstant(data.gear[i])
                 local itemIcon = GetItemIcon(itemID)
                 if (i==1 or i==3 or i==4 or i==9 or i==6) then
                     if not IsItemClassSet(itemID) then
@@ -176,15 +219,16 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
                 frame["ItemFrame"..i]["ItemIcon"..i]:SetTexture(itemIcon)
                 frame["ItemFrame"..i]:SetScript("OnEnter", function(self)
                     GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
-                    GameTooltip:SetHyperlink(MPLH_KACDATA[playerID]["gear"][i])
+                    GameTooltip:SetHyperlink(data.gear[i])
                     GameTooltip:Show()
                 end)
+                frame["ItemFrame"..i]:SetScript("OnLeave", GameTooltip_Hide)
             end
         end
     end
+end
 
-    frame.CharacterFrame:SetSize(600, 84)
-    frame.CharacterFrame:Show()
+local function SetOrderButtons(frame, playerID, elementData)
     local index = DataProvider:FindIndex(elementData)
     frame.UpButton:SetScript("OnClick", function(self)
         local tmp = nil
@@ -229,6 +273,30 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     end
 end
 
+function MPLT_AltManagerMixin:InitElements(frame, elementData)
+    local playerID = elementData.playerID
+    local data = MPLH_KACDATA[playerID]
+
+    if not frame.slotsCreated then
+        CreateItemSlotFrames(frame)
+        CreateDungeonSlotFrames(frame)
+        frame.slotsCreated = true
+    end
+
+    frame.CharacterFrame.CharName:SetText(playerID)
+    frame.CharacterFrame.CharName:SetTextScale(0.5)
+    Addon.SetBorderColor(frame.CharacterFrame, 0.38, 0.5, 1, 1)
+    frame.CharacterFrame:SetSize(600, 84)
+    frame.CharacterFrame:Show()
+
+    SetKeystone(frame, data)
+    SetDungeons(frame, data)
+    SetIlvlProg(frame, data)
+    SetRio(frame, data)
+    SetGear(frame, data)
+    SetOrderButtons(frame, playerID, elementData)
+end
+
 function MPLT_AltManagerMixin:PrepareAltManager()
     local scrollPos = AltManagerFrame.ScrollBar:GetScrollPercentage()
     DataProvider:Flush()
@@ -242,11 +310,8 @@ function MPLT_AltManagerMixin:PrepareAltManager()
     AltManagerFrame.ScrollBox:SetInterpolateScroll(true)
     AltManagerFrame.ScrollBar:SetInterpolateScroll(true)
     AltManagerFrame.ScrollBox:SetPanExtent(60)
-    local children = {}
     for i = 1, #MPLH_ORDER do
-        local playerID = MPLH_ORDER[i]
-        children[playerID] = {}
-        DataProvider:Insert({playerID = playerID})
+        DataProvider:Insert({playerID = MPLH_ORDER[i]})
     end
     AltManagerFrame.ScrollBox:SetDataProvider(DataProvider)
     AltManagerFrame.ScrollBar:SetScrollPercentage(scrollPos, true)
@@ -264,7 +329,3 @@ function MPLT_AltManagerMixin:PrepareAltManager()
     AltManagerFrame.ScrollBox.Shadows:Hide()
     AltManagerFrame:SetAlpha(1)
 end
-
-local eventHandlerFrame = CreateFrame('Frame')
-eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
-eventHandlerFrame:RegisterEvent('FIRST_FRAME_RENDERED')

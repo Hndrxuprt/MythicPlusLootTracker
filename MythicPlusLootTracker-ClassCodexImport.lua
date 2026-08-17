@@ -38,9 +38,9 @@ local function SetItemSource(type)
     if type == "Raid" then
         tbl = Addon.RaidEJInstanceID
     elseif type == "Mythic+" then
-        tbl = Addon.MapIDToEJInstaceID
+        tbl = Addon.MapIDToEJInstanceID
     elseif type == "Overall" then
-        tbl = CopyTable(Addon.MapIDToEJInstaceID)
+        tbl = CopyTable(Addon.MapIDToEJInstanceID)
         MergeTable(tbl, Addon.RaidEJInstanceID)
     end
     if not tbl or not next(tbl) then
@@ -111,10 +111,10 @@ local function TrackItem()
                     if MPLH_TRACKITEM_ORDER[playerID] == nil then
                         MPLH_TRACKITEM_ORDER[playerID] = {}
                     end
-                    if not tContains(_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][data.source], data.itemID) then
+                    if not tContains(MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source], data.itemID) then
                         tinsert(MPLH_TRACKEDITEM_ITEMORDER[playerID][data.source], data.itemID)
                     end
-                    if not tContains(_G["MPLH_TRACKITEM_ORDER"][playerID], data.source) then
+                    if not tContains(MPLH_TRACKITEM_ORDER[playerID], data.source) then
                         tinsert(MPLH_TRACKITEM_ORDER[playerID], data.source)
                     end
                 end
@@ -159,21 +159,21 @@ local function ProcessEvent(self, event, ...)
         if EJ_GetCurrentTier() ~= lastTier then
             EJ_SelectTier(lastTier)
         end
-        if not next(Addon.MapIDToEJInstaceID) then
+        if not next(Addon.MapIDToEJInstanceID) then
             for i=1, 8 do
                 local dungeonInstanceID = EJ_GetInstanceByIndex(i, false)
                 if dungeonInstanceID then
-                    local mapID = Addon.EJInstaceIDToMapID[dungeonInstanceID]
+                    local mapID = Addon.EJInstanceIDToMapID[dungeonInstanceID]
                     if mapID then
-                        Addon.MapIDToEJInstaceID[mapID] = dungeonInstanceID
+                        Addon.MapIDToEJInstanceID[mapID] = dungeonInstanceID
                     end
                 end
             end
         end
         if not next(Addon.RaidEJInstanceID) then
             for i=1, 4 do
-                local riadInstanceID = EJ_GetInstanceByIndex(i, true)
-                Addon.RaidEJInstanceID[i] = riadInstanceID
+                local raidInstanceID = EJ_GetInstanceByIndex(i, true)
+                Addon.RaidEJInstanceID[i] = raidInstanceID
             end
         end
 

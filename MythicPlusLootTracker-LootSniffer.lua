@@ -143,7 +143,7 @@ function IsItemEquippable(itemLink)
     local _, _, _, _, role, primaryStat, _, _, _, _ = GetSpecializationInfo(GetSpecialization())
     local playerPreferredArmor = CLASS_ARMOR[UnitClassBase("player")]
 
-    local function IsEquppable(itemLink)
+    local function IsEquippable(itemLink)
         local itemName, itemLink, _, _, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _,classID, subclassID, _, _, _, _ = C_Item.GetItemInfo(itemLink)
 
         if itemEquipLoc == 'INVTYPE_CLOAK' or itemEquipLoc == 'INVTYPE_FINGER' or itemEquipLoc == 'INVTYPE_NECK' then
@@ -192,10 +192,10 @@ function IsItemEquippable(itemLink)
     if not C_Item.IsItemDataCachedByID(itemLink) then
         local item = Item:CreateFromItemLink(itemLink)
         item:ContinueOnItemLoad(function()
-            return IsEquppable(itemLink)
+            return IsEquippable(itemLink)
         end)
     else
-        return IsEquppable(itemLink)
+        return IsEquippable(itemLink)
     end
 end
 

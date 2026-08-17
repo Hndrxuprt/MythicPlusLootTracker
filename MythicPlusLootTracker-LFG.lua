@@ -40,7 +40,7 @@ local function PrepareNumItems(parentFrame)
         local playerID = name .. "-" .. realm
         local text = 0
         if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][mapID] then
-            text = GetDungeonTableLenght(MPLH_TRACKITEM[playerID][mapID])
+            text = GetTableLength(MPLH_TRACKITEM[playerID][mapID])
         end
 
         local dataParent = select(2,parentFrame.DataDisplay:GetPoint())

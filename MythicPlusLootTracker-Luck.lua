@@ -1,5 +1,4 @@
 local AddonName, Addon = ...
-local seasonID = Addon.currentSeason
 
 MythicPlusLootTrackerLuckElementMixin = {}
 
@@ -64,8 +63,8 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
     lootFrame.ScrollBox:SetInterpolateScroll(true)
     lootFrame.ScrollBar:SetInterpolateScroll(true)
     local function GetData(dungeonID)
-        if MPLH_ENC[seasonID][playerID] and MPLH_ENC[seasonID][playerID][dungeonID] then
-            for itemLink, amount in pairs(MPLH_ENC[seasonID][playerID][dungeonID]) do
+        if MPLH_ENC[Addon.currentSeason][playerID] and MPLH_ENC[Addon.currentSeason][playerID][dungeonID] then
+            for itemLink, amount in pairs(MPLH_ENC[Addon.currentSeason][playerID][dungeonID]) do
                 local itemType = select(6,GetItemInfoInstant(itemLink))
                     if (itemType == 2) or (itemType == 4) then
                         LootDataProvider:Insert({itemLink = itemLink, amount = amount})
@@ -76,8 +75,8 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
     if dungeonID ~= 888888 then
         GetData(dungeonID)
     else
-        if MPLH_ENC[seasonID] and MPLH_ENC[seasonID][playerID] then
-            for dungeonID, _v in pairs(MPLH_ENC[seasonID][playerID]) do
+        if MPLH_ENC[Addon.currentSeason] and MPLH_ENC[Addon.currentSeason][playerID] then
+            for dungeonID, _v in pairs(MPLH_ENC[Addon.currentSeason][playerID]) do
                 GetData(dungeonID)
             end
         end
@@ -140,12 +139,12 @@ function PrepareEncounterList(playerID)
         end
     end)
 
-    if MPLH_ENC_ENDED and MPLH_ENC_ENDED[seasonID][playerID] then
+    if MPLH_ENC_ENDED and MPLH_ENC_ENDED[Addon.currentSeason][playerID] then
         local overall = 0
         local overallFortune = 0
         local overallLoot = 0
-        for encounterID, runs in pairs(MPLH_ENC_ENDED[seasonID][playerID]) do
-            local fortune, numLoot = CalcFortune(playerID, encounterID, seasonID)
+        for encounterID, runs in pairs(MPLH_ENC_ENDED[Addon.currentSeason][playerID]) do
+            local fortune, numLoot = CalcFortune(playerID, encounterID, Addon.currentSeason)
             DataProvider:Insert({encounterID = encounterID, runs = runs, fortune = fortune})
             overall = overall + runs
             overallLoot = overallLoot + numLoot

@@ -4,8 +4,6 @@ local UIConfig = nil
 
 local greatVaultTable = {}
 
-local seasonID = Addon.currentSeason
-
 MPLTCoreMixin = {}
 
 local function AddonLoadedEvent(self, event, Name, ...)
@@ -55,29 +53,19 @@ local function isValueinTable(table, searchValue)
     return false
 end
 
-local function isKeyInTable(table, searchValue)
-    for key,value in pairs(table) do 
-        if(key == searchValue) then 
-            return true, key
-        end
-    end
-    return false
-end
-
-
 local function SplitItemLink(itemLink)
     local s1, s2 = nil, nil
     s1, s2 = strsplit("~", itemLink, 2)
     return s1, s2
 end
 
-function GetDungeonTableLenght(table)
-    local tableLenght = 0
+function GetTableLength(table)
+    local tableLength = 0
     if table ~= nil then
         for k,v in pairs(table) do
-            tableLenght = tableLenght + 1
+            tableLength = tableLength + 1
         end
-        return tableLenght
+        return tableLength
     end
 end
 
@@ -249,31 +237,31 @@ local function CalcDungeonStat(instanceID)
     end
     local name, realm = UnitFullName("player")
     local playerID = name .. "-" .. realm
-    if MPLH_ENC_ENDED[seasonID][playerID] == nil then
-        MPLH_ENC_ENDED[seasonID][playerID] = {}
+    if MPLH_ENC_ENDED[Addon.currentSeason][playerID] == nil then
+        MPLH_ENC_ENDED[Addon.currentSeason][playerID] = {}
     end
     if instanceID == 999999 then
-        if MPLH_ENC_ENDED[seasonID][playerID][instanceID] == nil then
-            MPLH_ENC_ENDED[seasonID][playerID][instanceID] = 1
+        if MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] == nil then
+            MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = 1
         else
-            MPLH_ENC_ENDED[seasonID][playerID][instanceID] = MPLH_ENC_ENDED[seasonID][playerID][instanceID] + 1
+            MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] + 1
         end
-        if _G["MPLH_TRACKITEM"][playerID] then
-            for dung, items in pairs(_G["MPLH_TRACKITEM"][playerID]) do
+        if MPLH_TRACKITEM[playerID] then
+            for dung, items in pairs(MPLH_TRACKITEM[playerID]) do
                 for key, value in pairs(items) do
                     MPLH_TRACKITEM[playerID][dung][key]["attempts"] = MPLH_TRACKITEM[playerID][dung][key]["attempts"]+1
                 end
             end
         end
     elseif instanceID ~= nil and instanceID ~= 999999 then
-        if MPLH_ENC_ENDED[seasonID][playerID][instanceID] == nil then
-            MPLH_ENC_ENDED[seasonID][playerID][instanceID] = 1
+        if MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] == nil then
+            MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = 1
         else
-            MPLH_ENC_ENDED[seasonID][playerID][instanceID] = MPLH_ENC_ENDED[seasonID][playerID][instanceID] + 1
+            MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] + 1
         end
 
-        if _G["MPLH_TRACKITEM"][playerID] and _G["MPLH_TRACKITEM"][playerID][instanceID] then
-            for k, v in pairs(_G["MPLH_TRACKITEM"][playerID][instanceID]) do
+        if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][instanceID] then
+            for k, v in pairs(MPLH_TRACKITEM[playerID][instanceID]) do
                 MPLH_TRACKITEM[playerID][instanceID][k]["attempts"] = MPLH_TRACKITEM[playerID][instanceID][k]["attempts"]+1
             end
         end
@@ -284,11 +272,11 @@ end
 
 function CalcFortune(playerID, instanceID, seasonID)
     local fortune, pFortune, nFortune = 0,0,0
-    local MPLH_TABLE = _G["MPLH_ENC"]
-    local MPLH_ENDED_TABLE = _G["MPLH_ENC_ENDED"]
+    local MPLH_TABLE = MPLH_ENC
+    local MPLH_ENDED_TABLE = MPLH_ENC_ENDED
     if MPLH_TABLE[seasonID] and MPLH_TABLE[seasonID][playerID] and MPLH_TABLE[seasonID][playerID][instanceID] then
-        if GetDungeonTableLenght(MPLH_TABLE[seasonID][playerID][instanceID]) > 0 then
-            for k, v in pairs(MPLH_ENC[seasonID][playerID][instanceID]) do
+        if GetTableLength(MPLH_TABLE[seasonID][playerID][instanceID]) > 0 then
+            for k, v in pairs(MPLH_ENC[Addon.currentSeason][playerID][instanceID]) do
                 local itemType = select(6,GetItemInfoInstant(k))
                 local isTraded = select(1,strsplit("~",k))
                 if isTraded ~= "traded" and ((itemType == 2) or (itemType == 4)) then
@@ -310,7 +298,7 @@ end
 
 local function CalcChance(playerID, instanceID, item, reset, encounterID)
     local lootChance = 0
-    local attempts = _G["MPLH_TRACKITEM"][playerID][instanceID][item]["attempts"]
+    local attempts = MPLH_TRACKITEM[playerID][instanceID][item]["attempts"]
     local spec = GetSpecialization()
     local specID = GetSpecializationInfo(spec)
     local _,_,classID = UnitClass("player")
@@ -349,8 +337,8 @@ local function CalcChance(playerID, instanceID, item, reset, encounterID)
             lootChance = string.format("%.2f", (((1/wearableItems) * 0.40)*(attempts+1)*100))
         end
     end
-    if _G["MPLH_TRACKITEM"][playerID][instanceID][item]["chances"] == 0 then
-        _G["MPLH_TRACKITEM"][playerID][instanceID][item]["chances"] = lootChance
+    if MPLH_TRACKITEM[playerID][instanceID][item]["chances"] == 0 then
+        MPLH_TRACKITEM[playerID][instanceID][item]["chances"] = lootChance
     end
 end
 
@@ -367,16 +355,16 @@ local function LootReceivedEvent(itemID, itemLink, quantity, playerID, lootEncou
             table.remove(tradedItems, pos)
             newLink = "traded~"..newLink
         end
-        if _G["MPLH_TRACKITEM"][playerID] and _G["MPLH_TRACKITEM"][playerID][instanceID] and _G["MPLH_TRACKITEM"][playerID][instanceID][itemID] then
-            if _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"] and _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["done"] == 0 then
-                _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["done"] = 1
-                _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["date"] = date("%d.%m.%y")
-                _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["attempts"] = _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["attempts"]
-                _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["chance"] = _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["chances"]
+        if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][instanceID] and MPLH_TRACKITEM[playerID][instanceID][itemID] then
+            if MPLH_TRACKITEM[playerID][instanceID][itemID]["done"] and MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["done"] == 0 then
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["done"] = 1
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["date"] = date("%d.%m.%y")
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["attempts"] = MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"]
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["chance"] = MPLH_TRACKITEM[playerID][instanceID][itemID]["chances"]
 
-                _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["attempts"] = 0
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"] = 0
                 if isInTraded then
-                    _G["MPLH_TRACKITEM"][playerID][instanceID][itemID]["done"]["traded"] = 1
+                    MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["traded"] = 1
                 end
             end
             CalcChance(playerID, instanceID, itemID, reset)
@@ -467,13 +455,13 @@ local function UpdateItemTable(playerID, dungeonName, content)
     itemIconPool:ReleaseAll()
     ilvlPool:ReleaseAll()
     
-    local MPLH_ENC_TABLE = _G["MPLH_ENC"][seasonID]
+    local MPLH_ENC_TABLE = MPLH_ENC[Addon.currentSeason]
     if MPLH_ENC_TABLE[playerID] ~= nil and MPLH_ENC_TABLE[playerID][dungeonName] ~= nil then
         local tbl = {}
         tbl = CopyTable(MPLH_ENC_TABLE[playerID][dungeonName])
 
-        local scrollLenght = GetDungeonTableLenght(tbl) 
-        content:SetSize(308,scrollLenght*32);
+        local scrollLength = GetTableLength(tbl) 
+        content:SetSize(308,scrollLength*32);
 
         local sortedTable = Addon.sortTable(tbl)
 
@@ -588,7 +576,7 @@ function MPLTCoreMixin:OnHide()
         HelpPlate.Hide(false)
     end   
 end
-local function InstaceIDToMapID(instanceID, encID)
+local function InstanceIDToMapID(instanceID, encID)
     local mapID = instanceID
     if instanceID == 1194 then --current megadungeon JournalInstanceID
         for k, v in pairs(Addon.currentSeasonEncounters) do
@@ -596,8 +584,8 @@ local function InstaceIDToMapID(instanceID, encID)
                 mapID = k
             end
         end
-    elseif instanceID and Addon.EJInstaceIDToMapID[instanceID] then
-        mapID = Addon.EJInstaceIDToMapID[instanceID]
+    elseif instanceID and Addon.EJInstanceIDToMapID[instanceID] then
+        mapID = Addon.EJInstanceIDToMapID[instanceID]
     end
     return mapID
 end
@@ -628,7 +616,7 @@ local function EJTrackItem()
             local itemInfo = C_EncounterJournal.GetLootInfoByIndex(index)
             local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = GetItemInfoInstant(button.link)
             local mplusEncounters = C_ChallengeMode.GetMapTable()
-            local instanceID = isRaid and EncounterJournal.instanceID or InstaceIDToMapID(EncounterJournal.instanceID, itemInfo.encounterID)
+            local instanceID = isRaid and EncounterJournal.instanceID or InstanceIDToMapID(EncounterJournal.instanceID, itemInfo.encounterID)
             if button:IsVisible() and LinkUtil.IsLinkType(button.link, "item") then
                 local EJTrackItemButton = EJTrackItemPool:Acquire()
                 EJTrackItemButton:SetParent(MPLT_ButtonHolder)
@@ -640,7 +628,7 @@ local function EJTrackItem()
                 EJTrackItemButton:SetScript("OnClick", function()
                     local scrollPos = scrollBar:GetScrollPercentage()
                     if MPLH_TRACKITEM[playerID] and MPLH_TRACKITEM[playerID][instanceID] and MPLH_TRACKITEM[playerID][instanceID][itemID] then
-                        if #_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][instanceID] > 1 then
+                        if #MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID] > 1 then
                             tDeleteItem(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID)
                             MPLH_TRACKITEM[playerID][instanceID][itemID] = nil
                         else
@@ -658,7 +646,7 @@ local function EJTrackItem()
                                 MPLH_TRACKITEM[playerID][instanceID] = {}
                             end
                             itemID = tonumber(itemID)
-                            if not isKeyInTable(MPLH_TRACKITEM[playerID][instanceID], itemID) then
+                            if not MPLH_TRACKITEM[playerID][instanceID][itemID] then
                                 MPLH_TRACKITEM[playerID][instanceID][itemID] = {}
                                 MPLH_TRACKITEM[playerID][instanceID][itemID]["dateSince"] = date("%d.%m.%y")
                                 MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"] = 0
@@ -679,10 +667,10 @@ local function EJTrackItem()
                                 if MPLH_TRACKITEM_ORDER[playerID] == nil then
                                     MPLH_TRACKITEM_ORDER[playerID] = {}
                                 end
-                                if not isValueinTable(_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][instanceID], itemID) then
+                                if not isValueinTable(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID) then
                                     tinsert(MPLH_TRACKEDITEM_ITEMORDER[playerID][instanceID], itemID)
                                 end
-                                if not isValueinTable(_G["MPLH_TRACKITEM_ORDER"][playerID], instanceID) then
+                                if not isValueinTable(MPLH_TRACKITEM_ORDER[playerID], instanceID) then
                                     tinsert(MPLH_TRACKITEM_ORDER[playerID], instanceID)
                                 end
                                 CalcChance(playerID, instanceID, itemID, false, itemInfo.encounterID)
@@ -880,21 +868,21 @@ local function ProcessData(self)
         MPLTLootFrameTitleText:SetText(Addon.localization.title)
         MPLTLootFramePortrait:SetTexture("interface/icons/inv_bfa_paragoncache_orderofembers.blp")
 
-        local showLootShiffButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
-        showLootShiffButton:Hide()
-        showLootShiffButton:SetParent(MPLTLootFrame)
-        showLootShiffButton:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 70, -30)
-        showLootShiffButton:SetSize(100, 25)
-        showLootShiffButton:SetText(Addon.localization.snifferTitle)
-        showLootShiffButton:Show()
-        showLootShiffButton:SetScript("OnClick", function()
+        local showLootSnifferButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
+        showLootSnifferButton:Hide()
+        showLootSnifferButton:SetParent(MPLTLootFrame)
+        showLootSnifferButton:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 70, -30)
+        showLootSnifferButton:SetSize(100, 25)
+        showLootSnifferButton:SetText(Addon.localization.snifferTitle)
+        showLootSnifferButton:Show()
+        showLootSnifferButton:SetScript("OnClick", function()
             MPLT_LootSnifferMixin:Init()
         end)
 
         local showRollButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
         showRollButton:Hide()
         showRollButton:SetParent(MPLTLootFrame)
-        showRollButton:SetPoint("LEFT", showLootShiffButton, "RIGHT", 4, 0)
+        showRollButton:SetPoint("LEFT", showLootSnifferButton, "RIGHT", 4, 0)
         showRollButton:SetSize(100, 25)
         showRollButton:SetText(Addon.localization.rollButton)
         showRollButton:Show()
@@ -972,7 +960,7 @@ local function ProcessData(self)
             local function SetSelected(player)
                 UIConfig.dropDownChars:SetDefaultText(player)
                 UIConfig.dropDownChars.character = player
-                fortune = CalcFortune(player, dungeonName, seasonID)
+                fortune = CalcFortune(player, dungeonName, Addon.currentSeason)
 
                 local tabID = PanelTemplates_GetSelectedTab(MPLTLootFrame)
                 if tabID == 1 then
@@ -984,7 +972,7 @@ local function ProcessData(self)
                 MPLT_UpdateSubFrames()
             end
             
-            for k, v in pairs(MPLH_ENC[seasonID]) do
+            for k, v in pairs(MPLH_ENC[Addon.currentSeason]) do
                 rootDescription:CreateRadio(k, IsSelected, SetSelected, k)
             end
         end)
@@ -993,7 +981,7 @@ local function ProcessData(self)
         UIConfig.dropDownSeason:SetDefaultText(Addon.localization.season[Addon.currentSeason])
         UIConfig.dropDownSeason:SetPoint("RIGHT", MPLTLootFrameTitleText, "RIGHT", -215, -35)
         UIConfig.dropDownSeason:SetWidth(130)
-        UIConfig.dropDownSeason.seasonID = seasonID
+        UIConfig.dropDownSeason.seasonID = Addon.currentSeason
         UIConfig.dropDownSeason:SetupMenu(function(dropdown, rootDescription)
             rootDescription:CreateTitle("Seasons")
 
@@ -1004,7 +992,7 @@ local function ProcessData(self)
             local function SetSelected(season)
                 UIConfig.dropDownSeason:SetDefaultText(season)
                 UIConfig.dropDownSeason.seasonID = season
-                seasonID = season
+                Addon.currentSeason = season
 
                 local tabID = PanelTemplates_GetSelectedTab(MPLTLootFrame)
                 if tabID == 1 then
@@ -1110,9 +1098,9 @@ local function ProcessEvent(self, event, ...)
             StoreCharacterData()      
         end)
         C_MythicPlus.RequestMapInfo()
-        local seasonID = C_MythicPlus.GetCurrentSeason()
-        if seasonID and Addon.currentSeason < seasonID then
-            Addon.currentSeason = seasonID
+        local currentSeason = C_MythicPlus.GetCurrentSeason()
+        if currentSeason and Addon.currentSeason < currentSeason then
+            Addon.currentSeason = currentSeason
         end
     elseif event == "CHAT_MSG_CURRENCY" or event == "CURRENCY_DISPLAY_UPDATE" or event == "PLAYER_EQUIPMENT_CHANGED" then
         StoreCharacterData()  
@@ -1160,9 +1148,7 @@ end
 SLASH_MPLHCOMMAND1 = "/mplh"
 
 SlashCmdList["MPLHCOMMAND"] = function()
-    print("seasonID: ", seasonID)
     print("currentSeason: ", Addon.currentSeason)
-
 end
 
 local eventHandlerFrame = CreateFrame('Frame')

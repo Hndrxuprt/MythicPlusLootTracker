@@ -416,7 +416,7 @@ Addon.currentSeasonEncounters = {
 --JournalInstanceID from https://wago.tools/db2/JournalEncounter?page=1
 --MapID is ID from https://wago.tools/db2/MapChallengeMode?page=1
 --currentSeason dungeonMaps - C_ChallengeMode.GetMapTable()
-Addon.EJInstaceIDToMapID = {
+Addon.EJInstanceIDToMapID = {
 
     -----Lich King Encounters-----
     [278] = 556, --Pit of Saron
@@ -501,7 +501,7 @@ Addon.EJInstaceIDToMapID = {
     
 }
 
-Addon.MapIDToEJInstaceID = {}
+Addon.MapIDToEJInstanceID = {}
 
 
 Addon.RaidEJInstanceID ={}

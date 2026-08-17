@@ -73,13 +73,13 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
     TrackingFrame.ScrollBar:SetInterpolateScroll(true)
     TrackingFrame.ScrollBox:SetPanExtent(60)
     if MPLH_TRACKITEM_ORDER[playerID] then
-        for i = 1, #_G["MPLH_TRACKITEM_ORDER"][playerID] do
-            local encounterID = _G["MPLH_TRACKITEM_ORDER"][playerID][i]
+        for i = 1, #MPLH_TRACKITEM_ORDER[playerID] do
+            local encounterID = MPLH_TRACKITEM_ORDER[playerID][i]
             local children = {}
-            for n = 1, #_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][encounterID] do
+            for n = 1, #MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID] do
                 local itemElementFrame = CreateFrame("Frame", "ItemElementFrame".."_"..encounterID, nil, "MPLT_TrackingItemElementTemplate")
                 itemElementFrame:Show()
-                local itemID = _G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][encounterID][n]
+                local itemID = MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID][n]
                 local item = Item:CreateFromItemID(itemID)
                 item:ContinueOnItemLoad(function()
                     local itemLink = select(1,RecreateItemLink(item:GetItemLink()))
@@ -94,19 +94,19 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                             GameTooltip:Show()
                         end
                     )
-                    local dateSince = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["dateSince"]
-                    local attempts = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["attempts"]
-                    local chances = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["chances"]
-                    local doneDate = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["done"]["date"]
-                    local doneChance = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["done"]["chance"]
-                    local doneAttempts = _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["done"]["attempts"]
+                    local dateSince = MPLH_TRACKITEM[playerID][encounterID][itemID]["dateSince"]
+                    local attempts = MPLH_TRACKITEM[playerID][encounterID][itemID]["attempts"]
+                    local chances = MPLH_TRACKITEM[playerID][encounterID][itemID]["chances"]
+                    local doneDate = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["date"]
+                    local doneChance = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["chance"]
+                    local doneAttempts = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["attempts"]
                     itemElementFrame.ItemContainer.ItemSince:SetText(Addon.localization.since.."|cffd9d7d7"..dateSince)
                     itemElementFrame.ItemContainer.ItemAttempts:SetText(Addon.localization.attempts.."|cffd9d7d7"..attempts)
                     itemElementFrame.ItemContainer.ItemChances:SetText(Addon.localization.chance.."|cffd9d7d7"..chances+(chances*attempts).."%")
 
-                    if _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["done"]["done"] == 1 then
+                    if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["done"] == 1 then
                         local doneText = ""
-                        if _G["MPLH_TRACKITEM"][playerID][encounterID][itemID]["done"]["traded"] == 1 then
+                        if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["traded"] == 1 then
                             doneText = Addon.localization.got1..Addon.localization.gotTraded.."|cffd9d7d7"..doneDate
                                 ..Addon.localization.got2.."|cffd9d7d7"..doneAttempts..Addon.localization.got3
                                 ..Addon.localization.gotChance.."|cffd9d7d7"..(doneChance*doneAttempts).."%"
@@ -119,7 +119,7 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                         itemElementFrame.ItemDone.ItemDoneText:SetText("|cffd9d7d7"..doneText)
                     end
                     itemElementFrame.RemoveItem:SetScript("OnClick", function()
-                        if #_G["MPLH_TRACKEDITEM_ITEMORDER"][playerID][encounterID] > 1 then
+                        if #MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID] > 1 then
                             tDeleteItem(MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID], itemID)
                             MPLH_TRACKITEM[playerID][encounterID][itemID] = nil
                         else

@@ -35,9 +35,9 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     frame.CharacterFrame.CharName:SetText(elementData.playerID)
     frame.CharacterFrame.CharName:SetTextScale(0.5)
     local keyName = nil
-    if tonumber(_G["MPLH_KACDATA"][playerID]["currentKeystone"]) then
-        local name = select(1,C_ChallengeMode.GetMapUIInfo(_G["MPLH_KACDATA"][playerID]["currentKeystone"]))
-        keyName = name.."|cffc7c7c7".." (".._G["MPLH_KACDATA"][playerID]["currentKeystoneLvl"]..")"
+    if tonumber(MPLH_KACDATA[playerID]["currentKeystone"]) then
+        local name = select(1,C_ChallengeMode.GetMapUIInfo(MPLH_KACDATA[playerID]["currentKeystone"]))
+        keyName = name.."|cffc7c7c7".." ("..MPLH_KACDATA[playerID]["currentKeystoneLvl"]..")"
     else
         keyName = "No keystone"
     end
@@ -117,9 +117,9 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
             end)
         end
     end
-    frame.CharacterFrame.CharIlvl:SetText("|cffc7c7c7"..tostring(_G["MPLH_KACDATA"][playerID]["ilvl"]).." |cff7d7d7dilvl")
+    frame.CharacterFrame.CharIlvl:SetText("|cffc7c7c7"..tostring(MPLH_KACDATA[playerID]["ilvl"]).." |cff7d7d7dilvl")
     frame.CharacterFrame.CharIlvl:SetTextScale(1.2)
-    frame.CharProg.CharProg:SetText("|cffc7c7c7"..tostring(_G["MPLH_KACDATA"][playerID]["oneMPlus"].." / ".._G["MPLH_KACDATA"][playerID]["fourMPlus"].." / ".._G["MPLH_KACDATA"][playerID]["eightMPlus"]))
+    frame.CharProg.CharProg:SetText("|cffc7c7c7"..tostring(MPLH_KACDATA[playerID]["oneMPlus"].." / "..MPLH_KACDATA[playerID]["fourMPlus"].." / "..MPLH_KACDATA[playerID]["eightMPlus"]))
     frame.CharProg.CharProg:SetTextScale(1.2)
     frame.CharProg:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
@@ -146,7 +146,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         end
         GameTooltip:Show()
     end)
-    local rio = _G["MPLH_KACDATA"][playerID]["rio"]
+    local rio = MPLH_KACDATA[playerID]["rio"]
     frame.CharRio.CharRio:SetText(rio and rio.." |cff7d7d7drio" or "No RIO")
     frame.CharRio.CharRio:SetTextColor(0.5, 0.5, 0.5)
     if rio then
@@ -188,9 +188,9 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     local index = DataProvider:FindIndex(elementData)
     frame.UpButton:SetScript("OnClick", function(self)
         local tmp = nil
-        tmp = _G["MPLH_ORDER"][index]
-        _G["MPLH_ORDER"][index] = _G["MPLH_ORDER"][index-1]
-        _G["MPLH_ORDER"][index-1] = tmp
+        tmp = MPLH_ORDER[index]
+        MPLH_ORDER[index] = MPLH_ORDER[index-1]
+        MPLH_ORDER[index-1] = tmp
         C_Timer.After(0.4, function()
             MPLT_AltManagerMixin:PrepareAltManager()
             MPLT_UpdateSubFrames()
@@ -198,9 +198,9 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     end)
     frame.DownButton:SetScript("OnClick", function(self)
         local tmp = nil
-        tmp = _G["MPLH_ORDER"][index]
-        _G["MPLH_ORDER"][index] = _G["MPLH_ORDER"][index+1]
-        _G["MPLH_ORDER"][index+1] = tmp
+        tmp = MPLH_ORDER[index]
+        MPLH_ORDER[index] = MPLH_ORDER[index+1]
+        MPLH_ORDER[index+1] = tmp
         C_Timer.After(0.4, function()
             MPLT_AltManagerMixin:PrepareAltManager()
             MPLT_UpdateSubFrames()
@@ -220,7 +220,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     elseif index == 1 then
         frame.UpButton:Disable()
         frame.DownButton:Enable()
-    elseif index == #_G["MPLH_ORDER"] then
+    elseif index == #MPLH_ORDER then
         frame.UpButton:Enable()
         frame.DownButton:Disable()
     else
@@ -243,8 +243,8 @@ function MPLT_AltManagerMixin:PrepareAltManager()
     AltManagerFrame.ScrollBar:SetInterpolateScroll(true)
     AltManagerFrame.ScrollBox:SetPanExtent(60)
     local children = {}
-    for i = 1, #_G["MPLH_ORDER"] do
-        local playerID = _G["MPLH_ORDER"][i]
+    for i = 1, #MPLH_ORDER do
+        local playerID = MPLH_ORDER[i]
         children[playerID] = {}
         DataProvider:Insert({playerID = playerID})
     end

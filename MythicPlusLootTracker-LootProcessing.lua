@@ -90,8 +90,6 @@ function Addon.CalcDungeonStat(instanceID)
                 MPLH_TRACKITEM[playerID][instanceID][k]["attempts"] = MPLH_TRACKITEM[playerID][instanceID][k]["attempts"]+1
             end
         end
-    else
-        print("CalcDungeon failed because of instanceID: ", instanceID)
     end
 end
 

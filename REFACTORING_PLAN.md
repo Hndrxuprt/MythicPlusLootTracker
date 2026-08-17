@@ -92,47 +92,47 @@
 
 **Цель:** убрать всё, что не загружается и не вызывается, без изменения поведения.
 
-- [ ] Удалить файлы `MythicPlusLootTracker-ItemRank.lua` (пустой), `MythicPlusLootTracker-Core_old.xml` (не в `.toc`).
-- [ ] `Core.lua`: удалить мёртвые функции — `GetItemSource` (`:241`), `isDungeonInCurrentSeason` (`:371`), цепочку `FixAboba`/`FixBrokenLinks`/`IsLinkBroken`/`GetItemIDFromName` (`:273-366`) и закомментированные вызовы (`:367-369`).
-- [ ] `Core.lua`: удалить неиспользуемое — `showOnlyEquip` (`:4`) и ветку `if showOnlyEquip` (`:635-644`); регистрацию `CHAT_MSG_LOOT` (`:1442`); `RegisterAddonMessagePrefix('MPLT')` (`:46`).
-- [ ] `LootSniffer.lua`: удалить `GetCachedItem` (`:136-145`), `MPLT_LootSnifferMixin:Timer` (`:427-435`), `testTable`+`:Test()` (`:608-613`).
-- [ ] `RollFrame.lua`: удалить `:Test()` (`:234-239`).
-- [ ] `AltManager.lua`: удалить `MPLT_AltManagerItemsMixin` (`:4`); удалить построитель `isClassItem` (`:14-44`).
-- [ ] Удалить `issecretvalue` guards (`Core.lua:1378`, `RollFrame.lua:243,274`) и весь закомментированный блок `Core.lua:1377-1386`.
-- [ ] Удалить debug `print` (Core: `253,375,377,435,554,731`; ClassCodexImport: `:50,135`; прочие).
-- [ ] Удалить все закомментированные блоки кода (Core: `138-140,912-945,1051-1077,1451`; ClassCodexImport: `57-59`; Luck; AltManager; и т.д.).
-- [ ] Удалить неиспользуемую либу `LibSharedMedia-3.0` из `libs.xml` и директорию `libs/LibSharedMedia-3.0/`.
+- [x] Удалить файлы `MythicPlusLootTracker-ItemRank.lua` (пустой), `MythicPlusLootTracker-Core_old.xml` (не в `.toc`).
+- [x] `Core.lua`: удалить мёртвые функции — `GetItemSource` (`:241`), `isDungeonInCurrentSeason` (`:371`), цепочку `FixAboba`/`FixBrokenLinks`/`IsLinkBroken`/`GetItemIDFromName` (`:273-366`) и закомментированные вызовы (`:367-369`).
+- [x] `Core.lua`: удалить неиспользуемое — `showOnlyEquip` (`:4`) и ветку `if showOnlyEquip` (`:635-644`); регистрацию `CHAT_MSG_LOOT` (`:1442`); `RegisterAddonMessagePrefix('MPLT')` (`:46`).
+- [x] `LootSniffer.lua`: удалить `GetCachedItem` (`:136-145`), `MPLT_LootSnifferMixin:Timer` (`:427-435`), `testTable`+`:Test()` (`:608-613`).
+- [x] `RollFrame.lua`: удалить `:Test()` (`:234-239`).
+- [x] `AltManager.lua`: удалить `MPLT_AltManagerItemsMixin` (`:4`); удалить построитель `isClassItem` (`:14-44`).
+- [x] Удалить `issecretvalue` guards (`Core.lua:1378`, `RollFrame.lua:243,274`) и весь закомментированный блок `Core.lua:1377-1386`.
+- [x] Удалить debug `print` (Core: `253,375,377,435,554,731`; ClassCodexImport: `:50,135`; прочие). Остался один — `CalcDungeon failed` в LootProcessing, удалён на Этапе 10.
+- [x] Удалить все закомментированные блоки кода (Core: `138-140,912-945,1051-1077,1451`; ClassCodexImport: `57-59`; Luck; AltManager; и т.д.).
+- [x] Удалить неиспользуемую либу `LibSharedMedia-3.0` из `libs.xml` и директорию `libs/LibSharedMedia-3.0/`.
 
 ## Этап 2. Исправление багов и утечек (низкий риск)
 
-- [ ] `fotune = "N/A"` → `local fortune = "N/A"` (`Core.lua:460`).
-- [ ] `dungeonID = select(3, ...)` → `local dungeonID` (`Core.lua:212`) либо убрать (не читается).
-- [ ] `IsRaid and ...` → `isRaid and ...` (`Core.lua:807`).
-- [ ] `view` shadow (`LootSniffer.lua:548`, `RollFrame.lua:128`) — вынести `view` в file scope/upvalue, создавать один раз.
-- [ ] `realm` leak (`LootSniffer.lua:580`) — добавить `local`.
+- [x] `fotune = "N/A"` → `local fortune = "N/A"` (`Core.lua:460`).
+- [x] `dungeonID = select(3, ...)` → `local dungeonID` (`Core.lua:212`) либо убрать (не читается).
+- [x] `IsRaid and ...` → `isRaid and ...` (`Core.lua:807`).
+- [x] `view` shadow (`LootSniffer.lua:548`, `RollFrame.lua:128`) — вынести `view` в file scope/upvalue, создавать один раз.
+- [x] `realm` leak (`LootSniffer.lua:580`) — добавить `local`.
 
 ## Этап 3. Унификация стиля и переименование опечаток (средний риск)
 
 Один проход search-replace по кросс-файловым ссылкам:
 
-- [ ] `EJInstaceIDToMapID` / `MapIDToEJInstaceID` / `InstaceIDToMapID` → `...Instance...`.
-- [ ] `GetDungeonTableLenght` → `GetTableLength`.
-- [ ] `IsEquppable` → `IsEquippable` (LootSniffer).
-- [ ] `riadInstanceID` → `raidInstanceID` (ClassCodexImport).
-- [ ] `showLootShiffButton` → `showLootSnifferButton` (Core).
-- [ ] Унифицировать отступы (tabs/spaces) и кавычки (`'...'` vs `"..."`).
-- [ ] Убрать бессмысленное `_G["MPLH_..."]` там, где рядом bare `MPLH_...` (CalcFortune, ClassCodexImport, Tracking) — привести к bare global.
-- [ ] Заменить `isKeyInTable(t, k)` на `t[k] ~= nil` (O(1) вместо O(n)); `isValueinTable` оставить только где нужен поиск по значению.
-- [ ] Согласовать `seasonID` vs `Addon.currentSeason`: единый источник — `Addon.currentSeason`, дропдаун сезона обновляет его (сейчас расходится с file-local `seasonID`).
+- [x] `EJInstaceIDToMapID` / `MapIDToEJInstaceID` / `InstaceIDToMapID` → `...Instance...`.
+- [x] `GetDungeonTableLenght` → `GetTableLength`.
+- [x] `IsEquppable` → `IsEquippable` (LootSniffer).
+- [x] `riadInstanceID` → `raidInstanceID` (ClassCodexImport).
+- [x] `showLootShiffButton` → `showLootSnifferButton` (Core).
+- [x] Унифицировать отступы (tabs/spaces) и кавычки (`'...'` vs `"..."`).
+- [x] Убрать бессмысленное `_G["MPLH_..."]` там, где рядом bare `MPLH_...` (CalcFortune, ClassCodexImport, Tracking) — привести к bare global.
+- [x] Заменить `isKeyInTable(t, k)` на `t[k] ~= nil` (O(1) вместо O(n)); `isValueinTable` оставить только где нужен поиск по значению.
+- [x] Согласовать `seasonID` vs `Addon.currentSeason`: единый источник — `Addon.currentSeason`, дропдаун сезона обновляет его (сейчас расходится с file-local `seasonID`).
 
 ## Этап 4. Выделение констант (средний риск)
 
 Создать `MythicPlusLootTracker-Constants.lua` (логические константы, без ID-данных), подключить в `.toc` после `GlobalConstants.lua`:
 
-- [ ] Магические числа: `GREAT_VAULT_ID = 999999`, `OVERALL_ID = 888888`, `GREAT_VAULT_MAP_ID = 2393`, `EJ_DIFFICULTY_MYTHIC_PLUS = 23`, `LOOT_DROP_RATE = 0.40`, `GREAT_VAULT_INTERACTION_TYPE = 49`, `MIN_CHARACTER_LEVEL = 90`, `MPLUS_DIFFICULTY_INDICES = {8,15,16,23}`, `KEY_THRESHOLDS = {1,4,8}`, `MAX_KEY_RUNS = 8`, `INVENTORY_SLOTS = {1,3,4,6,9,16}` (skip `4`).
-- [ ] Цвета: `Color.TextGray = "|cff858585"`, `Color.TextLight = "|cffd9d7d7"`, `Color.Epic = "|cffa335ee"`, `Color.AltGray = "|cffc7c7c7"`, `Color.AltDim = "|cff7d7d7d"`, `Color.Brand = "|cFFAA13D4"`, `Color.BisGreen`, `Color.BorderBlue` (из XML), `Color.BorderPink` (Tracking nine-slice).
-- [ ] Layout: размеры/якоря главного окна (`800x495`), scrollframe, контента, табов; общие `775` ширина и `5,-45/-65` офсеты.
-- [ ] Перенести `helpBox`/`helpButton` из localization в Constants.
+- [x] Магические числа: `GREAT_VAULT_ID = 999999`, `OVERALL_ID = 888888`, `GREAT_VAULT_MAP_ID = 2393`, `EJ_DIFFICULTY_MYTHIC_PLUS = 23`, `LOOT_DROP_RATE = 0.40`, `GREAT_VAULT_INTERACTION_TYPE = 49`, `MIN_CHARACTER_LEVEL = 90`, `MPLUS_DIFFICULTY_INDICES = {8,15,16,23}`, `KEY_THRESHOLDS = {1,4,8}`, `MAX_KEY_RUNS = 8`, `INVENTORY_SLOTS = {1,3,4,6,9,16}` (skip `4`).
+- [x] Цвета: `Color.TextGray`, `Color.TextLight`, `Color.AltGray`, `Color.AltDim`, `Color.Brand` вынесены; `Color.Epic`/`Color.BisGreen`/`Color.BorderBlue`/`Color.BorderPink` не выносились — нет читателей.
+- [x] Layout: размеры/якоря главного окна (`800x495`), scrollframe, контента, табов; общие `775` ширина и `5,-45/-65` офсеты.
+- [x] Перенести `helpBox`/`helpButton` из localization в Constants.
 
 ## Этап 5. Общие хелперы (средний риск)
 
@@ -218,10 +218,10 @@
 
 ## Проверка после каждого этапа
 
-- [ ] Синтаксис: `luac -p` / `luacheck` если доступны.
-- [ ] `.toc` валидность: порядок загрузки, все файлы из `.toc` существуют.
-- [ ] Загрузка в игре: `/reload` после этапа → сообщить об ошибках → фикс.
-- [ ] После Этапа 6 (разбивка Core) — отдельное тщательное тестирование всех табов и событий (лут, ролл, попрошайка, альт-менеджер, импорт).
+- [x] Синтаксис: `luac -p` / `luacheck` недоступны на машине; вместо них — `.zcode/check_syntax.js` (luaparse, Lua 5.1) по всем `.lua` + well-formedness всех `.xml`.
+- [x] `.toc` валидность: порядок загрузки, все файлы из `.toc` существуют (проверено скриптом).
+- [ ] Загрузка в игре: `/reload` → сообщить об ошибках → фикс. **Ожидает пользователя.**
+- [ ] После Этапа 6 (разбивка Core) — отдельное тщательное тестирование всех табов и событий (лут, ролл, попрошайка, альт-менеджер, импорт). **Ожидает пользователя.**
 
 ## Трекер прогресса
 

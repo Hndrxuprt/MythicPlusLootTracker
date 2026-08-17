@@ -2,3 +2,4 @@ TODO
 .vscode/
 FromClassCodex/
 node_modules/
+.zcode/constants_ref.json

@@ -170,12 +170,13 @@
 
 ## Этап 7. Рефакторинг GlobalConstants.lua (средний риск)
 
-- [ ] Унифицировать три ID-таблицы (`currentSeasonEncounters`, `EJInstaceIDToMapID`, `ActivityID`) в одну таблицу подземелий `[mapID] = { ejID, activityID, encounters, name }` с производными lookup-таблицами при загрузке — убирает баги «дублирующийся ключ молча перезаписывается» (`[1194]`, `[1178]`, Karazhan).
-- [ ] Удалить закомментированные альтернативные маппинги и мёртвые записи (Mechagon Junkyard, Karazhan).
-- [ ] Исправить дубликаты энкаунтеров: `[464]` Time-Lost Battlefield (`:293-294`), `[353]` Chopper Redhook (`:178,183`).
-- [ ] `MapIDToEJInstaceID` / `RaidEJInstanceID` — либо заполнять eagerly (файл самодостаточен), либо документировать как runtime-populated (комментарий-данные разрешён).
-- [ ] Переименовать `EJInstace...` → `EJInstance...` (согласовано с Этапом 3).
-- [ ] Оставить имена боссов/сезонов как комментарии-данные (по принципам).
+- [x] Три ID-таблицы (`currentSeasonEncounters`, `EJInstanceIDToMapID`, `ActivityID`) унифицированы в одну таблицу `Addon.Dungeons` (`[mapID] = { name, journalInstanceID, activityIDs, encounters }`); lookup-таблицы производятся при загрузке. Дубликаты ключей (`[1194]`, `[1178]`, Karazhan) устранены; оба крыла Tazavesh (391/392) сохраняют общий `journalInstanceID = 1194`.
+- [x] Закомментированные альтернативные маппинги и мёртвые записи (Mechagon Junkyard, Karazhan) удалены.
+- [x] Дубликаты энкаунтеров исправлены: `[464]` Time-Lost Battlefield (2534 удалён), `[353]` Chopper Redhook (2654 удалён).
+- [x] `MapIDToEJInstanceID` / `RaidEJInstanceID` документированы как runtime-populated (ClassCodexImport).
+- [x] `EJInstace...` → `EJInstance...` (согласовано с Этапом 3).
+- [x] Имена боссов/подземелий сохранены как комментарии-данные; генерация проверена скриптом `.zcode/verify_constants.js` против эталонного дампа.
+- [x] Константы `Addon.MapIDToEJInstanceID`/`RaidEJInstanceID` остались пустыми в файле (заполняются в рантайме).
 
 ## Этап 8. Локализация (средний риск)
 
@@ -229,7 +230,7 @@
 - [x] Этап 4 — Выделение констант
 - [x] Этап 5 — Общие хелперы
 - [x] Этап 6 — Разбивка Core.lua на модули
-- [ ] Этап 7 — Рефакторинг GlobalConstants.lua
+- [x] Этап 7 — Рефакторинг GlobalConstants.lua
 - [ ] Этап 8 — Локализация
 - [ ] Этап 9 — AltManager — XML и бог-функция
 - [ ] Этап 10 — Прочие модули и UI/XML

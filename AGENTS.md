@@ -11,8 +11,8 @@ World of Warcraft (Retail) addon, written in Lua 5.1 and loaded by the WoW clien
 
 ## Season / data that must be hand-updated each WoW season
 
-- `Addon.currentSeason = 18` in `MythicPlusLootTracker-GlobalConstants.lua:3`.
-- The ID mapping tables in that same file: `Addon.currentSeasonEncounters`, `Addon.EJInstaceIDToMapID`, `Addon.ActivityID`. IDs come from wago.tools (`JournalEncounter`, `MapChallengeMode`).
+- `Addon.currentSeason = 18` in `MythicPlusLootTracker-GlobalConstants.lua`.
+- `Addon.Dungeons` in that same file — the single source of dungeon data (`[mapID] = { name, journalInstanceID, activityIDs, encounters }`). The lookup tables `Addon.currentSeasonEncounters`, `Addon.EJInstanceIDToMapID`, `Addon.ActivityID` are derived from it at load. IDs come from wago.tools (`JournalEncounter`, `MapChallengeMode`).
 - `Addon.localization.season` arrays in both localization files (see below).
 - `## Version` and `## Interface` in the `.toc`.
 

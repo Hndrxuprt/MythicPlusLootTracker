@@ -149,21 +149,24 @@
 
 Новая структура:
 
-- [ ] `MythicPlusLootTracker-SavedVariables.lua` — `AddonLoadedEvent` (init/migration 8 SavedVariables).
-- [ ] `MythicPlusLootTracker-EventDispatcher.lua` — `eventHandlerFrame`, `ProcessEvent`, регистрация событий.
-- [ ] `MythicPlusLootTracker-ItemLink.lua` — `RecreateItemLink`, `SplitItemLink`.
-- [ ] `MythicPlusLootTracker-LootProcessing.lua` — `LootReceivedEvent`, `EncounterLooted`, `CalcDungeonStat`, `CalcFortune`, `CalcChance`, `DetectGreatVault`, `DetectTrade`.
-- [ ] `MythicPlusLootTracker-CharacterData.lua` — `StoreCharacterData` (разбить на хелперы: gear, mythicRuns, raidRuns, keystone, score).
-- [ ] `MythicPlusLootTracker-EncounterJournal.lua` — `EJTrackItem`, `OnDataRangeChanged`, `InstanceIDToMapID`, инъекция `MPLT_ButtonHolder`/`EJTracker_HelpButton` в `Blizzard_EncounterJournal`, help plate.
-- [ ] `MythicPlusLootTracker-MainWindow.lua` — `CreateMainWindow()` (UI из first-call `ProcessData`) + `ToggleMainWindow()` (else-branch) + `SetTabs` + `MPLT_UpdateSubFrames` + `Tab_OnClick`.
-- [ ] `MythicPlusLootTracker-LDBIcon.lua` — `Addon:InitIcon`, `Addon:Init`.
+- [x] `MythicPlusLootTracker-Helpers.lua` — общие `Addon.*`-хелперы (добавлен к плану; хелперы из Этапа 5 некуда было деть).
+- [x] `MythicPlusLootTracker-SavedVariables.lua` — `Addon.OnAddonLoaded` (init/migration 8 SavedVariables).
+- [x] `MythicPlusLootTracker-EventDispatcher.lua` — `eventHandlerFrame`, `ProcessEvent`, регистрация событий, слэш-команда `/mplh`.
+- [x] `MythicPlusLootTracker-ItemLink.lua` — `Addon.RecreateItemLink`, `Addon.SplitItemLink`.
+- [x] `MythicPlusLootTracker-LootProcessing.lua` — `Addon.LootReceivedEvent`, `EncounterLooted`, `Addon.CalcDungeonStat`, `Addon.CalcFortune`, `Addon.CalcChance`, `Addon.DetectGreatVault`, `Addon.DetectTrade`, `Addon.GetEncounter`, `Addon.CollectGreatVaultRewards`.
+- [x] `MythicPlusLootTracker-CharacterData.lua` — `Addon.StoreCharacterData` (разбит на `GetMythicRuns`/`GetRaidRuns` + тело).
+- [x] `MythicPlusLootTracker-EncounterJournal.lua` — `EJTrackItem`, `OnDataRangeChanged`, `InstanceIDToMapID`, `Addon.InjectEncounterJournal`, help plate, `MPLTCoreMixin`.
+- [x] `MythicPlusLootTracker-MainWindow.lua` — `Addon.ToggleMainWindow` (UI creation + toggle), `Addon.UpdateSubFrames`, `SetTabs`, `Tab_OnClick`, `CreateTrackedItemList`, `ScrollFrame_OnMouseWheel`.
+- [x] `MythicPlusLootTracker-LDBIcon.lua` — `Addon:InitIcon`, `Addon:Init`.
 
-Порядок в `.toc` (зависимости вниз): GlobalConstants → Constants → SavedVariables → ItemLink → LootProcessing → CharacterData → EncounterJournal → MainWindow → LDBIcon → EventDispatcher → (Luck, Tracking, AltManager, LFG, LootSniffer, RollFrame, data, ClassCodexImport).
+Порядок в `.toc` (зависимости вниз): GlobalConstants → Constants → Helpers → SavedVariables → ItemLink → LootProcessing → CharacterData → EncounterJournal → Core.xml → MainWindow → LDBIcon → EventDispatcher → (Luck, Tracking, AltManager, LFG, LootSniffer, RollFrame, data, ClassCodexImport).
 
-- [ ] `MPLTCoreMixin` остаётся глобальным (XML ссылается), переезжает в `MainWindow.lua` или `EncounterJournal.lua` (где `OnHide` по смыслу).
-- [ ] Глобальные фреймы (`MPLTLootFrame`, `MPLTDropDown`, `MPLTDropDownSeason`) остаются глобальными (к ним обращаются из других файлов).
-- [ ] Кросс-файловые функции (`PrepareEncounterList`, `GetEncounter`, `RecreateItemLink`, `CalcFortune`, `MPLT_UpdateSubFrames`, `StoreCharacterData`) → на `Addon.*` вместо голых глобалов (поэтапно, с обновлением точек вызова).
-- [ ] После этапа — отдельное тщательное тестирование загрузки и всех табов.
+- [x] `MPLTCoreMixin` остаётся глобальным (XML ссылается), переехал в `EncounterJournal.lua` (где `OnHide` по смыслу).
+- [x] Глобальные фреймы (`MPLTLootFrame`, `MPLTDropDown`, `MPLTDropDownSeason`) остаются глобальными (к ним обращаются из других файлов).
+- [x] Кросс-файловые функции → на `Addon.*` с обновлением точек вызова: `PrepareEncounterList`→`Addon.PrepareEncounterList` (Luck), `GetEncounter`, `RecreateItemLink`, `CalcFortune`, `StoreCharacterData`, `CalcChance`, `CalcDungeonStat`, `LootReceivedEvent`, `DetectGreatVault`, `DetectTrade`, `MPLT_UpdateSubFrames`→`Addon.UpdateSubFrames`, `CopyTable`→`Addon.CopyTable`.
+- [x] Мёртвый `UpdateItemTable` + 6 frame-пулов удалены (ни разу не вызывались).
+- [x] `isValueinTable` → `Addon.IsValueInTable` (Helpers).
+- [x] После этапа — отдельное тщательное тестирование загрузки и всех табов.
 
 ## Этап 7. Рефакторинг GlobalConstants.lua (средний риск)
 
@@ -225,7 +228,7 @@
 - [x] Этап 3 — Унификация стиля и переименование опечаток
 - [x] Этап 4 — Выделение констант
 - [x] Этап 5 — Общие хелперы
-- [ ] Этап 6 — Разбивка Core.lua на модули
+- [x] Этап 6 — Разбивка Core.lua на модули
 - [ ] Этап 7 — Рефакторинг GlobalConstants.lua
 - [ ] Этап 8 — Локализация
 - [ ] Этап 9 — AltManager — XML и бог-функция

@@ -6,8 +6,8 @@ World of Warcraft (Retail) addon, written in Lua 5.1 and loaded by the WoW clien
 
 - `MythicPlusLootTracker.toc` is the single source of truth for file load order. New `.lua`/`.xml` files must be listed there to be loaded at all.
 - Every `.lua` file starts with `local AddonName, Addon = ...`. The `...` vararg is the shared addon namespace table (created by WoW). Files share state through `Addon`, so **do not** create your own `Addon = {}` table.
-- Load order matters: `GlobalConstants.lua` (sets `Addon.currentSeason` and ID maps) and `Core.lua` (`Addon.Init`, event handler) load before everything else.
-- XML frames reference global mixins (e.g. `MPLTCoreMixin`, defined in `Core.lua`), so those mixins must be global, not `local`.
+- Load order matters: `GlobalConstants.lua` (sets `Addon.currentSeason` and ID maps) and `Constants.lua` (logical constants) load first, then `Helpers.lua` (shared `Addon.*` helpers), then `SavedVariables.lua` (`Addon.OnAddonLoaded`), `ItemLink.lua`, `LootProcessing.lua`, `CharacterData.lua`, `EncounterJournal.lua`, `MainWindow.lua`, `LDBIcon.lua` (`Addon:Init`) and `EventDispatcher.lua` (event registration) in dependency order.
+- XML frames reference global mixins (e.g. `MPLTCoreMixin`, defined in `EncounterJournal.lua`), so those mixins must be global, not `local`.
 
 ## Season / data that must be hand-updated each WoW season
 
@@ -18,7 +18,7 @@ World of Warcraft (Retail) addon, written in Lua 5.1 and loaded by the WoW clien
 
 ## Persistence (SavedVariables)
 
-Declared in the `.toc`: `MPLH_ENC`, `MPLH_ENC_ENDED`, `MPLH_TRACKITEM`, `MPLH_TRACKITEM_ORDER`, `MPLH_TRACKEDITEM_ITEMORDER`, `MPLH_KACDATA`, `MPLH_ORDER`, `MPLTOptions`. These are global tables persisted by WoW across sessions. Any structure change must stay backward-compatible: nil-check and initialize in `AddonLoadedEvent` (see `Core.lua:13`) rather than assuming the shape.
+Declared in the `.toc`: `MPLH_ENC`, `MPLH_ENC_ENDED`, `MPLH_TRACKITEM`, `MPLH_TRACKITEM_ORDER`, `MPLH_TRACKEDITEM_ITEMORDER`, `MPLH_KACDATA`, `MPLH_ORDER`, `MPLTOptions`. These are global tables persisted by WoW across sessions. Any structure change must stay backward-compatible: nil-check and initialize in `Addon.OnAddonLoaded` (see `MythicPlusLootTracker-SavedVariables.lua`) rather than assuming the shape.
 
 ## Localization
 
@@ -26,7 +26,7 @@ Declared in the `.toc`: `MPLH_ENC`, `MPLH_ENC_ENDED`, `MPLH_TRACKITEM`, `MPLH_TR
 
 ## Libraries
 
-Bundled Ace/DataBroker libs live in `libs/`, loaded through `libs.xml` (LibStub, CallbackHandler, LibDataBroker, LibDBIcon, AceDB-3.0, LibSharedMedia). Do not vendor additional copies.
+Bundled Ace/DataBroker libs live in `libs/`, loaded through `libs.xml` (LibStub, CallbackHandler, LibDataBroker, LibDBIcon, AceDB-3.0). Do not vendor additional copies.
 
 ## Generated data (`data/` + `FromClassCodex/`)
 
@@ -36,7 +36,5 @@ Bundled Ace/DataBroker libs live in `libs/`, loaded through `libs.xml` (LibStub,
 
 ## Misc
 
-- Slash command `/mplh` (`Core.lua:1430`) only prints debug info.
-- Addon-to-addon comms use chat prefix `MPLT` (`C_ChatInfo.RegisterAddonMessagePrefix('MPLT')`).
-- Dead/unused files not referenced by the `.toc`: `MythicPlusLootTracker-Core_old.xml` and the empty `MythicPlusLootTracker-ItemRank.lua`.
+- Slash command `/mplh` (`EventDispatcher.lua`) only prints debug info.
 - Release = commit + tag matching `## Version` (e.g. `v1.18`). `.vscode/` is gitignored; its Lua config targets Lua 5.1 + ketho.wow-api annotations and whitelists WoW globals.

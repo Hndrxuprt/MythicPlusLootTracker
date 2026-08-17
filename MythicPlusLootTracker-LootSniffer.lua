@@ -103,7 +103,7 @@ MPLT_LootSnifferMixin.lootTable = {}
 local function IsItemNeeded(itemID)
     local playerID = Addon.GetPlayerID()
 
-    local _, mapID = GetEncounter(instance)
+    local _, mapID = Addon.GetEncounter(instance)
 
     if MPLH_TRACKITEM and MPLH_TRACKITEM[playerID] then
         if MPLH_TRACKITEM[playerID][mapID] then

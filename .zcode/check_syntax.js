@@ -2,15 +2,24 @@ const luaparse = require('luaparse');
 const fs = require('fs');
 
 const files = [
-  'MythicPlusLootTracker-Core.lua',
-  'MythicPlusLootTracker-LootSniffer.lua',
-  'MythicPlusLootTracker-RollFrame.lua',
-  'MythicPlusLootTracker-AltManager.lua',
-  'MythicPlusLootTracker-ClassCodexImport.lua',
+  'MythicPlusLootTracker-GlobalConstants.lua',
+  'MythicPlusLootTracker-Constants.lua',
+  'MythicPlusLootTracker-Helpers.lua',
+  'MythicPlusLootTracker-SavedVariables.lua',
+  'MythicPlusLootTracker-ItemLink.lua',
+  'MythicPlusLootTracker-LootProcessing.lua',
+  'MythicPlusLootTracker-CharacterData.lua',
+  'MythicPlusLootTracker-EncounterJournal.lua',
+  'MythicPlusLootTracker-MainWindow.lua',
+  'MythicPlusLootTracker-LDBIcon.lua',
+  'MythicPlusLootTracker-EventDispatcher.lua',
   'MythicPlusLootTracker-Luck.lua',
   'MythicPlusLootTracker-Tracking.lua',
+  'MythicPlusLootTracker-AltManager.lua',
   'MythicPlusLootTracker-LFG.lua',
-  'MythicPlusLootTracker-GlobalConstants.lua',
+  'MythicPlusLootTracker-LootSniffer.lua',
+  'MythicPlusLootTracker-RollFrame.lua',
+  'MythicPlusLootTracker-ClassCodexImport.lua',
 ];
 
 let ok = true;

@@ -40,7 +40,7 @@ local function SetItemSource(type)
     elseif type == "Mythic+" then
         tbl = Addon.MapIDToEJInstanceID
     elseif type == "Overall" then
-        tbl = CopyTable(Addon.MapIDToEJInstanceID)
+        tbl = Addon.CopyTable(Addon.MapIDToEJInstanceID)
         MergeTable(tbl, Addon.RaidEJInstanceID)
     end
     if not tbl or not next(tbl) then
@@ -87,7 +87,7 @@ local function TrackItem()
         end
         if MPLTLootFrame then
             MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
-            MPLT_UpdateSubFrames()
+            Addon.UpdateSubFrames()
         end
     end
 end

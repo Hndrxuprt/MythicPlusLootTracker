@@ -1,6 +1,6 @@
 import re
 
-files = ['MythicPlusLootTracker-Core.lua', 'MythicPlusLootTracker-LootSniffer.lua', 'MythicPlusLootTracker-RollFrame.lua', 'MythicPlusLootTracker-AltManager.lua', 'MythicPlusLootTracker-ClassCodexImport.lua', 'MythicPlusLootTracker-Luck.lua', 'MythicPlusLootTracker-Tracking.lua', 'MythicPlusLootTracker-LFG.lua']
+files = ['MythicPlusLootTracker-GlobalConstants.lua', 'MythicPlusLootTracker-Constants.lua', 'MythicPlusLootTracker-Helpers.lua', 'MythicPlusLootTracker-SavedVariables.lua', 'MythicPlusLootTracker-ItemLink.lua', 'MythicPlusLootTracker-LootProcessing.lua', 'MythicPlusLootTracker-CharacterData.lua', 'MythicPlusLootTracker-EncounterJournal.lua', 'MythicPlusLootTracker-MainWindow.lua', 'MythicPlusLootTracker-LDBIcon.lua', 'MythicPlusLootTracker-EventDispatcher.lua', 'MythicPlusLootTracker-Luck.lua', 'MythicPlusLootTracker-Tracking.lua', 'MythicPlusLootTracker-AltManager.lua', 'MythicPlusLootTracker-LFG.lua', 'MythicPlusLootTracker-LootSniffer.lua', 'MythicPlusLootTracker-RollFrame.lua', 'MythicPlusLootTracker-ClassCodexImport.lua']
 for f in files:
     src = open(f, encoding='utf-8', errors='replace').read()
     s = re.sub(r'--\[\[.*?\]\]', '', src, flags=re.S)

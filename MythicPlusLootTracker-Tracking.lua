@@ -15,7 +15,7 @@ local gridLayout = AnchorUtil.CreateGridLayout(GRID_DIRECTION, GRID_STRIDE, GRID
 
 function MPLT_TrackingElementMixin:InitElements(frame, elementData, playerID)
     local encounterID = elementData.encounterID
-    local dungeonName = select(1,GetEncounter(encounterID))
+    local dungeonName = select(1,Addon.GetEncounter(encounterID))
     frame.EncounterContainer.EncounterText:SetText(dungeonName)
     frame.EncounterContainer.EncounterText:SetTextScale(0.6)
     local children = elementData.children
@@ -32,7 +32,7 @@ function MPLT_TrackingElementMixin:InitElements(frame, elementData, playerID)
         MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID] = nil
         MPLH_TRACKITEM[playerID][encounterID] = nil
         self:PrepareTrackingList(playerID)
-        MPLT_UpdateSubFrames()
+        Addon.UpdateSubFrames()
     end)
     local initialAnchor = AnchorUtil.CreateAnchor("TOPLEFT", frame.EncounterContainer.Highlight, "BOTTOMLEFT", 70, 30)
     AnchorUtil.GridLayout(elementData.children[elementData.encounterID], initialAnchor, gridLayout)
@@ -82,7 +82,7 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                 local itemID = MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID][n]
                 local item = Item:CreateFromItemID(itemID)
                 item:ContinueOnItemLoad(function()
-                    local itemLink = select(1,RecreateItemLink(item:GetItemLink()))
+                    local itemLink = select(1,Addon.RecreateItemLink(item:GetItemLink()))
                     itemElementFrame.ItemContainer.icon:SetTexture(item:GetItemIcon())
                     itemElementFrame.ItemContainer.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
                     itemElementFrame.ItemContainer.ItemText:SetText(itemLink)
@@ -128,7 +128,7 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                             tDeleteItem(MPLH_TRACKITEM_ORDER[playerID], encounterID)
                         end
                         self:PrepareTrackingList(playerID)
-                        MPLT_UpdateSubFrames()
+                        Addon.UpdateSubFrames()
                     end)
                 end)
                 if not children[encounterID] then

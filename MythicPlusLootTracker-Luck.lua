@@ -102,7 +102,7 @@ local oldSelection
 local function Init_Button(button, elementData, playerID)
     local encounterId = elementData.encounterID
     local runs = elementData.runs
-    local name = select(1,GetEncounter(encounterId))
+    local name = select(1,Addon.GetEncounter(encounterId))
     local fortune = string.format("%.1f",(elementData.fortune*100)).."%"
     button.name:SetText(name.." - "..runs.." - "..fortune)
     button:SetScript("OnClick", function()
@@ -120,7 +120,7 @@ local function Init_Button(button, elementData, playerID)
     end
 end
 
-function PrepareEncounterList(playerID)
+function Addon.PrepareEncounterList(playerID)
     DataProvider:Flush()
 
     local view = CreateScrollBoxListLinearView(10, 10, 2, 2, 0);
@@ -144,7 +144,7 @@ function PrepareEncounterList(playerID)
         local overallFortune = 0
         local overallLoot = 0
         for encounterID, runs in pairs(MPLH_ENC_ENDED[Addon.currentSeason][playerID]) do
-            local fortune, numLoot = CalcFortune(playerID, encounterID, Addon.currentSeason)
+            local fortune, numLoot = Addon.CalcFortune(playerID, encounterID, Addon.currentSeason)
             DataProvider:Insert({encounterID = encounterID, runs = runs, fortune = fortune})
             overall = overall + runs
             overallLoot = overallLoot + numLoot

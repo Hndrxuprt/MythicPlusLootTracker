@@ -37,14 +37,14 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
     local keyName = nil
     if tonumber(MPLH_KACDATA[playerID]["currentKeystone"]) then
         local name = select(1,C_ChallengeMode.GetMapUIInfo(MPLH_KACDATA[playerID]["currentKeystone"]))
-        keyName = name.."|cffc7c7c7".." ("..MPLH_KACDATA[playerID]["currentKeystoneLvl"]..")"
+        keyName = name..Addon.Constants.Color.AltGray.." ("..MPLH_KACDATA[playerID]["currentKeystoneLvl"]..")"
     else
         keyName = "No keystone"
     end
     frame.CharacterFrame.CharKeystone:SetText(keyName)
     frame.CharacterFrame.CharKeystone:SetTextScale(1.2)
     local mapInfo = MPLH_KACDATA[playerID]["keys"]
-    for i=1, 8 do
+    for i=1, Addon.Constants.MAX_KEY_RUNS do
         if (not mapInfo) or (not mapInfo[i]) then
             frame["Dungeon"..i]["DungeonIcon"..i]:SetAlpha(0)
             frame["Dungeon"..i]:SetScript("OnEnter", function(self)
@@ -117,9 +117,9 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
             end)
         end
     end
-    frame.CharacterFrame.CharIlvl:SetText("|cffc7c7c7"..tostring(MPLH_KACDATA[playerID]["ilvl"]).." |cff7d7d7dilvl")
+    frame.CharacterFrame.CharIlvl:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["ilvl"]).." "..Addon.Constants.Color.AltDim.."ilvl")
     frame.CharacterFrame.CharIlvl:SetTextScale(1.2)
-    frame.CharProg.CharProg:SetText("|cffc7c7c7"..tostring(MPLH_KACDATA[playerID]["oneMPlus"].." / "..MPLH_KACDATA[playerID]["fourMPlus"].." / "..MPLH_KACDATA[playerID]["eightMPlus"]))
+    frame.CharProg.CharProg:SetText(Addon.Constants.Color.AltGray..tostring(MPLH_KACDATA[playerID]["oneMPlus"].." / "..MPLH_KACDATA[playerID]["fourMPlus"].." / "..MPLH_KACDATA[playerID]["eightMPlus"]))
     frame.CharProg.CharProg:SetTextScale(1.2)
     frame.CharProg:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
@@ -147,7 +147,7 @@ function MPLT_AltManagerMixin:InitElements(frame, elementData)
         GameTooltip:Show()
     end)
     local rio = MPLH_KACDATA[playerID]["rio"]
-    frame.CharRio.CharRio:SetText(rio and rio.." |cff7d7d7drio" or "No RIO")
+    frame.CharRio.CharRio:SetText(rio and rio.." "..Addon.Constants.Color.AltDim.."rio" or "No RIO")
     frame.CharRio.CharRio:SetTextColor(0.5, 0.5, 0.5)
     if rio then
         local color = C_ChallengeMode.GetDungeonScoreRarityColor(rio)
@@ -253,8 +253,8 @@ function MPLT_AltManagerMixin:PrepareAltManager()
 
     AltManagerFrame:ClearAllPoints()
     AltManagerFrame:SetParent(MPLTLootFrame)
-    AltManagerFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, -45)
-    AltManagerFrame:SetSize(775, 425)
+    AltManagerFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, Addon.Constants.Layout.AltManagerOffsetY)
+    AltManagerFrame:SetSize(Addon.Constants.Layout.ContentWidth, 425)
     AltManagerFrame:Hide()
     AltManagerFrame.NineSlice:Hide()
     AltManagerFrame.TitleContainer:Hide()

@@ -55,8 +55,8 @@ local function SetItemSource(type)
             EncounterJournal_DisplayInstance(instanceID)
         end
 
-        if ( EJ_IsValidInstanceDifficulty(23) ) then
-            EJ_SetDifficulty(23)
+        if ( EJ_IsValidInstanceDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS) ) then
+            EJ_SetDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS)
         end
         local numLoot = EJ_GetNumLoot()
         for i=1, numLoot do

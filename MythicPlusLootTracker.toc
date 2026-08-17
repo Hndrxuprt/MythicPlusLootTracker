@@ -15,6 +15,7 @@ libs.xml
 
 OutputLogTemplate.xml
 MythicPlusLootTracker-GlobalConstants.lua
+MythicPlusLootTracker-Constants.lua
 MythicPlusLootTracker-Core.lua
 MythicPlusLootTracker-Core.xml
 MythicPlusLootTracker-Luck.xml

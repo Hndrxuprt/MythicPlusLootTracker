@@ -1,0 +1,40 @@
+local AddonName, Addon = ...
+
+Addon.Constants = {
+    GREAT_VAULT_ID = 999999,
+    OVERALL_ID = 888888,
+    GREAT_VAULT_MAP_ID = 2393,
+    GREAT_VAULT_ITEM_ID = 199202,
+    EJ_DIFFICULTY_MYTHIC_PLUS = 23,
+    LOOT_DROP_RATE = 0.40,
+    GREAT_VAULT_INTERACTION_TYPE = 49,
+    MIN_CHARACTER_LEVEL = 90,
+    MPLUS_DIFFICULTY_INDICES = { 8, 15, 16, 23 },
+    KEY_THRESHOLDS = { 1, 4, 8 },
+    MAX_KEY_RUNS = 8,
+    INVENTORY_SLOTS = { 1, 3, 4, 6, 9, 16 },
+    GEAR_SLOT_COUNT = 17,
+    GEAR_SLOT_SKIP = 4,
+    Color = {
+        TextGray = "|cff858585",
+        TextLight = "|cffd9d7d7",
+        AltGray = "|cffc7c7c7",
+        AltDim = "|cff7d7d7d",
+        Brand = "|cFFAA13D4",
+    },
+    Layout = {
+        MainWindowWidth = 800,
+        MainWindowHeight = 495,
+        ContentWidth = 775,
+        TabContentWidth = 610,
+        TabContentHeight = 350,
+        ScrollFrameWidth = 200,
+        ScrollFrameHeight = 424,
+        AltManagerOffsetY = -45,
+        TrackingOffsetY = -65,
+    },
+    HelpPlate = {
+        helpBox = { x = 200, y = -470, width = 165, height = 40 },
+        helpButton = { x = 320, y = -470 },
+    },
+}

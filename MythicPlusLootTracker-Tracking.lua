@@ -100,23 +100,23 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                     local doneDate = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["date"]
                     local doneChance = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["chance"]
                     local doneAttempts = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["attempts"]
-                    itemElementFrame.ItemContainer.ItemSince:SetText(Addon.localization.since.."|cffd9d7d7"..dateSince)
-                    itemElementFrame.ItemContainer.ItemAttempts:SetText(Addon.localization.attempts.."|cffd9d7d7"..attempts)
-                    itemElementFrame.ItemContainer.ItemChances:SetText(Addon.localization.chance.."|cffd9d7d7"..chances+(chances*attempts).."%")
+                    itemElementFrame.ItemContainer.ItemSince:SetText(Addon.localization.since..Addon.Constants.Color.TextLight..dateSince)
+                    itemElementFrame.ItemContainer.ItemAttempts:SetText(Addon.localization.attempts..Addon.Constants.Color.TextLight..attempts)
+                    itemElementFrame.ItemContainer.ItemChances:SetText(Addon.localization.chance..Addon.Constants.Color.TextLight..chances+(chances*attempts).."%")
 
                     if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["done"] == 1 then
                         local doneText = ""
                         if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["traded"] == 1 then
-                            doneText = Addon.localization.got1..Addon.localization.gotTraded.."|cffd9d7d7"..doneDate
-                                ..Addon.localization.got2.."|cffd9d7d7"..doneAttempts..Addon.localization.got3
-                                ..Addon.localization.gotChance.."|cffd9d7d7"..(doneChance*doneAttempts).."%"
+                            doneText = Addon.localization.got1..Addon.localization.gotTraded..Addon.Constants.Color.TextLight..doneDate
+                                ..Addon.localization.got2..Addon.Constants.Color.TextLight..doneAttempts..Addon.localization.got3
+                                ..Addon.localization.gotChance..Addon.Constants.Color.TextLight..(doneChance*doneAttempts).."%"
                         else
-                            doneText = Addon.localization.got1.."|cffd9d7d7"..doneDate
-                                ..Addon.localization.got2.."|cffd9d7d7"..doneAttempts..Addon.localization.got3
-                                ..Addon.localization.gotChance.."|cffd9d7d7"..(doneChance*doneAttempts).."%"
+                            doneText = Addon.localization.got1..Addon.Constants.Color.TextLight..doneDate
+                                ..Addon.localization.got2..Addon.Constants.Color.TextLight..doneAttempts..Addon.localization.got3
+                                ..Addon.localization.gotChance..Addon.Constants.Color.TextLight..(doneChance*doneAttempts).."%"
                         end
                         itemElementFrame.ItemDone:Show()
-                        itemElementFrame.ItemDone.ItemDoneText:SetText("|cffd9d7d7"..doneText)
+                        itemElementFrame.ItemDone.ItemDoneText:SetText(Addon.Constants.Color.TextLight..doneText)
                     end
                     itemElementFrame.RemoveItem:SetScript("OnClick", function()
                         if #MPLH_TRACKEDITEM_ITEMORDER[playerID][encounterID] > 1 then
@@ -143,8 +143,8 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
     TrackingFrame.ScrollBar:SetScrollPercentage(scrollPos, true)
     TrackingFrame:ClearAllPoints()
     TrackingFrame:SetParent(MPLTLootFrame)
-    TrackingFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, -65)
-    TrackingFrame:SetSize(775, 401)
+    TrackingFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, Addon.Constants.Layout.TrackingOffsetY)
+    TrackingFrame:SetSize(Addon.Constants.Layout.ContentWidth, 401)
     TrackingFrame:Hide()
     TrackingFrame:SetAlpha(1)
 end

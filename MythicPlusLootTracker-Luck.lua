@@ -72,7 +72,7 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
             end
         end
     end
-    if dungeonID ~= 888888 then
+    if dungeonID ~= Addon.Constants.OVERALL_ID then
         GetData(dungeonID)
     else
         if MPLH_ENC[Addon.currentSeason] and MPLH_ENC[Addon.currentSeason][playerID] then
@@ -114,7 +114,7 @@ local function Init_Button(button, elementData, playerID)
         MythicPlusLootTrackerLuckElementMixin:PrepareLootList(encounterId, playerID)
     end)
 
-    if encounterId == 888888 then
+    if encounterId == Addon.Constants.OVERALL_ID then
         button:LockHighlight()
         button:Click()
     end
@@ -150,7 +150,7 @@ function PrepareEncounterList(playerID)
             overallLoot = overallLoot + numLoot
         end
         overallFortune = overallLoot/overall
-        DataProvider:Insert({encounterID = 888888, runs = overall, fortune = overallFortune})
+        DataProvider:Insert({encounterID = Addon.Constants.OVERALL_ID, runs = overall, fortune = overallFortune})
         EncountersFrame.ScrollBox:SetDataProvider(DataProvider)
     end
     local function SortComparator(enc1, enc2)

@@ -63,8 +63,6 @@ Addon.localization.season = {
 Addon.localization.help1 = "Вы можете добавлять и удалять предметы для отслеживания в Mythic Plus Loot Tracker"
 Addon.localization.help2 = "Для рейдов отслеживание работает в любом режиме, для подземелий только в `Эпохальный+`"
 Addon.localization.help3 = "Отслеживание предметов доступно для Подземелий и Рейдов"
-Addon.localization.helpBox = { x = 300, y = -470, width = 165, height = 40 }
-Addon.localization.helpButton = { x = 420,  y = -470 }
 
 Addon.localization.snifferTitle = "Попрошайка"
 Addon.localization.snifferW = "Ш"

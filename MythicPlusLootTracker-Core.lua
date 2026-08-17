@@ -116,7 +116,7 @@ local function SetTabs(frame, numTabs, ...)
         tab:SetText(select(i, ...))
         tab:SetScript("OnClick", Tab_OnClick)
         tab.content = CreateFrame ("Frame", nil, UIConfig.ScrollFrame)
-        tab.content:SetSize(610,350)
+        tab.content:SetSize(Addon.Constants.Layout.TabContentWidth, Addon.Constants.Layout.TabContentHeight)
         tab.content:Hide()
         tab:Hide()
         tab:Show()
@@ -194,10 +194,10 @@ function GetEncounter(instance)
             dungeonName = select(1,GetInstanceInfo() )
             return dungeonName, instance
         end
-    elseif tonumber(instance) == 999999 then
+    elseif Addon.Constants.GREAT_VAULT_ID then
         dungeonName = Addon.localization.gvault
         return dungeonName, instance 
-    elseif tonumber(instance) == 888888 then
+    elseif Addon.Constants.OVERALL_ID then
         dungeonName = "Overall"
         return dungeonName, instance 
     elseif isRaid and isRaid ~= 0 then
@@ -240,7 +240,7 @@ local function CalcDungeonStat(instanceID)
     if MPLH_ENC_ENDED[Addon.currentSeason][playerID] == nil then
         MPLH_ENC_ENDED[Addon.currentSeason][playerID] = {}
     end
-    if instanceID == 999999 then
+    if instanceID == Addon.Constants.GREAT_VAULT_ID then
         if MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] == nil then
             MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = 1
         else
@@ -253,7 +253,7 @@ local function CalcDungeonStat(instanceID)
                 end
             end
         end
-    elseif instanceID ~= nil and instanceID ~= 999999 then
+    elseif instanceID ~= nil and instanceID ~= Addon.Constants.GREAT_VAULT_ID then
         if MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] == nil then
             MPLH_ENC_ENDED[Addon.currentSeason][playerID][instanceID] = 1
         else
@@ -305,8 +305,8 @@ local function CalcChance(playerID, instanceID, item, reset, encounterID)
     local numLoot = 0
     local wearableItems = 0
     EJ_SetLootFilter(classID, specID)
-    if ( EJ_IsValidInstanceDifficulty(23) ) then
-        EJ_SetDifficulty(23)
+    if ( EJ_IsValidInstanceDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS) ) then
+        EJ_SetDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS)
     end
     local function GetWearableForEnc(Enc)
         if Enc then
@@ -332,9 +332,9 @@ local function CalcChance(playerID, instanceID, item, reset, encounterID)
 
     if wearableItems > 0 then
         if reset then
-            lootChance = string.format("%.2f", (((1/wearableItems) * 0.40)*100))
+            lootChance = string.format("%.2f", (((1/wearableItems) * Addon.Constants.LOOT_DROP_RATE)*100))
         else
-            lootChance = string.format("%.2f", (((1/wearableItems) * 0.40)*(attempts+1)*100))
+            lootChance = string.format("%.2f", (((1/wearableItems) * Addon.Constants.LOOT_DROP_RATE)*(attempts+1)*100))
         end
     end
     if MPLH_TRACKITEM[playerID][instanceID][item]["chances"] == 0 then
@@ -379,10 +379,10 @@ local function DetectGreatVault(itemLink)
     local itemType = select(6,GetItemInfoInstant(itemLink))
     local itemID = select(1, GetItemInfoInstant(itemLink))
     local mapID = C_Map.GetBestMapForUnit("player")
-    if ((itemType == 2) or (itemType == 4)) and mapID == 2393 and isValueinTable(greatVaultTable, itemID) then
+    if ((itemType == 2) or (itemType == 4)) and mapID == Addon.Constants.GREAT_VAULT_MAP_ID and isValueinTable(greatVaultTable, itemID) then
         local name, realm = UnitFullName("player")
         local fullname = name .. "-" .. realm
-        local greatVault = 999999
+        local greatVault = Addon.Constants.GREAT_VAULT_ID
         local dungeonName = GetEncounter(greatVault)
         CalcDungeonStat(greatVault)
         C_MythicPlus.RequestMapInfo()
@@ -560,7 +560,7 @@ local EJTracker_HelpPlate = {
 	FrameSize = { width = 840, height = 520 },
 	[1] = { ButtonPos = { x = 380,	y = -60 }, HighLightBox = { x = 390,  y = -80, width = 45, height = 385 },		ToolTipDir = "LEFT",   ToolTipText = Addon.localization.help1 },
 	[2] = { ButtonPos = { x = 645,  y = -40 }, HighLightBox = { x = 670, y = -50, width = 110, height = 30 },	ToolTipDir = "LEFT",   ToolTipText = Addon.localization.help2 },
-	[3] = { ButtonPos = Addon.localization.helpButton, HighLightBox = Addon.localization.helpBox,	ToolTipDir = "RIGHT",   ToolTipText = Addon.localization.help3 },
+	[3] = { ButtonPos = Addon.Constants.HelpPlate.helpButton, HighLightBox = Addon.Constants.HelpPlate.helpBox,	ToolTipDir = "RIGHT",   ToolTipText = Addon.localization.help3 },
 }
 local function EJTrackerHelpPlate_ToggleTutorial()
 	local helpPlate = EJTracker_HelpPlate;
@@ -601,7 +601,7 @@ local function EJTrackItem()
     if (EJ_GetCurrentTier() ~= EJ_GetNumTiers()) then
         return
     end
-    if (not isRaid) and (EJ_GetDifficulty() ~= 23) then
+    if (not isRaid) and (EJ_GetDifficulty() ~= Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS) then
         return
     end
 
@@ -704,7 +704,7 @@ local function CreateTrackedItemList(parent)
 end
 
 function StoreCharacterData()
-    if UnitLevel("player") < 90 then 
+    if UnitLevel("player") < Addon.Constants.MIN_CHARACTER_LEVEL then 
         return
     else
         local name, realm = UnitFullName("player")
@@ -726,7 +726,7 @@ function StoreCharacterData()
                 end
             end
             table.sort(runHistory, comparison);
-            for i = 1, 8 do
+            for i = 1, Addon.Constants.MAX_KEY_RUNS do
                 if runHistory[i] then
                     tinsert(mythicRuns, runHistory[i])
                 end
@@ -788,8 +788,8 @@ function StoreCharacterData()
         end
 
         MPLH_KACDATA[playerID]["gear"] = {}
-        for i=1, 17 do
-            if i ~= 4 then
+        for i=1, Addon.Constants.GEAR_SLOT_COUNT do
+            if i ~= Addon.Constants.GEAR_SLOT_SKIP then
                 local itemLink = GetInventoryItemLink("player", i)
                 tinsert(MPLH_KACDATA[playerID]["gear"], itemLink)
             end
@@ -845,7 +845,7 @@ local function ProcessData(self)
         UIConfig = CreateFrame("Frame", "MPLTLootFrame", UIParent, "ButtonFrameTemplate")
         _G["UIConfig"] = UIConfig
         tinsert(UISpecialFrames, UIConfig:GetName())
-        UIConfig:SetSize(800,495)
+        UIConfig:SetSize(Addon.Constants.Layout.MainWindowWidth, Addon.Constants.Layout.MainWindowHeight)
         UIConfig:SetPoint("CENTER")
         UIConfig:SetMovable(true)
         UIConfig:EnableMouse(true)
@@ -939,7 +939,7 @@ local function ProcessData(self)
         UIConfig.ScrollFrame = CreateFrame("ScrollFrame", nil, UIConfig, "UIPanelScrollFrameTemplate")
         UIConfig.ScrollFrame:SetPoint("TOPLEFT", MPLTLootFrameBg, "TOPLEFT", 8, -45)
         UIConfig.ScrollFrame:SetPoint("BOTTOMRIGHT", MPLTLootFrameBg, "BOTTOMRIGHT", -3, 30)
-        UIConfig.ScrollFrame:SetSize(200,424)
+        UIConfig.ScrollFrame:SetSize(Addon.Constants.Layout.ScrollFrameWidth, Addon.Constants.Layout.ScrollFrameHeight)
 
         UIConfig.ScrollFrame:SetClipsChildren(true)
 
@@ -1047,7 +1047,7 @@ function Addon:InitIcon()
             if not tooltip or not tooltip.AddLine then
                 return
             end
-            tooltip:AddLine("|cFFAA13D4Mythic+ Loot Tracker|r")
+            tooltip:AddLine(Addon.Constants.Color.Brand.."Mythic+ Loot Tracker|r")
             tooltip:AddLine("|cFFFFFFFF" .. Addon.localization.mbutton)
         end,
     })
@@ -1111,7 +1111,7 @@ local function ProcessEvent(self, event, ...)
 
         if unitName == playerID or unitName == name then
             local _, _, difficultyIndex, _, _, _, _, _, _, _ = GetInstanceInfo()
-            if difficultyIndex == 8 or difficultyIndex == 15 or difficultyIndex == 16 or difficultyIndex == 23 then
+            if isValueinTable(Addon.Constants.MPLUS_DIFFICULTY_INDICES, difficultyIndex) then
                 LootReceivedEvent(itemID, itemLink, quantity, playerID, lootEncounterId)
             end
         end
@@ -1126,7 +1126,7 @@ local function ProcessEvent(self, event, ...)
         local typeIdentifier, itemLink, quantity, specID, sex, personalLootToast, toastMethod, lessAwesome, upgraded, corrupted = ...
         DetectGreatVault(itemLink)
     elseif event == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
-        if ... == 49 then
+        if ... == Addon.Constants.GREAT_VAULT_INTERACTION_TYPE then
             if C_WeeklyRewards.HasAvailableRewards() and C_WeeklyRewards.CanClaimRewards() then
                 local activities = C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus)
                 table.sort(activities, function(left, right) return left.index < right.index; end)
@@ -1139,7 +1139,7 @@ local function ProcessEvent(self, event, ...)
                         end
                     end
                 end
-                tinsert(greatVaultTable, 199202)
+                tinsert(greatVaultTable, Addon.Constants.GREAT_VAULT_ITEM_ID)
             end
         end
     end

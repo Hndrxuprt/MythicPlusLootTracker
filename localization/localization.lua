@@ -60,8 +60,6 @@ Addon.localization.season = {
 Addon.localization.help1 = "You can add and remove items to be tracked in Mythic Plus Loot Tracker"
 Addon.localization.help2 = "For raids, tracking works on any difficulty, for dungeons only on `Mythic+`"
 Addon.localization.help3 = "Item tracking is available for Dungeons and Raids"
-Addon.localization.helpBox = { x = 200, y = -470, width = 165, height = 40 }
-Addon.localization.helpButton = { x = 320,  y = -470 }
 
 Addon.localization.snifferTitle = "Loot sniffer"
 Addon.localization.snifferW = "W"

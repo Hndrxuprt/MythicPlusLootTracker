@@ -91,6 +91,7 @@ rollFrame.AutocloseText:SetText(Addon.localization.snifferAutoclose)
 rollFrame:Show()
 
 MPLT_RollFrameMixin.DataProvider = CreateDataProvider()
+local view
 
 function MPLT_RollFrameMixin:Autoclose()
     if not rollFrame.autoclose then
@@ -125,7 +126,7 @@ end
 function MPLT_RollFrameMixin:PrepareScrollFrame()
     self.DataProvider:Flush()
     if not view then
-        local view = CreateScrollBoxListLinearView()
+        view = CreateScrollBoxListLinearView()
         view:SetPadding(6, 4, 4, 20, 2)
         view:SetElementExtent(26)
         view:SetElementInitializer("MPLT_RollFrameRowTemplate", function(frame, elementData)

@@ -198,7 +198,6 @@ function GetEncounter(instance)
         mapID = info.mapChallengeModeID
         if mapID and mapID ~= 0 then
             dungeonName = select(1, C_ChallengeMode.GetMapUIInfo(mapID))
-            dungeonID = select(3, C_ChallengeMode.GetMapUIInfo(mapID))
             if dungeonName then
                 return dungeonName, mapID
             end
@@ -304,7 +303,7 @@ function CalcFortune(playerID, instanceID, seasonID)
             end     
         end
     else
-        fotune = "N/A"
+        local fortune = "N/A"
     end
     return fortune, pFortune
 end
@@ -629,7 +628,7 @@ local function EJTrackItem()
             local itemInfo = C_EncounterJournal.GetLootInfoByIndex(index)
             local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = GetItemInfoInstant(button.link)
             local mplusEncounters = C_ChallengeMode.GetMapTable()
-            local instanceID = IsRaid and EncounterJournal.instanceID or InstaceIDToMapID(EncounterJournal.instanceID, itemInfo.encounterID)
+            local instanceID = isRaid and EncounterJournal.instanceID or InstaceIDToMapID(EncounterJournal.instanceID, itemInfo.encounterID)
             if button:IsVisible() and LinkUtil.IsLinkType(button.link, "item") then
                 local EJTrackItemButton = EJTrackItemPool:Acquire()
                 EJTrackItemButton:SetParent(MPLT_ButtonHolder)

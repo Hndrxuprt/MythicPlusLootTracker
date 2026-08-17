@@ -341,6 +341,7 @@ askingFrame.AutocloseText:SetText(Addon.localization.snifferAutoclose)
 askingFrame:Hide()
 
 local DataProvider = CreateDataProvider()
+local view
 
 local function AddNewItem(itemLink, unitName, isBis)
     local data = { itemLink = itemLink, owner = unitName, wAsked = false, pAsked = false, isBis = isBis }
@@ -467,7 +468,7 @@ end
 function MPLT_LootSnifferMixin:PrepareScrollFrame()
     DataProvider:Flush()
     if not view then
-        local view = CreateScrollBoxListLinearView()
+        view = CreateScrollBoxListLinearView()
         view:SetPadding(6, 4, 4, 20, 2)
         view:SetElementExtent(26)
         view:SetElementInitializer("MPLT_LootSnifferRowTemplate", function(frame, elementData)

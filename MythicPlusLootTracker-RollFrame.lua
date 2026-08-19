@@ -217,7 +217,7 @@ local function ProcessEvent(self, event, ...)
     if event == 'CHAT_MSG_SYSTEM' then
         local msg = ...
 
-        if not msg then return end
+        if not msg or issecretvalue(msg) then return end
 
         local name, roll, min, max = msg:match(rollPattern)
 

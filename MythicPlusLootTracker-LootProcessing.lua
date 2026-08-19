@@ -20,10 +20,10 @@ function Addon.GetEncounter(instance)
             dungeonName = select(1,GetInstanceInfo() )
             return dungeonName, instance
         end
-    elseif Addon.Constants.GREAT_VAULT_ID then
+    elseif instance == Addon.Constants.GREAT_VAULT_ID then
         dungeonName = Addon.localization.gvault
         return dungeonName, instance 
-    elseif Addon.Constants.OVERALL_ID then
+    elseif instance == Addon.Constants.OVERALL_ID then
         dungeonName = Addon.localization.overall
         return dungeonName, instance 
     elseif isRaid and isRaid ~= 0 then

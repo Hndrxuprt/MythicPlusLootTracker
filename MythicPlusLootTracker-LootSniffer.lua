@@ -96,6 +96,105 @@ local partyMessage_RU = {
     "дай плз",
     "если не нужна, отдашь?",
 }
+local classNick_EN = {
+    ["WARRIOR"] = { "war", "warr" },
+    ["DEATHKNIGHT"] = { "dk" },
+    ["PALADIN"] = { "pala", "pal" },
+    ["MONK"] = { "monk", "monky" },
+    ["PRIEST"] = { "priest" },
+    ["SHAMAN"] = { "sham", "shaman", "shama" },
+    ["DRUID"] = { "drood", "druid", "dudu" },
+    ["ROGUE"] = { "rog", "rogue" },
+    ["MAGE"] = { "mage" },
+    ["WARLOCK"] = { "lock", "warlock", "wl" },
+    ["HUNTER"] = { "hunt", "hunter" },
+    ["DEMONHUNTER"] = { "dh" },
+    ["EVOKER"] = { "evo", "evoker" },
+}
+local classNick_RU = {
+    ["WARRIOR"] = { "вар" },
+    ["DEATHKNIGHT"] = { "дк" },
+    ["PALADIN"] = { "пал", "паладин", "пала" },
+    ["MONK"] = { "монах", "монк" },
+    ["PRIEST"] = { "прист", "жрец" },
+    ["SHAMAN"] = { "шам", "шаман", "шама" },
+    ["DRUID"] = { "дру", "друид" },
+    ["ROGUE"] = { "рог", "рога" },
+    ["MAGE"] = { "маг" },
+    ["WARLOCK"] = { "лок" },
+    ["HUNTER"] = { "хант", "хунт" },
+    ["DEMONHUNTER"] = { "дх" },
+    ["EVOKER"] = { "дракон", "крыложоп" },
+}
+local itemTypeWord_EN = {
+    ["INVTYPE_TRINKET"] = { "trinket", "trink" },
+    ["INVTYPE_WAIST"] = { "belt" },
+    ["INVTYPE_FINGER"] = { "ring" },
+    ["INVTYPE_NECK"] = { "neck" },
+    ["INVTYPE_CLOAK"] = { "cloak", "cape" },
+    ["INVTYPE_FEET"] = { "boots", "shoes" },
+    ["INVTYPE_HAND"] = { "gloves" },
+    ["INVTYPE_HEAD"] = { "helm", "helmet" },
+    ["INVTYPE_SHOULDER"] = { "shoulders" },
+    ["INVTYPE_CHEST"] = { "chest" },
+    ["INVTYPE_ROBE"] = { "robe", "chest" },
+    ["INVTYPE_LEGS"] = { "legs", "pants" },
+    ["INVTYPE_WRIST"] = { "bracers" },
+    ["INVTYPE_WEAPON"] = { "weapon" },
+    ["INVTYPE_2HWEAPON"] = { "weapon" },
+    ["INVTYPE_SHIELD"] = { "shield" },
+    ["INVTYPE_HOLDABLE"] = { "off-hand" },
+    ["INVTYPE_WEAPONMAINHAND"] = { "main hand" },
+    ["INVTYPE_WEAPONOFFHAND"] = { "off-hand" },
+    ["INVTYPE_RANGED"] = { "weapon" },
+    ["INVTYPE_RANGEDRIGHT"] = { "weapon" },
+    ["INVTYPE_THROWN"] = { "weapon" },
+}
+-- Слова типов предметов для RU — хранить только в винительном падеже:
+-- неодуш. м/ср род: винительный = именительный (амулет, кольцо, пояс, щит...);
+-- женский род — форма на -у/-ю (триньку, шею, шапку, пушку). Множ. неодуш.
+-- тоже совпадает с им. (перчатки, ноги, сапоги). Шаблоны partyTypeMessage_RU
+-- должны использовать глагол/безличное с прямым дополнением в винительном,
+-- без согласования по роду ("надо", "отдашь", "дай", "можно забрать").
+local itemTypeWord_RU = {
+    ["INVTYPE_TRINKET"] = { "тринкет", "тринк" },
+    ["INVTYPE_WAIST"] = { "пояс" },
+    ["INVTYPE_FINGER"] = { "кольцо" },
+    ["INVTYPE_NECK"] = { "нек", "шею" },
+    ["INVTYPE_CLOAK"] = { "плащ" },
+    ["INVTYPE_FEET"] = { "сапоги", "боты" },
+    ["INVTYPE_HAND"] = { "перчатки", "руки" },
+    ["INVTYPE_HEAD"] = { "шлем", "шапку" },
+    ["INVTYPE_SHOULDER"] = { "наплечники" },
+    ["INVTYPE_CHEST"] = { "нагрудник", "чест" },
+    ["INVTYPE_ROBE"] = { "нагрудник", "чест" },
+    ["INVTYPE_LEGS"] = { "штаны", "ноги" },
+    ["INVTYPE_WRIST"] = { "наручи", "запы", "брасы" },
+    ["INVTYPE_WEAPON"] = { "оружие", "пушку" },
+    ["INVTYPE_2HWEAPON"] = { "оружие", "пушку" },
+    ["INVTYPE_SHIELD"] = { "щит" },
+    ["INVTYPE_HOLDABLE"] = { "оффхенд" },
+    ["INVTYPE_WEAPONMAINHAND"] = { "оружие", "пушку" },
+    ["INVTYPE_WEAPONOFFHAND"] = { "оружие", "пушку" },
+    ["INVTYPE_RANGED"] = { "оружие", "пушку" },
+    ["INVTYPE_RANGEDRIGHT"] = { "оружие", "пушку" },
+    ["INVTYPE_THROWN"] = { "метательное" },
+}
+local partyTypeMessage_EN = {
+    "do you need %s?",
+    "you need %s?",
+    "u need %s?",
+    "u keeping %s?",
+    "mind if I take %s?",
+    "can i have %s pls?",
+}
+local partyTypeMessage_RU = {
+    "тебе надо %s?",
+    "отдашь %s?",
+    "можно забрать %s?",
+    "дай %s плз",
+    "%s не отдашь?",
+}
 
 MPLT_LootSnifferMixin = {}
 MPLT_LootSnifferMixin.lootTable = {}
@@ -256,26 +355,57 @@ function IsItemUpgrade(itemLink)
     return IsUpgrade(itemLink)
 end
 
-function AskForItem(unitName, itemLink, chatType)
-    
+local function RandomItemDesignation(itemLink)
+    if math.random() < 0.5 then
+        return itemLink
+    end
+    local itemName = string.match(itemLink, "%[(.-)%]")
+    return itemName or itemLink
+end
+
+function AskForItem(unitName, itemLink, chatType, className)
+
     local function isRussianName(name)
         return string.match(name, "[\192-я\241]+") and not string.match(name, "[A-Za-z]")
     end
 
     local isRu = isRussianName(unitName)
-    local tbl
+    local message
 
     if chatType == "PARTY" then
-        tbl = isRu and partyMessage_RU or partyMessage_EN
         if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
             chatType = 'INSTANCE_CHAT'
         end
+
+        local nicks = isRu and classNick_RU or classNick_EN
+        local prefix = ""
+        if className and nicks[className] and math.random() < 0.5 then
+            local nickList = nicks[className]
+            prefix = nickList[math.random(1,#nickList)]..", "
+        end
+
+        local itemEquipLoc = select(4, C_Item.GetItemInfoInstant(itemLink))
+        local body
+
+        if isRu then
+            local tbl = partyMessage_RU
+            body = tbl[math.random(1,#tbl)].." "..itemLink
+        elseif itemEquipLoc and itemTypeWord_EN[itemEquipLoc] and math.random() < 0.5 then
+            local wordList = itemTypeWord_EN[itemEquipLoc]
+            local typeTemplates = partyTypeMessage_EN
+            local template = typeTemplates[math.random(1,#typeTemplates)]
+            body = template:format(wordList[math.random(1,#wordList)])
+        else
+            local tbl = partyMessage_EN
+            body = tbl[math.random(1,#tbl)].." "..RandomItemDesignation(itemLink)
+        end
+
+        message = prefix .. body
     else
-        tbl = isRu and messageText_RU or messageText_EN
+        local tbl = isRu and messageText_RU or messageText_EN
+        message = tbl[math.random(1,#tbl)].." "..itemLink
     end
 
-    local message = tbl[math.random(1,#tbl)].." "..itemLink
-    
     C_ChatInfo.SendChatMessage(message, chatType, nil, unitName)
 end
 
@@ -312,8 +442,8 @@ askingFrame:Hide()
 local DataProvider = CreateDataProvider()
 local view
 
-local function AddNewItem(itemLink, unitName, isBis)
-    local data = { itemLink = itemLink, owner = unitName, wAsked = false, pAsked = false, isBis = isBis }
+local function AddNewItem(itemLink, unitName, className, isBis)
+    local data = { itemLink = itemLink, owner = unitName, className = className, wAsked = false, pAsked = false, isBis = isBis }
 
     table.insert(MPLT_LootSnifferMixin.lootTable, data)
 end
@@ -390,7 +520,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
 
         frame.WhisperButton:SetText(Addon.localization.snifferW)
         frame.WhisperButton:SetScript("OnClick", function(self)
-            AskForItem(itemOwner, itemLink, "WHISPER")
+            AskForItem(itemOwner, itemLink, "WHISPER", elementData.className)
             frame.WhisperButton:Disable()
             if MPLT_LootSnifferMixin.lootTable[index] then
                 MPLT_LootSnifferMixin.lootTable[index].wAsked = true
@@ -398,7 +528,7 @@ function MPLT_LootSnifferMixin:Update(frame, elementData)
         end)
         frame.PartyButton:SetText(Addon.localization.snifferP)
         frame.PartyButton:SetScript("OnClick", function(self)
-            AskForItem(itemOwner, itemLink, "PARTY")
+            AskForItem(itemOwner, itemLink, "PARTY", elementData.className)
             frame.PartyButton:Disable()
             if MPLT_LootSnifferMixin.lootTable[index] then
                 MPLT_LootSnifferMixin.lootTable[index].pAsked = true
@@ -440,7 +570,7 @@ function MPLT_LootSnifferMixin:PrepareScrollFrame()
     end
 
     for k,data in pairs(MPLT_LootSnifferMixin.lootTable) do
-        DataProvider:Insert({ itemLink = data.itemLink, owner = data.owner, asked = data.asked, isBis = data.isBis })
+        DataProvider:Insert({ itemLink = data.itemLink, owner = data.owner, className = data.className, asked = data.asked, isBis = data.isBis })
     end
 end
 
@@ -478,10 +608,10 @@ local function ProcessEvent(self, event, ...)
         end
 
         if IsItemNeeded(itemID) then
-            AddNewItem(itemLink, unitName, true)
+            AddNewItem(itemLink, unitName, className, true)
             MPLT_LootSnifferMixin:Init()
         elseif IsItemUpgrade(itemLink) then
-            AddNewItem(itemLink, unitName, false)
+            AddNewItem(itemLink, unitName, className, false)
             MPLT_LootSnifferMixin:Init()
         end
     end)

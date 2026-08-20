@@ -149,11 +149,12 @@ function Addon.StartAutoclose(frame, owner, restart)
 end
 
 function Addon.RunOnItemReady(itemLink, callback)
-    if not C_Item.IsItemDataCachedByID(itemLink) then
+    local itemID = GetItemInfoInstant(itemLink)
+    if itemID and C_Item.IsItemDataCachedByID(itemID) then
+        callback()
+    else
         local item = Item:CreateFromItemLink(itemLink)
         item:ContinueOnItemLoad(callback)
-    else
-        callback()
     end
 end
 

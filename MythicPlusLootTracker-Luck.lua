@@ -102,9 +102,9 @@ local oldSelection
 local function Init_Button(button, elementData, playerID)
     local encounterId = elementData.encounterID
     local runs = elementData.runs
-    local name = select(1,Addon.GetEncounter(encounterId))
+    local name = select(1,Addon.GetEncounter(encounterId)) or tostring(encounterId)
     local fortune = string.format("%.1f",(elementData.fortune*100)).."%"
-    button.name:SetText(name.." - "..runs.." - "..fortune)
+    button.Name:SetText(name.." - "..runs.." - "..fortune)
     button:SetScript("OnClick", function()
         if oldSelection then
             oldSelection:UnlockHighlight()

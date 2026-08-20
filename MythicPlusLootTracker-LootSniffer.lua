@@ -103,23 +103,14 @@ MPLT_LootSnifferMixin.lootTable = {}
 local function IsItemNeeded(itemID)
     local playerID = Addon.GetPlayerID()
 
-    local _, mapID = Addon.GetEncounter(instance)
+    if not (MPLH_TRACKITEM and MPLH_TRACKITEM[playerID]) then
+        return false
+    end
 
-    if MPLH_TRACKITEM and MPLH_TRACKITEM[playerID] then
-        if MPLH_TRACKITEM[playerID][mapID] then
-            if MPLH_TRACKITEM[playerID][mapID][itemID] then
-                if MPLH_TRACKITEM[playerID][mapID][itemID]["done"]["done"] == 0 then
-                    return true
-                end
-            end
-        else
-            for map, data in pairs(MPLH_TRACKITEM[playerID]) do
-                if data[itemID] then
-                    if data[itemID]["done"]["done"] == 0 then
-                        return true
-                    end
-                end
-            end
+    for _, data in pairs(MPLH_TRACKITEM[playerID]) do
+        local record = data[itemID]
+        if record and record["done"] and record["done"]["done"] == 0 then
+            return true
         end
     end
 
@@ -138,7 +129,6 @@ local function IsItemValid(itemID)
 end
 
 function IsItemEquippable(itemLink)
-    local equippable
     local _, _, _, _, role, primaryStat, _, _, _, _ = GetSpecializationInfo(GetSpecialization())
     local playerPreferredArmor = CLASS_ARMOR[UnitClassBase("player")]
 
@@ -188,9 +178,7 @@ function IsItemEquippable(itemLink)
         end
     end
 
-    return Addon.RunOnItemReady(itemLink, function()
-        return IsEquippable(itemLink)
-    end)
+    return IsEquippable(itemLink)
 end
 
 function GetItemLevelDiff(itemLink)
@@ -265,9 +253,7 @@ function IsItemUpgrade(itemLink)
         
     end
 
-    return Addon.RunOnItemReady(itemLink, function()
-        return IsUpgrade(itemLink)
-    end)
+    return IsUpgrade(itemLink)
 end
 
 function AskForItem(unitName, itemLink, chatType)
@@ -464,14 +450,15 @@ end
 
 local savedInstanceID
 local function ProcessEvent(self, event, ...)
-    if event == 'ENCOUNTER_LOOT_RECEIVED' then
-        local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
+    if event ~= 'ENCOUNTER_LOOT_RECEIVED' then return end
 
+    local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
+    local itemType = select(6, GetItemInfoInstant(itemLink))
+
+    Addon.RunOnItemReady(itemLink, function()
         local itemBindType = select(14, C_Item.GetItemInfo(itemLink))
-        local itemType = select(6,GetItemInfoInstant(itemLink))
 
         if UnitIsUnit('player', unitName) then
-
             if not Addon.IsEquippableItemType(itemType) or (itemBindType == 2 or itemBindType >= 7) then
                 return
             end
@@ -483,7 +470,7 @@ local function ProcessEvent(self, event, ...)
 
         if itemBindType >= 7 then return end
 
-        local instanceID = select(8,GetInstanceInfo())
+        local instanceID = select(8, GetInstanceInfo())
 
         if savedInstanceID ~= instanceID then
             wipe(MPLT_LootSnifferMixin.lootTable)
@@ -497,7 +484,7 @@ local function ProcessEvent(self, event, ...)
             AddNewItem(itemLink, unitName, false)
             MPLT_LootSnifferMixin:Init()
         end
-    end
+    end)
 end
 
 local eventHandlerFrame = CreateFrame('Frame')

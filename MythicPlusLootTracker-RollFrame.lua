@@ -185,13 +185,16 @@ Addon.itemRolls = {}
 
 local latestItem
 
-function Addon.RollForItem(itemID, itemLink)
+function Addon.RollForItem(itemID, itemLink, seq)
     if not itemID then return end
+
+    if seq and Addon.itemRolls.seq and seq < Addon.itemRolls.seq then return end
 
     wipe(Addon.itemRolls)
 
     Addon.itemRolls.itemID = itemID
     Addon.itemRolls.itemLink = itemLink
+    Addon.itemRolls.seq = seq
 
     local itemTexture = C_Item.GetItemIconByID(itemLink)
     rollFrame.ItemContainer.ItemIcon:SetTexture(itemTexture)

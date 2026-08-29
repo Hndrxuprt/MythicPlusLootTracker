@@ -3,6 +3,9 @@ local AddonName, Addon = ...
 local greatVaultTable = {}
 local tradedItems = {}
 
+-- DifficultyIDs для рейдовых лут-листов журнала (Normal/Heroic/Mythic).
+local RAID_DIFFICULTIES = { 14, 15, 16 }
+
 function Addon.GetEncounter(instance)
     local dungeonName = nil
     local mapID = nil
@@ -121,46 +124,61 @@ end
 
 function Addon.CalcChance(playerID, instanceID, item, reset, encounterID)
     local lootChance = 0
-    local attempts = MPLH_TRACKITEM[playerID][instanceID][item]["attempts"]
     local spec = GetSpecialization()
     local specID = GetSpecializationInfo(spec)
     local _,_,classID = UnitClass("player")
     local numLoot = 0
     local wearableItems = 0
     EJ_SetLootFilter(classID, specID)
-    if ( EJ_IsValidInstanceDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS) ) then
-        EJ_SetDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS)
-    end
     local function GetWearableForEnc(Enc)
         if Enc then
             local name, _, _, _, _, journalInstanceID, _, _ = EJ_GetEncounterInfo(Enc)
-            EJ_SelectInstance(journalInstanceID)
-            numLoot = EJ_GetNumLoot()
-            for i=1, numLoot do
-                local info = C_EncounterJournal.GetLootInfoByIndex(i)
-                if info.slot ~= "" and not info.displayAsPerPlayerLoot and not C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(info.itemID) then
-                    wearableItems = wearableItems + 1
+            if journalInstanceID then
+                EJ_SelectInstance(journalInstanceID)
+                if EJ_InstanceIsRaid() then
+                    for _, difficultyID in ipairs(RAID_DIFFICULTIES) do
+                        if EJ_IsValidInstanceDifficulty(difficultyID) then
+                            EJ_SetDifficulty(difficultyID)
+                            break
+                        end
+                    end
+                elseif EJ_IsValidInstanceDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS) then
+                    EJ_SetDifficulty(Addon.Constants.EJ_DIFFICULTY_MYTHIC_PLUS)
+                end
+                numLoot = EJ_GetNumLoot()
+                for i=1, numLoot do
+                    local info = C_EncounterJournal.GetLootInfoByIndex(i)
+                    if info.slot ~= "" and not info.displayAsPerPlayerLoot and not C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(info.itemID) then
+                        wearableItems = wearableItems + 1
+                    end
                 end
             end
         end
     end
     if not encounterID then
-        for k, v in pairs(Addon.currentSeasonEncounters[instanceID]) do
-            encounterID = v
-            break 
-        end     
+        if Addon.currentSeasonEncounters[instanceID] then
+            for k, v in pairs(Addon.currentSeasonEncounters[instanceID]) do
+                encounterID = v
+                break
+            end
+        else
+            local _, _, journalInstanceID = EJ_GetInstanceInfo(instanceID)
+            if journalInstanceID then
+                local _, _, firstEncounterID = EJ_GetEncounterInfoByIndex(1, journalInstanceID)
+                if firstEncounterID then
+                    encounterID = firstEncounterID
+                end
+            end
+        end
     end
 
     GetWearableForEnc(encounterID)
 
     if wearableItems > 0 then
-        if reset then
-            lootChance = string.format("%.2f", (((1/wearableItems) * Addon.Constants.LOOT_DROP_RATE)*100))
-        else
-            lootChance = string.format("%.2f", (((1/wearableItems) * Addon.Constants.LOOT_DROP_RATE)*(attempts+1)*100))
-        end
+        lootChance = tonumber(string.format("%.2f", ((1/wearableItems) * Addon.Constants.LOOT_DROP_RATE)*100))
     end
-    if MPLH_TRACKITEM[playerID][instanceID][item]["chances"] == 0 then
+    local chances = MPLH_TRACKITEM[playerID][instanceID][item]["chances"]
+    if not chances or chances == 0 then
         MPLH_TRACKITEM[playerID][instanceID][item]["chances"] = lootChance
     end
 end
@@ -181,14 +199,16 @@ function Addon.LootReceivedEvent(itemID, itemLink, quantity, playerID, lootEncou
                 MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["done"] = 1
                 MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["date"] = date("%d.%m.%y")
                 MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["attempts"] = MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"]
-                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["chance"] = MPLH_TRACKITEM[playerID][instanceID][itemID]["chances"]
+                -- attempts ещё не включает текущий забег (он засчитывается на CHALLENGE_MODE_COMPLETED),
+                -- поэтому шанс на момент получения — база, умноженная на попытки + текущий забег.
+                MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["chance"] = tonumber(MPLH_TRACKITEM[playerID][instanceID][itemID]["chances"] or 0) * (MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["attempts"] + 1)
 
                 MPLH_TRACKITEM[playerID][instanceID][itemID]["attempts"] = 0
                 if isInTraded then
                     MPLH_TRACKITEM[playerID][instanceID][itemID]["done"]["traded"] = 1
                 end
             end
-            Addon.CalcChance(playerID, instanceID, itemID, reset)
+            Addon.CalcChance(playerID, instanceID, itemID, false, lootEncounterId)
         end
         C_MythicPlus.RequestMapInfo()
         local currentSeason = C_MythicPlus.GetCurrentSeason()

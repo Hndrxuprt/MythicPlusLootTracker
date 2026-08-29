@@ -83,6 +83,7 @@ local function TrackItem()
         for _, data in ipairs(gearTable) do
             if data.source then
                 Addon.MakeTrackedItemRecord(playerID, data.source, data.itemID)
+                Addon.CalcChance(playerID, data.source, data.itemID, false)
             end
         end
         if MPLTLootFrame then

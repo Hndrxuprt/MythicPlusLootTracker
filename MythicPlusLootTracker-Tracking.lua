@@ -97,10 +97,15 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                     )
                     local dateSince = MPLH_TRACKITEM[playerID][encounterID][itemID]["dateSince"]
                     local attempts = MPLH_TRACKITEM[playerID][encounterID][itemID]["attempts"]
-                    local chances = MPLH_TRACKITEM[playerID][encounterID][itemID]["chances"]
+                    local chances = tonumber(MPLH_TRACKITEM[playerID][encounterID][itemID]["chances"] or 0)
                     local doneDate = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["date"]
                     local doneChance = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["chance"]
                     local doneAttempts = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["attempts"]
+                    -- Старые записи хранили базовый шанс строкой без множителя попыток;
+                    -- новые — числом, уже с учётом попыток на момент получения.
+                    if type(doneChance) == "string" then
+                        doneChance = (tonumber(doneChance) or 0) * doneAttempts
+                    end
                     itemElementFrame.ItemContainer.ItemSince:SetText(Addon.localization.since..Addon.Constants.Color.TextLight..dateSince)
                     itemElementFrame.ItemContainer.ItemAttempts:SetText(Addon.localization.attempts..Addon.Constants.Color.TextLight..attempts)
                     itemElementFrame.ItemContainer.ItemChances:SetText(Addon.localization.chance..Addon.Constants.Color.TextLight..chances+(chances*attempts).."%")
@@ -108,7 +113,7 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
                     if MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["done"] == 1 then
                         local traded = MPLH_TRACKITEM[playerID][encounterID][itemID]["done"]["traded"] == 1
                         local doneTemplate = traded and Addon.localization.doneTraded or Addon.localization.done
-                        local doneText = string.format(doneTemplate, doneDate, doneAttempts, doneChance*doneAttempts)
+                        local doneText = string.format(doneTemplate, doneDate, doneAttempts, doneChance)
                         itemElementFrame.ItemDone:Show()
                         itemElementFrame.ItemDone.ItemDoneText:SetText(Addon.Constants.Color.TextLight..doneText)
                     end

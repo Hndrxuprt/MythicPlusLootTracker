@@ -585,6 +585,9 @@ local function ProcessEvent(self, event, ...)
     local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
     local itemType = select(6, GetItemInfoInstant(itemLink))
 
+    Addon.lootSeq = (Addon.lootSeq or 0) + 1
+    local seq = Addon.lootSeq
+
     Addon.RunOnItemReady(itemLink, function()
         local itemBindType = select(14, C_Item.GetItemInfo(itemLink))
 
@@ -593,7 +596,7 @@ local function ProcessEvent(self, event, ...)
                 return
             end
             if IsInGroup() and (not IsItemNeeded(itemID) and not IsItemUpgrade(itemLink)) then
-                Addon.RollForItem(itemID, itemLink)
+                Addon.RollForItem(itemID, itemLink, seq)
             end
             return
         end

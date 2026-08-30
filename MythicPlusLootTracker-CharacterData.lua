@@ -51,16 +51,24 @@ local function GetRaidRuns()
             return left.uiOrder < right.uiOrder;
         end)
         local lastInstanceID = nil;
+        local instanceName = nil;
         for index, encounter in ipairs(encounters) do
             local name, description, encounterID, rootSectionID, link, instanceID = EJ_GetEncounterInfo(encounter.encounterID);
             if instanceID ~= lastInstanceID then
-                local instanceName = EJ_GetInstanceInfo(instanceID);
+                instanceName = EJ_GetInstanceInfo(instanceID);
                 lastInstanceID = instanceID;
             end
             if name then
                 if encounter.bestDifficulty > 0 then
                     local completedDifficultyName = DifficultyUtil.GetDifficultyName(encounter.bestDifficulty);
-                    tinsert(raidRuns, {name, completedDifficultyName})
+                    -- Сохраняем имя рейдового экземпляра в первой записи блока,
+                    -- чтобы тултип AltManager не пересоздавал его через
+                    -- C_AdventureJournal.GetSuggestions()[3] (хрупкий хардкод).
+                    local entry = { name, completedDifficultyName }
+                    if instanceName and #raidRuns == 0 then
+                        entry.instanceName = instanceName
+                    end
+                    tinsert(raidRuns, entry)
                 end
             end
         end
@@ -90,12 +98,31 @@ function Addon.StoreCharacterData()
             tinsert(MPLH_ORDER, playerID)
         end
 
-        MPLH_KACDATA[playerID]["gear"] = {}
+        -- Захват экипировки. На входе в игру PLAYER_EQUIPMENT_CHANGED стреляет
+        -- очередью, пока инвентарь ещё синхронизируется, и GetInventoryItemLink
+        -- возвращает nil для всех слотов. Переприсваивание gear={} в этот момент
+        -- стирало ранее сохранённые ссылки — поэтому у части альтов gear = {}.
+        -- Сначала собираем во временную таблицу и перезаписываем gear только если
+        -- удалось прочитать хотя бы одну ссылку; иначе оставляем старые данные.
+        local newGear = {}
+        local gearIdx = 0
+        local anyLink = false
         for i=1, Addon.Constants.GEAR_SLOT_COUNT do
             if i ~= Addon.Constants.GEAR_SLOT_SKIP then
+                gearIdx = gearIdx + 1
+                -- Прямое индексирование сохраняет nil-дырки на своих местах;
+                -- tinsert с nil сжимал массив и сдвигал хвостовые слоты.
                 local itemLink = GetInventoryItemLink("player", i)
-                tinsert(MPLH_KACDATA[playerID]["gear"], itemLink)
+                newGear[gearIdx] = itemLink
+                if itemLink then
+                    anyLink = true
+                end
             end
+        end
+        if anyLink then
+            MPLH_KACDATA[playerID]["gear"] = newGear
+        elseif MPLH_KACDATA[playerID]["gear"] == nil then
+            MPLH_KACDATA[playerID]["gear"] = {}
         end
 
         MPLH_KACDATA[playerID]["rio"] = C_ChallengeMode.GetOverallDungeonScore()
@@ -121,8 +148,15 @@ function Addon.StoreCharacterData()
         MPLH_KACDATA[playerID]["oneMPlus"] = oneMPlus
         MPLH_KACDATA[playerID]["fourMPlus"] = fourMPlus
         MPLH_KACDATA[playerID]["eightMPlus"] = eightMPlus
-        MPLH_KACDATA[playerID]["currentKeystone"] = currentKeystone
-        MPLH_KACDATA[playerID]["currentKeystoneLvl"] = currentKeystoneLvl
+        -- Кейстоун: как и gear, не затираем сохранённое значение "N/A", если
+        -- C_MythicPlus ещё не прогрузил ключ на раннем PLAYER_EQUIPMENT_CHANGED.
+        if tonumber(currentKeystone) then
+            MPLH_KACDATA[playerID]["currentKeystone"] = currentKeystone
+            MPLH_KACDATA[playerID]["currentKeystoneLvl"] = currentKeystoneLvl
+        elseif MPLH_KACDATA[playerID]["currentKeystone"] == nil then
+            MPLH_KACDATA[playerID]["currentKeystone"] = currentKeystone
+            MPLH_KACDATA[playerID]["currentKeystoneLvl"] = currentKeystoneLvl
+        end
         local r, g, b = GetItemLevelColor()
         MPLH_KACDATA[playerID]["ilvl"] = format("|cff%02x%02x%02x", r*255, g*255, b*255)..floor(select(2, GetAverageItemLevel()))
         if MPLH_KACDATA[playerID]["mythicRuns"] and next(MPLH_KACDATA[playerID]["mythicRuns"]) then

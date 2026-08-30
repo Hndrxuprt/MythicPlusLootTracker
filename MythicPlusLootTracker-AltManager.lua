@@ -168,12 +168,12 @@ local function SetIlvlProg(frame, data)
             GameTooltip_AddBlankLineToTooltip(GameTooltip)
         end
         if next(data.raidRuns) then
-            local suggestions = C_AdventureJournal.GetSuggestions()
-            local raidSuggestion = suggestions[3]
-            local raidEJID = raidSuggestion.ej_instanceID
-
-            local instanceName = EJ_GetInstanceInfo(raidEJID) --Undermine
-            GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_ENCOUNTER_LIST, instanceName))
+            -- Имя рейдового экземпляра сохраняем в GetRaidRuns (первая запись),
+            -- больше не берём его из C_AdventureJournal.GetSuggestions()[3].
+            local instanceName = data.raidRuns[1].instanceName
+            if instanceName then
+                GameTooltip_AddHighlightLine(GameTooltip, string.format(WEEKLY_REWARDS_ENCOUNTER_LIST, instanceName))
+            end
             for i = 1, #data.raidRuns do
                 GameTooltip_AddColoredLine(GameTooltip, string.format(WEEKLY_REWARDS_COMPLETED_ENCOUNTER, data.raidRuns[i][1], data.raidRuns[i][2]), GREEN_FONT_COLOR)
             end
@@ -195,34 +195,46 @@ local function SetRio(frame, data)
     frame.CharRio:SetScript("OnLeave", GameTooltip_Hide)
 end
 
+local TIER_SLOTS = { [1] = true, [3] = true, [4] = true, [9] = true, [6] = true }
+
 local function SetGear(frame, data)
     if data.gear then
         for i=1, 16 do
-            if not data.gear[i] then
-                frame["ItemFrame"..i]["ItemIcon"..i]:SetAlpha(0)
-                frame["ItemFrame"..i]:SetScript("OnEnter", function(self)
+            local itemFrame = frame["ItemFrame"..i]
+            local itemLink = data.gear[i]
+            if not itemLink then
+                itemFrame["ItemIcon"..i]:SetAlpha(0)
+                -- Восстанавливаем рамку: серую для не-tier слота, жёлтую для tier-слота
+                if TIER_SLOTS[i] then
+                    itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-yellow")
+                else
+                    itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-gray")
+                end
+                itemFrame:SetScript("OnEnter", function(self)
                     GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
                     GameTooltip:Hide()
                 end)
-                frame["ItemFrame"..i]:SetScript("OnLeave", GameTooltip_Hide)
+                itemFrame:SetScript("OnLeave", GameTooltip_Hide)
             else
-                frame["ItemFrame"..i]["ItemIcon"..i]:SetAlpha(1)
-                local itemID = GetItemInfoInstant(data.gear[i])
+                itemFrame["ItemIcon"..i]:SetAlpha(1)
+                local itemID = GetItemInfoInstant(itemLink)
                 local itemIcon = GetItemIcon(itemID)
-                if (i==1 or i==3 or i==4 or i==9 or i==6) then
+                if TIER_SLOTS[i] then
                     if not IsItemClassSet(itemID) then
-                        frame["ItemFrame"..i]["Item"..i]:SetAtlas("talents-node-choiceflyout-square-red")
+                        itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-red")
                     else
-                        frame["ItemFrame"..i]["Item"..i]:SetAtlas("talents-node-choiceflyout-square-yellow")
+                        itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-yellow")
                     end
+                else
+                    itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-gray")
                 end
-                frame["ItemFrame"..i]["ItemIcon"..i]:SetTexture(itemIcon)
-                frame["ItemFrame"..i]:SetScript("OnEnter", function(self)
+                itemFrame["ItemIcon"..i]:SetTexture(itemIcon)
+                itemFrame:SetScript("OnEnter", function(self)
                     GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 20, 10)
-                    GameTooltip:SetHyperlink(data.gear[i])
+                    GameTooltip:SetHyperlink(itemLink)
                     GameTooltip:Show()
                 end)
-                frame["ItemFrame"..i]:SetScript("OnLeave", GameTooltip_Hide)
+                itemFrame:SetScript("OnLeave", GameTooltip_Hide)
             end
         end
     end

@@ -173,13 +173,7 @@ local function InitFortuneCompact(frame, elementData, dataIndex)
         frame.FortuneValue:SetTextScale(1.1)
     end
 
-    -- Зебра + рамка.
-    local zebra = (dataIndex % 2 == 0)
-    if zebra then
-        frame.RowBG:SetVertexColor(0.18, 0.18, 0.20, 0.55)
-    else
-        frame.RowBG:SetVertexColor(0.10, 0.10, 0.12, 0.45)
-    end
+    -- Рамка — цвет задаём здесь; зебру применяет RegisterAlternateRowBehavior после сортировки.
     local border = { frame.RowBorderTop, frame.RowBorderBottom, frame.RowBorderLeft, frame.RowBorderRight }
     for _, tex in ipairs(border) do
         if tex then tex:SetVertexColor(0.35, 0.35, 0.38, 0.6) end
@@ -221,9 +215,16 @@ function Addon.PrepareEncounterList(playerID)
         end)
         ScrollUtil.InitScrollBoxListWithScrollBar(EncountersFrame.ScrollBox, EncountersFrame.ScrollBar, view)
         EncountersFrame.ScrollBox:Init(view)
-        -- Перетираем callback зебры от полного вида пустым: компактные строки — Frame,
-        -- у них нет SetNormalTexture, и зебра рисуется в InitFortuneCompact.
-        ScrollUtil.RegisterAlternateRowBehavior(EncountersFrame.ScrollBox, function() end)
+        -- Зебра применяется после сортировки, в финальном порядке строк.
+        ScrollUtil.RegisterAlternateRowBehavior(EncountersFrame.ScrollBox, function(frame, alternate)
+            if frame.RowBG then
+                if alternate then
+                    frame.RowBG:SetVertexColor(0.18, 0.18, 0.20, 0.55)
+                else
+                    frame.RowBG:SetVertexColor(0.10, 0.10, 0.12, 0.45)
+                end
+            end
+        end)
     else
         local view = CreateScrollBoxListLinearView(10, 10, 2, 2, 0);
         view:SetElementExtent(20)
@@ -289,6 +290,10 @@ function Addon.PrepareEncounterList(playerID)
     if compact then
         EncountersFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, Addon.Constants.Layout.TrackingOffsetY)
         EncountersFrame:SetSize(Addon.Constants.Layout.CompactContentWidth, 401)
+        -- Сдвигаем скролл на 2px левее, чтобы он уместился внутри фрейма.
+        EncountersFrame.ScrollBar:ClearAllPoints()
+        EncountersFrame.ScrollBar:SetPoint("TOPRIGHT", EncountersFrame, "TOPRIGHT", -1, -5)
+        EncountersFrame.ScrollBar:SetPoint("BOTTOMRIGHT", EncountersFrame, "BOTTOMRIGHT", -1, 5)
         -- Скрываем декоративные текстуры полного вида.
         if EncountersFrame.bg then EncountersFrame.bg:Hide() end
         if EncountersFrame.title then EncountersFrame.title:Hide() end

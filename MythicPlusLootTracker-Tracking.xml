@@ -217,10 +217,10 @@
             <Layer level="ARTWORK">
                 <!-- Название подземелья — в верхней части строки, до 2 строк.
                      Шрифт/цвет задаётся в Lua: GameFontHighlightMedium + CAMPAIGN_COMPLETE_COLOR. -->
-                <FontString parentKey="EncounterText" inherits="GameFontHighlightMedium" justifyH="LEFT" justifyV="TOP" maxLines="2">
-                    <Size x="160" y="32"/>
+                <FontString parentKey="EncounterText" inherits="GameFontHighlightMedium" justifyH="LEFT" justifyV="MIDDLE" maxLines="2">
+                    <Size x="160" y="36"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="8" y="-6"/>
+                        <Anchor point="LEFT" x="8" y="0"/>
                     </Anchors>
                 </FontString>
                 <!-- Количество попыток в подземелье — под названием.

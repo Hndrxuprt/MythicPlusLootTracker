@@ -348,6 +348,10 @@ function MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
     TrackingFrame:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 5, Addon.Constants.Layout.TrackingOffsetY)
     if compact then
         TrackingFrame:SetSize(Addon.Constants.Layout.CompactContentWidth, 401)
+        -- Сдвигаем скролл на 2px левее, чтобы он уместился внутри фрейма.
+        TrackingFrame.ScrollBar:ClearAllPoints()
+        TrackingFrame.ScrollBar:SetPoint("TOPRIGHT", TrackingFrame, "TOPRIGHT", -1, -5)
+        TrackingFrame.ScrollBar:SetPoint("BOTTOMRIGHT", TrackingFrame, "BOTTOMRIGHT", -1, 5)
     else
         TrackingFrame:SetSize(Addon.Constants.Layout.ContentWidth, 401)
     end

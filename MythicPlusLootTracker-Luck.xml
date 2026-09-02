@@ -96,7 +96,6 @@
 		<Size x="400" y="48"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="RowBG" file="Interface\Buttons\White8x8" setAllPoints="true"/>
 				<Texture parentKey="DungeonBG" file="Interface\EncounterJournal\UI-EJ-BACKGROUND-Default">
 					<Size x="400" y="430"/>
 					<Anchors>
@@ -104,6 +103,10 @@
 					</Anchors>
 				</Texture>
 				<MaskTexture parentKey="DungeonMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE" setAllPoints="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<!-- Зебра поверх фона подземелья -->
+				<Texture parentKey="RowBG" file="Interface\Buttons\White8x8" setAllPoints="true"/>
 			</Layer>
 			<Layer level="BORDER">
 				<Texture parentKey="RowBorderTop" file="Interface\Buttons\White8x8">

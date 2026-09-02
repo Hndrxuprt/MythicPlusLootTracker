@@ -23,7 +23,7 @@ Addon.localization.rio = "рио"
 Addon.localization.tradedItem = "Обменян"
 
 Addon.localization.since = "|cff858585Отслеживается с: "
-Addon.localization.attempts = "|cff858585Попыток: "
+Addon.localization.attempts = "Попыток: "
 Addon.localization.chance = "|cff858585Шанс: "
 Addon.localization.done = "|cff858585Получен |cffd9d7d7%s |cff858585после |cffd9d7d7%s |cff858585попыток |cff858585с шансом |cffd9d7d7%s%%|r"
 Addon.localization.doneTraded = "|cff858585Получен |cffd9d7d7обменом |cffd9d7d7%s |cff858585после |cffd9d7d7%s |cff858585попыток |cff858585с шансом |cffd9d7d7%s%%|r"
@@ -82,3 +82,14 @@ Addon.localization.CCImportButtonDesc2 = "IcyVeins Guide BIS"
 Addon.localization.CCImportButtonDesc3 = "Click - Mythic+"
 Addon.localization.CCImportButtonDesc4 = "Shift+Click - Raid"
 Addon.localization.CCImportButtonDesc5 = "Alt+Click - Overall"
+
+Addon.localization.compactView = "Компактный вид"
+Addon.localization.compactViewExpand = "Полный вид"
+
+Addon.localization.runs = "Прохождений: "
+Addon.localization.items = "Предметов: "
+Addon.localization.fortuneLabel = "Везение: "
+
+Addon.localization.runsLabel = "Прохожд."
+Addon.localization.itemsLabel = "Предметов"
+Addon.localization.luckLabel = "Везение"

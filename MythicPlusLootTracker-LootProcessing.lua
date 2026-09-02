@@ -43,6 +43,32 @@ function Addon.GetEncounter(instance)
     end
 end
 
+-- Возвращает путь фоновой текстуры подземелья из EncounterJournal.
+-- Для M+ принимает mapID (резолвит в journalInstanceID), для рейдов — EJ instanceID.
+-- Возвращает nil для сентинелов (Great Vault / Overall) и если фон недоступен.
+function Addon.GetDungeonBackground(instance)
+    if instance == nil
+        or instance == Addon.Constants.GREAT_VAULT_ID
+        or instance == Addon.Constants.OVERALL_ID then
+        return nil
+    end
+    local isRaid = select(11, EJ_GetInstanceInfo(instance))
+    if isRaid and isRaid ~= 0 then
+        return select(3, EJ_GetInstanceInfo(instance))
+    end
+    -- M+: instance — это mapID; резолвим journalInstanceID из данных аддона.
+    local dungeon = Addon.Dungeons and Addon.Dungeons[instance]
+    if dungeon and dungeon.journalInstanceID then
+        return select(3, EJ_GetInstanceInfo(dungeon.journalInstanceID))
+    end
+    -- Запасной путь: рантайм-таблица, заполняемая из EJ_GetInstanceByIndex.
+    local ejID = Addon.MapIDToEJInstanceID and Addon.MapIDToEJInstanceID[instance]
+    if ejID then
+        return select(3, EJ_GetInstanceInfo(ejID))
+    end
+    return nil
+end
+
 local function EncounterLooted(encounter, itemLink, quantity, playerID, season)
     if MPLH_ENC[season] == nil then
         MPLH_ENC[season] = {}

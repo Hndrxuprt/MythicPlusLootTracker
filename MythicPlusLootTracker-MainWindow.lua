@@ -21,11 +21,62 @@ function Addon.UpdateSubFrames()
         UIConfig.dropDownChars:Show()
         UIConfig.dropDownSeason:Show()
     end
+
+    -- Компактный вид доступен на вкладках Fortune и Tracking; на остальных — полный размер окна.
+    local compact = Addon.DB and Addon.DB.global and Addon.DB.global.compactView and (tabID == 1 or tabID == 2)
+    if compact then
+        MPLTLootFrame:SetWidth(Addon.Constants.Layout.CompactWindowWidth)
+        UIConfig.dropDownChars:Hide()
+        UIConfig.dropDownSeason:Hide()
+        -- Верхние кнопки показываем обычного размера и перепривязываем к левому краю.
+        if UIConfig.topButtons then
+            for _, btn in ipairs(UIConfig.topButtons) do
+                btn:Show()
+                btn:ClearAllPoints()
+                btn:SetSize(100, 25)
+            end
+            UIConfig.topButtons[1]:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 58, -28)
+            for i = 2, #UIConfig.topButtons do
+                UIConfig.topButtons[i]:SetPoint("LEFT", UIConfig.topButtons[i-1], "RIGHT", 4, 0)
+            end
+        end
+        if UIConfig.compactToggle then
+            UIConfig.compactToggle:Show()
+        end
+    else
+        MPLTLootFrame:SetWidth(Addon.Constants.Layout.MainWindowWidth)
+        if UIConfig.topButtons then
+            for _, btn in ipairs(UIConfig.topButtons) do
+                btn:Show()
+                btn:ClearAllPoints()
+                btn:SetSize(100, 25)
+            end
+            -- Полный вид: восстанавливаем исходные якоря.
+            UIConfig.topButtons[1]:SetPoint("TOPLEFT", MPLTLootFrame, "TOPLEFT", 70, -30)
+            for i = 2, #UIConfig.topButtons do
+                UIConfig.topButtons[i]:SetPoint("LEFT", UIConfig.topButtons[i-1], "RIGHT", 4, 0)
+            end
+        end
+        if UIConfig.compactToggle then
+            -- Кнопка видна на вкладках Fortune и Tracking; на AltManager — скрывается.
+            if tabID == 1 or tabID == 2 then
+                UIConfig.compactToggle:Show()
+            else
+                UIConfig.compactToggle:Hide()
+            end
+        end
+    end
 end
 
 local function Tab_OnClick(self)
     PanelTemplates_SetTab(self:GetParent(), self:GetID())
     Addon.UpdateSubFrames()
+    -- При переключении на Fortune перестраиваем список, чтобы подхватить compactView.
+    local tabID = self:GetID()
+    if tabID == 1 and UIConfig then
+        local playerID = UIConfig.dropDownChars and UIConfig.dropDownChars.character or Addon.GetPlayerID()
+        Addon.PrepareEncounterList(playerID)
+    end
 end
 
 local function SetTabs(frame, numTabs, ...)
@@ -104,6 +155,51 @@ function Addon.ToggleMainWindow()
         MPLTLootFrameTitleText:SetText(Addon.localization.title)
         MPLTLootFramePortrait:SetTexture("interface/icons/inv_bfa_paragoncache_orderofembers.blp")
 
+        -- Переключатель компактного вида вкладки Tracking: слева от кнопки закрытия окна.
+        local compactToggle = CreateFrame("Frame", "MPLTCompactToggle", MPLTLootFrame, "MaximizeMinimizeButtonFrameTemplate")
+        compactToggle:SetPoint("RIGHT", MPLTLootFrame.CloseButton, "LEFT", 0, 0)
+        UIConfig.compactToggle = compactToggle
+        -- Свой onClick вместо стандартного Maximize()/Minimize(): меняем флаг и перестраиваем список.
+        -- Имена методов миксина контринтуитивны: SetMinimizedLook() показывает MinimizeButton
+        -- (иконку "свернуть") — это вид полного/развёрнутого состояния; SetMaximizedLook() — наоборот.
+        compactToggle.MaximizeButton:SetScript("OnClick", function()
+            Addon.DB.global.compactView = false
+            compactToggle:SetMinimizedLook()
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+            local playerID = UIConfig.dropDownChars.character or Addon.GetPlayerID()
+            Addon.PrepareEncounterList(playerID)
+            MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
+            Addon.UpdateSubFrames()
+        end)
+        compactToggle.MinimizeButton:SetScript("OnClick", function()
+            Addon.DB.global.compactView = true
+            compactToggle:SetMaximizedLook()
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+            local playerID = UIConfig.dropDownChars.character or Addon.GetPlayerID()
+            Addon.PrepareEncounterList(playerID)
+            MPLT_TrackingElementMixin:PrepareTrackingList(playerID)
+            Addon.UpdateSubFrames()
+        end)
+        -- Тултип с подписью при наведении.
+        compactToggle:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            if Addon.DB.global.compactView then
+                GameTooltip:SetText(Addon.localization.compactViewExpand)
+            else
+                GameTooltip:SetText(Addon.localization.compactView)
+            end
+            GameTooltip:Show()
+        end)
+        compactToggle:SetScript("OnLeave", GameTooltip_Hide)
+        -- Синхронизируем вид кнопки с сохранённым состоянием.
+        -- Полный вид → показываем "свернуть" (SetMinimizedLook); компакт → "развернуть" (SetMaximizedLook).
+        if Addon.DB.global.compactView then
+            compactToggle:SetMaximizedLook()
+        else
+            compactToggle:SetMinimizedLook()
+        end
+        -- Кнопка видна только на вкладке Tracking; UpdateSubFrames управляет видимостью.
+
         local showLootSnifferButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
         showLootSnifferButton:Hide()
         showLootSnifferButton:SetParent(MPLTLootFrame)
@@ -114,6 +210,7 @@ function Addon.ToggleMainWindow()
         showLootSnifferButton:SetScript("OnClick", function()
             MPLT_LootSnifferMixin:Init()
         end)
+        UIConfig.topButtons = { showLootSnifferButton }
 
         local showRollButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
         showRollButton:Hide()
@@ -125,6 +222,7 @@ function Addon.ToggleMainWindow()
         showRollButton:SetScript("OnClick", function()
             MPLT_RollFrameMixin:Init()
         end)
+        table.insert(UIConfig.topButtons, showRollButton)
 
         if C_AddOns.IsAddOnLoaded("ClassCodex") then
             local showImportButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
@@ -158,6 +256,7 @@ function Addon.ToggleMainWindow()
                 GameTooltip:SetScale(1)
                 GameTooltip:Hide()
             end)
+            table.insert(UIConfig.topButtons, showImportButton)
 
 
             local texture = C_AddOns.GetAddOnMetadata("ClassCodex", "IconTexture")

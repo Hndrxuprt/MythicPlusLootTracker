@@ -29,6 +29,7 @@ function Addon:Init()
             minimap = {
                 hide = false,
             },
+            compactView = false,
         },
     })
     Addon:InitIcon()

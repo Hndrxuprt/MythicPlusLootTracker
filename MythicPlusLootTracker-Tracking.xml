@@ -160,4 +160,122 @@
             </Button>
         </Frames>
     </Frame>
+
+    <!-- Compact view: одна строка на подземелье, иконки предметов справа от названия -->
+    <Frame name="MPLT_TrackingCompactEncounterElementTemplate" mixin="MPLT_TrackingElementMixin" virtual="true">
+        <Size x="400" y="52"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="RowBG" file="Interface\Buttons\White8x8">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <!-- Полупрозрачный фон подземелья из EncounterJournal.
+                     Фиксированный размер с сохранением пропорций арт-текстуры;
+                     маска обрезает видимую область под строку. -->
+                <Texture parentKey="DungeonBG" file="Interface\EncounterJournal\UI-EJ-BACKGROUND-Default">
+                    <Size x="400" y="430"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <MaskTexture parentKey="DungeonMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE" setAllPoints="true"/>
+            </Layer>
+            <Layer level="BORDER">
+                <!-- Рамка-разделитель строк: четыре тонкие полосы по периметру -->
+                <Texture parentKey="RowBorderTop" file="Interface\Buttons\White8x8">
+                    <Size x="0" y="1"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="TOPRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="RowBorderBottom" file="Interface\Buttons\White8x8">
+                    <Size x="0" y="1"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="RowBorderLeft" file="Interface\Buttons\White8x8">
+                    <Size x="1" y="0"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMLEFT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="RowBorderRight" file="Interface\Buttons\White8x8">
+                    <Size x="1" y="0"/>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <!-- Название подземелья — в верхней части строки, до 2 строк.
+                     Шрифт/цвет задаётся в Lua: GameFontHighlightMedium + CAMPAIGN_COMPLETE_COLOR. -->
+                <FontString parentKey="EncounterText" inherits="GameFontHighlightMedium" justifyH="LEFT" justifyV="TOP" maxLines="2">
+                    <Size x="160" y="32"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="8" y="-6"/>
+                    </Anchors>
+                </FontString>
+                <!-- Количество попыток в подземелье — под названием.
+                     Шрифт/цвет в Lua: GameFontDisableTiny2 + SPELLBOOK_UNLEARNED_TINT_COLOR. -->
+                <FontString parentKey="AttemptsText" inherits="GameFontDisableTiny2" justifyH="LEFT" justifyV="BOTTOM" maxLines="1">
+                    <Size x="160" y="16"/>
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" x="8" y="2"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <!-- Удаление всего подземелья из отслеживания -->
+            <Button parentKey="RemoveEnc" inherits="UIPanelCloseButtonNoScripts">
+                <Size x="13" y="13"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-2" y="-2"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <!-- Compact view: ячейка предмета — иконка по центру строки, шанс под ней -->
+    <Frame name="MPLT_TrackingCompactItemElementTemplate" virtual="true">
+        <Size x="32" y="52"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="icon">
+                    <Size x="26" y="26"/>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="6"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString parentKey="Chance" inherits="GameFontDisableTiny" justifyH="CENTER" justifyV="TOP" maxLines="1">
+                    <Size x="40" y="14"/>
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent.icon" relativePoint="BOTTOM" x="0" y="-4"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnEnter>
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                GameTooltip:SetText("");
+            </OnEnter>
+            <OnLeave function="GameTooltip_Hide"/>
+        </Scripts>
+    </Frame>
 </UI>

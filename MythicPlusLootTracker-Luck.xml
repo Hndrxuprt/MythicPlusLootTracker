@@ -90,4 +90,100 @@
 			</AnimationGroup>
 		</Animations>
 	</Frame>
+
+	<!-- Compact Fortune: строка данжа с фоном, слева название, справа статистика -->
+	<Frame name="MPLT_FortuneCompactElementTemplate" mixin="MythicPlusLootTrackerLuckElementMixin" virtual="true">
+		<Size x="400" y="48"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="RowBG" file="Interface\Buttons\White8x8" setAllPoints="true"/>
+				<Texture parentKey="DungeonBG" file="Interface\EncounterJournal\UI-EJ-BACKGROUND-Default">
+					<Size x="400" y="430"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<MaskTexture parentKey="DungeonMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE" setAllPoints="true"/>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="RowBorderTop" file="Interface\Buttons\White8x8">
+					<Size x="0" y="1"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RowBorderBottom" file="Interface\Buttons\White8x8">
+					<Size x="0" y="1"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RowBorderLeft" file="Interface\Buttons\White8x8">
+					<Size x="1" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+						<Anchor point="BOTTOMLEFT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RowBorderRight" file="Interface\Buttons\White8x8">
+					<Size x="1" y="0"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="0" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="EncounterText" inherits="GameFontHighlightMedium" justifyH="LEFT" justifyV="MIDDLE" maxLines="2">
+					<Size x="160" y="48"/>
+					<Anchors>
+						<Anchor point="LEFT" x="8" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- Колонка Runs: метка сверху, значение снизу -->
+				<FontString parentKey="RunsLabel" inherits="GameFontDisableTiny" justifyH="CENTER" justifyV="BOTTOM" maxLines="1">
+					<Size x="66" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="180" y="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="RunsValue" inherits="GameFontHighlightSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+					<Size x="66" y="16"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.RunsLabel" relativePoint="BOTTOM" x="0" y="-1"/>
+					</Anchors>
+				</FontString>
+				<!-- Колонка Items -->
+				<FontString parentKey="ItemsLabel" inherits="GameFontDisableTiny" justifyH="CENTER" justifyV="BOTTOM" maxLines="1">
+					<Size x="66" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="250" y="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="ItemsValue" inherits="GameFontHighlightSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+					<Size x="66" y="16"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.ItemsLabel" relativePoint="BOTTOM" x="0" y="-1"/>
+					</Anchors>
+				</FontString>
+				<!-- Колонка Luck -->
+				<FontString parentKey="FortuneLabel" inherits="GameFontDisableTiny" justifyH="CENTER" justifyV="BOTTOM" maxLines="1">
+					<Size x="66" y="12"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="320" y="-8"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="FortuneValue" inherits="GameFontHighlightSmall" justifyH="CENTER" justifyV="TOP" maxLines="1">
+					<Size x="66" y="16"/>
+					<Anchors>
+						<Anchor point="TOP" relativeKey="$parent.FortuneLabel" relativePoint="BOTTOM" x="0" y="-1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
 </UI>

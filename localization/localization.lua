@@ -21,7 +21,7 @@ Addon.localization.rio = "rio"
 Addon.localization.tradedItem = "Traded item"
 
 Addon.localization.since = "|cff858585Tracking since: "
-Addon.localization.attempts = "|cff858585Attempts: "
+Addon.localization.attempts = "Attempts: "
 Addon.localization.chance = "|cff858585Chance: "
 Addon.localization.done = "|cff858585You got it |cffd9d7d7%s |cff858585after |cffd9d7d7%s |cff858585attempts |cff858585with chance |cffd9d7d7%s%%|r"
 Addon.localization.doneTraded = "|cff858585You got it |cffd9d7d7traded |cffd9d7d7%s |cff858585after |cffd9d7d7%s |cff858585attempts |cff858585with chance |cffd9d7d7%s%%|r"
@@ -79,3 +79,14 @@ Addon.localization.CCImportButtonDesc2 = "IcyVeins Guide BIS"
 Addon.localization.CCImportButtonDesc3 = "Click - Mythic+"
 Addon.localization.CCImportButtonDesc4 = "Shift+Click - Raid"
 Addon.localization.CCImportButtonDesc5 = "Alt+Click - Overall"
+
+Addon.localization.compactView = "Compact view"
+Addon.localization.compactViewExpand = "Full view"
+
+Addon.localization.runs = "Runs: "
+Addon.localization.items = "Items: "
+Addon.localization.fortuneLabel = "Luck: "
+
+Addon.localization.runsLabel = "Runs"
+Addon.localization.itemsLabel = "Items"
+Addon.localization.luckLabel = "Luck"

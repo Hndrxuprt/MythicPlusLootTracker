@@ -1,6 +1,6 @@
 ## Interface: 120100
 ## Title: Mythic Plus Loot Tracker
-## Version: 1.25
+## Version: 1.26
 ## SavedVariables: MPLH_ENC, MPLH_ENC_ENDED, MPLH_TRACKITEM, MPLH_TRACKITEM_ORDER, MPLH_TRACKEDITEM_ITEMORDER, MPLH_KACDATA, MPLH_ORDER, MPLTOptions
 ## Notes: Tracking all items recieved in mythic plus dungeons
 ## Notes-ruRU: Трекер лута в мифик+ подземельях

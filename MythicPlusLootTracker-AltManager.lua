@@ -218,7 +218,7 @@ local function SetGear(frame, data)
             else
                 itemFrame["ItemIcon"..i]:SetAlpha(1)
                 local itemID = C_Item.GetItemInfoInstant(itemLink)
-                local itemIcon = GetItemIcon(itemID)
+                local itemIcon = C_Item.GetItemIconByID(itemID)
                 if TIER_SLOTS[i] then
                     if not IsItemClassSet(itemID) then
                         itemFrame["Item"..i]:SetAtlas("talents-node-choiceflyout-square-red")

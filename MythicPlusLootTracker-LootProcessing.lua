@@ -129,7 +129,7 @@ function Addon.CalcFortune(playerID, instanceID, seasonID)
     if MPLH_TABLE[seasonID] and MPLH_TABLE[seasonID][playerID] and MPLH_TABLE[seasonID][playerID][instanceID] then
         if Addon.GetTableLength(MPLH_TABLE[seasonID][playerID][instanceID]) > 0 then
             for k, v in pairs(MPLH_ENC[Addon.currentSeason][playerID][instanceID]) do
-                local itemType = select(6,GetItemInfoInstant(k))
+                local itemType = select(6,C_Item.GetItemInfoInstant(k))
                 local isTraded = select(1,strsplit("~",k))
                 if isTraded ~= "traded" and Addon.IsEquippableItemType(itemType) then
                     pFortune = pFortune + 1
@@ -243,8 +243,8 @@ function Addon.LootReceivedEvent(itemID, itemLink, quantity, playerID, lootEncou
 end
 
 function Addon.DetectGreatVault(itemLink)
-    local itemType = select(6,GetItemInfoInstant(itemLink))
-    local itemID = select(1, GetItemInfoInstant(itemLink))
+    local itemType = select(6,C_Item.GetItemInfoInstant(itemLink))
+    local itemID = select(1, C_Item.GetItemInfoInstant(itemLink))
     local mapID = C_Map.GetBestMapForUnit("player")
     if Addon.IsEquippableItemType(itemType) and mapID == Addon.Constants.GREAT_VAULT_MAP_ID and Addon.IsValueInTable(greatVaultTable, itemID) then
         local fullname = Addon.GetPlayerID()
@@ -261,7 +261,7 @@ end
 function Addon.DetectTrade(tradeSlotIndex)
     local slotItemLink = GetTradeTargetItemLink(tradeSlotIndex)
     if slotItemLink then
-        local itemType = select(6,GetItemInfoInstant(slotItemLink))
+        local itemType = select(6,C_Item.GetItemInfoInstant(slotItemLink))
         if Addon.IsEquippableItemType(itemType) then
             tinsert(tradedItems, slotItemLink)
             return slotItemLink

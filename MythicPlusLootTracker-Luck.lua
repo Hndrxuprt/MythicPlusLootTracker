@@ -21,7 +21,7 @@ local LootDataProvider = CreateDataProvider()
 function MythicPlusLootTrackerLuckElementMixin:InitLootList(frame, elementData)
     local name = elementData.itemLink
     local traded, itemLink = strsplit("~", name, 2)
-    local itemID = select(1,GetDetailedItemLevelInfo(itemLink or traded))
+    local itemID = select(1,C_Item.GetDetailedItemLevelInfo(itemLink or traded))
     frame.ItemContainer.Item:SetItem(itemLink or traded)
     frame.ItemContainer.Item.Count:SetText(itemID)
     frame.ItemContainer.Item.Count:Show()
@@ -65,7 +65,7 @@ function MythicPlusLootTrackerLuckElementMixin:PrepareLootList(dungeonID, player
     local function GetData(dungeonID)
         if MPLH_ENC[Addon.currentSeason][playerID] and MPLH_ENC[Addon.currentSeason][playerID][dungeonID] then
             for itemLink, amount in pairs(MPLH_ENC[Addon.currentSeason][playerID][dungeonID]) do
-                local itemType = select(6,GetItemInfoInstant(itemLink))
+                local itemType = select(6,C_Item.GetItemInfoInstant(itemLink))
                     if Addon.IsEquippableItemType(itemType) then
                         LootDataProvider:Insert({itemLink = itemLink, amount = amount})
                     end

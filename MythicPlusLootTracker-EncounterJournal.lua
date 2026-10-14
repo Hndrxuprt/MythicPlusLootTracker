@@ -63,7 +63,7 @@ local function EJTrackItem()
             local elementData = button:GetElementData()
             local index = elementData.index
             local itemInfo = C_EncounterJournal.GetLootInfoByIndex(index)
-            local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = GetItemInfoInstant(button.link)
+            local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = C_Item.GetItemInfoInstant(button.link)
             local mplusEncounters = C_ChallengeMode.GetMapTable()
             local instanceID = isRaid and EncounterJournal.instanceID or InstanceIDToMapID(EncounterJournal.instanceID, itemInfo.encounterID)
             if button:IsVisible() and LinkUtil.IsLinkType(button.link, "item") then

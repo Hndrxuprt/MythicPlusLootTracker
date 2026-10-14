@@ -217,7 +217,7 @@ local function SetGear(frame, data)
                 itemFrame:SetScript("OnLeave", GameTooltip_Hide)
             else
                 itemFrame["ItemIcon"..i]:SetAlpha(1)
-                local itemID = GetItemInfoInstant(itemLink)
+                local itemID = C_Item.GetItemInfoInstant(itemLink)
                 local itemIcon = GetItemIcon(itemID)
                 if TIER_SLOTS[i] then
                     if not IsItemClassSet(itemID) then

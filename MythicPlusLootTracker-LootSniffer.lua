@@ -281,7 +281,7 @@ function IsItemEquippable(itemLink)
 end
 
 function GetItemLevelDiff(itemLink)
-    if not GetItemInfoInstant(itemLink) then return end
+    if not C_Item.GetItemInfoInstant(itemLink) then return end
     local itemLevel = C_Item.GetDetailedItemLevelInfo(itemLink)
     local _, _, _, itemEquipLoc = C_Item.GetItemInfoInstant(itemLink)
 
@@ -328,7 +328,7 @@ function GetItemLevelDiff(itemLink)
 end
 
 function IsItemUpgrade(itemLink)
-    local itemID = GetItemInfoInstant(itemLink)
+    local itemID = C_Item.GetItemInfoInstant(itemLink)
 
     local isValidItemType, isValidInvSlot = IsItemValid(itemID)
 
@@ -353,14 +353,6 @@ function IsItemUpgrade(itemLink)
     end
 
     return IsUpgrade(itemLink)
-end
-
-local function RandomItemDesignation(itemLink)
-    if math.random() < 0.5 then
-        return itemLink
-    end
-    local itemName = string.match(itemLink, "%[(.-)%]")
-    return itemName or itemLink
 end
 
 function AskForItem(unitName, itemLink, chatType, className)
@@ -397,7 +389,7 @@ function AskForItem(unitName, itemLink, chatType, className)
             body = template:format(wordList[math.random(1,#wordList)])
         else
             local tbl = partyMessage_EN
-            body = tbl[math.random(1,#tbl)].." "..RandomItemDesignation(itemLink)
+            body = tbl[math.random(1,#tbl)].." "..itemLink
         end
 
         message = prefix .. body
@@ -583,7 +575,7 @@ local function ProcessEvent(self, event, ...)
     if event ~= 'ENCOUNTER_LOOT_RECEIVED' then return end
 
     local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
-    local itemType = select(6, GetItemInfoInstant(itemLink))
+    local itemType = select(6, C_Item.GetItemInfoInstant(itemLink))
 
     Addon.lootSeq = (Addon.lootSeq or 0) + 1
     local seq = Addon.lootSeq

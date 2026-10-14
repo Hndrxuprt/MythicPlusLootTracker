@@ -3,3 +3,4 @@ TODO
 FromClassCodex/
 node_modules/
 .zcode/
+*.md

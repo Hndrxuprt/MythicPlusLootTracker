@@ -30,6 +30,10 @@ function Addon:Init()
                 hide = false,
             },
             compactView = false,
+            lootSpec = {
+                enabled = false,
+                lastInstanceID = 0,
+            },
         },
     })
     Addon:InitIcon()

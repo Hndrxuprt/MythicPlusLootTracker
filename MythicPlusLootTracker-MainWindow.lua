@@ -2,6 +2,33 @@ local AddonName, Addon = ...
 
 local UIConfig = nil
 
+local function CreateLootSpecCheckbox()
+    if UIConfig == nil then return end
+    if _G["MPLT_LootSpecToggle"] then return end
+
+    local checkbox = CreateFrame("CheckButton", "MPLT_LootSpecToggle", MPLTLootFrameBg, "UICheckButtonTemplate")
+    checkbox:SetPoint("RIGHT", MPLTLootFrameTitleText, "LEFT", 0, -10)
+    checkbox:SetHitRectInsets(0, 0, 0, 0)
+    checkbox:SetSize(140, 22)
+    checkbox:SetScript("OnClick", function()
+        Addon.SetLootSpecEnabled(nil)
+    end)
+
+    local text = checkbox:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
+    text:SetPoint("LEFT", checkbox, "LEFT", 16, 0)
+    text:SetText(Addon.localization.lootSpecOption)
+    text:SetFontObject(nil)
+
+    checkbox:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(Addon.localization.lootSpecOptionTip, 1, 1, 1)
+        GameTooltip:AddLine(Addon.localization.lootSpecSection)
+        GameTooltip:AddLine(string.format(Addon.localization.lootSpecRules, 449976))
+        GameTooltip:Show()
+    end)
+    checkbox:SetScript("OnLeave", GameTooltip_Hide)
+end
+
 function Addon.UpdateSubFrames()
     local tabID = PanelTemplates_GetSelectedTab(MPLTLootFrame)
     local SubFrames = {"MPLTEncountersFrame", "MPLTTrackingFrame", "MPLTAltManagerFrame"}
@@ -65,6 +92,27 @@ function Addon.UpdateSubFrames()
                 UIConfig.compactToggle:Hide()
             end
         end
+    end
+
+    local ShowLootSpecCheckbox = function()
+        local checkbox = _G["MPLT_LootSpecToggle"]
+        if not checkbox then
+            Addon.CreateLootSpecCheckbox(UIConfig.importButton)
+            checkbox = _G["MPLT_LootSpecToggle"]
+        end
+
+        if checkbox then
+            checkbox:Show()
+            if Addon.DB.global.lootSpec and Addon.DB.global.lootSpec.enabled then
+                checkbox:SetChecked(true)
+            else
+                checkbox:SetChecked(false)
+            end
+        end
+    end
+
+    if Addon.CreateLootSpecCheckbox then
+        ShowLootSpecCheckbox()
     end
 end
 
@@ -224,49 +272,57 @@ function Addon.ToggleMainWindow()
         end)
         table.insert(UIConfig.topButtons, showRollButton)
 
-        if C_AddOns.IsAddOnLoaded("ClassCodex") then
-            local showImportButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
-            showImportButton:Hide()
-            showImportButton:SetParent(MPLTLootFrame)
-            showImportButton:SetPoint("LEFT", showRollButton, "RIGHT", 4, 0)
-            showImportButton:SetSize(100, 25)
-            showImportButton:SetText(Addon.localization.CCImportButton)
-            showImportButton:Show()
-            showImportButton:SetScript("OnClick", function()
-                local sourceType = "Mythic+"
-                if IsShiftKeyDown() then
-                    sourceType = "Raid"
-                elseif IsAltKeyDown() then
-                    sourceType = "Overall"
-                end
-                MPLT_ImportClassCodexGear(sourceType)
-            end)
-            showImportButton:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip_AddNormalLine(GameTooltip, Addon.localization.CCImportButtonDesc1)
-                GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                GameTooltip_AddHighlightLine(GameTooltip, Addon.localization.CCImportButtonDesc2)
-                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc3, LIGHTYELLOW_FONT_COLOR)
-                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc4, LIGHTYELLOW_FONT_COLOR)
-                GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc5, LIGHTYELLOW_FONT_COLOR)
-                GameTooltip:SetScale(0.82)
-                GameTooltip:Show()
-            end)
-            showImportButton:SetScript("OnLeave",function(self)
-                GameTooltip:SetScale(1)
-                GameTooltip:Hide()
-            end)
-            table.insert(UIConfig.topButtons, showImportButton)
-
-
-            local texture = C_AddOns.GetAddOnMetadata("ClassCodex", "IconTexture")
-            if texture then
-                showImportButton.icon = showImportButton:CreateTexture()
-                showImportButton.icon:SetSize(16, 16)
-                showImportButton.icon:SetPoint("LEFT", showImportButton, "LEFT", 8, 0)
-                showImportButton.icon:SetTexture(texture)
-                showImportButton.icon:Show()
+        local showImportButton = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
+        showImportButton:Hide()
+        showImportButton:SetParent(MPLTLootFrame)
+        showImportButton:SetPoint("LEFT", showRollButton, "RIGHT", 4, 0)
+        showImportButton:SetSize(100, 25)
+        showImportButton:SetText(Addon.localization.CCImportButton)
+        showImportButton:Show()
+        showImportButton:SetScript("OnClick", function()
+            local sourceType = "Mythic+"
+            if IsShiftKeyDown() then
+                sourceType = "Raid"
+            elseif IsAltKeyDown() then
+                sourceType = "Overall"
             end
+            MPLT_ImportClassCodexGear(sourceType)
+        end)
+        showImportButton:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            local isClassCodex = Addon.importSource == "classcodex"
+            GameTooltip_AddNormalLine(GameTooltip, isClassCodex and Addon.localization.CCImportButtonDesc1 or Addon.localization.ImportDescBundled)
+            GameTooltip_AddBlankLineToTooltip(GameTooltip)
+            GameTooltip_AddHighlightLine(GameTooltip, Addon.localization.CCImportButtonDesc2)
+            GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc3, LIGHTYELLOW_FONT_COLOR)
+            GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc4, LIGHTYELLOW_FONT_COLOR)
+            GameTooltip_AddColoredLine(GameTooltip, Addon.localization.CCImportButtonDesc5, LIGHTYELLOW_FONT_COLOR)
+            GameTooltip:SetScale(0.82)
+            GameTooltip:Show()
+        end)
+        showImportButton:SetScript("OnLeave",function(self)
+            GameTooltip:SetScale(1)
+            GameTooltip:Hide()
+        end)
+        table.insert(UIConfig.topButtons, showImportButton)
+
+        -- Иконка кнопки: при загруженном Class Codex — иконка аддона,
+        -- иначе — встроенная иконка Icy Veins из media/.
+        local ccLoaded = C_AddOns.IsAddOnLoaded("ClassCodex") and Addon.importSource == "classcodex"
+        local iconTexture = ccLoaded
+            and C_AddOns.GetAddOnMetadata("ClassCodex", "IconTexture")
+            or "Interface\\AddOns\\"..AddonName.."\\media\\icy-veins.png"
+        showImportButton.icon = showImportButton:CreateTexture()
+        showImportButton.icon:SetSize(16, 16)
+        showImportButton.icon:SetPoint("LEFT", showImportButton, "LEFT", 8, 0)
+        showImportButton.icon:SetTexture(iconTexture)
+        showImportButton.icon:Show()
+        UIConfig.importButton = showImportButton
+
+        -- Чекбокс модуля LootSpec справа от Import: создаётся при создании окна,
+        -- при загрузке аддона окна ещё не существует
+        if Addon.CreateLootSpecCheckbox then
+            Addon.CreateLootSpecCheckbox(showImportButton)
         end
 
 

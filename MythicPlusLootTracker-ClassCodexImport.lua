@@ -143,13 +143,16 @@ local function ProcessEvent(self, event, ...)
             end
         end
 
+        -- Встроенная база Icy Veins из data/ всегда доступна; берём её по умолчанию,
+        -- чтобы импорт работал и без аддона Class Codex.
+        GuideDB = GuideSource["icyveins"]
+        Addon.importSource = "icyveins"
+
         if C_AddOns.IsAddOnLoaded("ClassCodex") then
-            if ClassCodex_LastScrape and ClassCodex_LastScrape > Guide_LastScrape then
-                if ClassCodexSource then
-                    GuideDB = ClassCodexSource["icyveins"]
-                end
-            else
-                GuideDB = GuideSource["icyveins"]
+            -- Если Class Codex собрал более свежие данные, предпочитаем их.
+            if ClassCodex_LastScrape and ClassCodex_LastScrape > Guide_LastScrape and ClassCodexSource then
+                GuideDB = ClassCodexSource["icyveins"]
+                Addon.importSource = "classcodex"
             end
         end
     end
